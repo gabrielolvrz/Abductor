@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="560" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="560" rx="24" fill="url(#bg)"/>
+  <rect x="24" y="24" width="752" height="512" rx="16" stroke="url(#gold)" stroke-opacity="0.3" stroke-width="2"/>
+  <!-- Architectural Columns / Scales of Justice Minimalist Art -->
+  <g opacity="0.16" stroke="url(#gold)" stroke-width="2">
+    <line x1="160" y1="80" x2="160" y2="480"/>
+    <line x1="200" y1="80" x2="200" y2="480"/>
+    <line x1="600" y1="80" x2="600" y2="480"/>
+    <line x1="640" y1="80" x2="640" y2="480"/>
+  </g>
+  <circle cx="400" cy="240" r="92" stroke="url(#gold)" stroke-opacity="0.45" stroke-width="2.5"/>
+  <path d="M400 165V315M335 205H465M335 205L310 260H360L335 205ZM465 205L440 260H490L465 205ZM365 315H435" stroke="url(#gold)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="400" y="395" text-anchor="middle" fill="#f8fafc" font-family="Georgia, serif" font-size="24" font-weight="bold" letter-spacing="2">ADVOCACIA &amp; CONSULTORIA JURÍDICA</text>
+  <text x="400" y="430" text-anchor="middle" fill="#cbd5e1" font-family="sans-serif" font-size="14" letter-spacing="3">ÉTICA • RIGOR TÉCNICO • SEGURANÇA JURÍDICA</text>
+</svg>

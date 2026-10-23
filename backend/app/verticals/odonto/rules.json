@@ -1,0 +1,30 @@
+{
+  "slug": "odonto",
+  "display_name": "Clínicas Odontológicas e Dentistas",
+  "search_terms": [
+    "Dentista",
+    "Clínica Odontológica",
+    "Implante Dentário",
+    "Harmonização Orofacial",
+    "Ortodontista"
+  ],
+  "scoring": {
+    "reviews_threshold_high": 15,
+    "reviews_points_high": 25,
+    "reviews_threshold_mid": 5,
+    "reviews_points_mid": 15,
+    "rating_ideal_min": 4.5
+  },
+  "blocked_terms_in_name": [
+    "Defensoria",
+    "OAB",
+    "Tribunal",
+    "Fórum",
+    "Sindicato",
+    "CRO",
+    "Conselho Regional",
+    "UBS",
+    "SUS"
+  ],
+  "dork_pattern": "\"{name}\" \"{city}\" site:instagram.com"
+}

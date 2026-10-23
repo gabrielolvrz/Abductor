@@ -1,0 +1,1617 @@
+<!doctype html>
+<html lang="pt-BR" class="scroll-smooth overflow-x-hidden" data-mode="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="page-title">Advocacia Institucional &amp; Consultoria Jurídica Estratégica</title>
+    <meta
+      name="description"
+      id="page-description"
+      content="Atuação jurídica estratégica, ética e personalizada. Resguardo ético e sigilo profissional conforme o Estatuto da OAB e LGPD."
+    />
+
+    <!-- Google Fonts: Playfair Display (Serif Autoridade) + Plus Jakarta Sans (Corpo Geométrico) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Playfair Display"', 'Georgia', 'Cambria', 'serif'],
+              sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+
+    <!-- Estilos de Paleta Dinâmica & Anti-AI Warm System -->
+    <style>
+      :root {
+        --bg-primary: #0f172a;
+        --bg-surface: #162032;
+        --text-primary: #f8f6f0;
+        --text-secondary: #94a3b8;
+        --color-accent: #c5a059;
+        --border-color: #1e293b;
+
+        --color-accent-hover: #d4af6a;
+        --color-accent-text: #d4af6a;
+        --color-on-accent: #0b1120;
+        --color-heading: #f8f6f0;
+        --color-muted: #94a3b8;
+        --color-primary: #0b1329;
+        --color-bg: #0f172a;
+        --color-surface: #162032;
+        --color-border: #1e293b;
+        --color-text: #f8f6f0;
+        --shadow-strong: rgba(0, 0, 0, 0.5);
+        --map-line: rgba(148, 163, 184, 0.08);
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-secondary);
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      }
+
+      .font-serif {
+        font-family: 'Playfair Display', Georgia, serif;
+      }
+
+      /* Textura sutil de granulação editorial */
+      .bg-noise {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+      }
+
+      /* Detalhes do Acordeão Nativo FAQ */
+      details summary::-webkit-details-marker {
+        display: none;
+      }
+
+      /* Suporte a touch targets amigáveis (min-height 48px) */
+      .touch-target {
+        min-height: 48px;
+      }
+
+      /* Âncoras não ficam escondidas sob o header fixo */
+      section[id] {
+        scroll-margin-top: 84px;
+      }
+
+      /* ================================================================= */
+      /* SCROLL REVEAL CINEMÁTICO: "NÉVOA SE DISSIPANDO"                   */
+      /* ================================================================= */
+      .reveal {
+        opacity: 0;
+        transform: translate3d(0, 40px, 0) scale(0.97);
+        filter: blur(6px);
+        transition:
+          opacity 950ms cubic-bezier(0.16, 1, 0.3, 1),
+          transform 950ms cubic-bezier(0.16, 1, 0.3, 1),
+          filter 950ms cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+      }
+
+      .reveal:not(.revealed) {
+        will-change: opacity, transform, filter;
+      }
+
+      .reveal.revealed {
+        opacity: 1;
+        transform: none;
+        filter: blur(0);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .reveal {
+          opacity: 1 !important;
+          transform: none !important;
+          filter: none !important;
+          transition: none !important;
+        }
+        .photo-zoom,
+        .card-interactive,
+        .btn-interactive,
+        .nav-link::after {
+          transition: none !important;
+        }
+      }
+
+      /* ================================================================= */
+      /* PONTE DE ACENTO: utilitários amber-* seguem --color-accent        */
+      /* ================================================================= */
+      html .text-amber-300,
+      html .text-amber-400,
+      html .hover\:text-amber-300:hover,
+      html .hover\:text-amber-400:hover,
+      html .group:hover .group-hover\:text-amber-400 {
+        color: var(--color-accent-text);
+      }
+      html .text-amber-400\/90 { color: color-mix(in srgb, var(--color-accent-text) 90%, transparent); }
+      html .text-amber-500\/30 { color: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+      html .text-amber-400\/20 { color: color-mix(in srgb, var(--color-accent-text) 20%, transparent); }
+      html .group:hover .group-hover\:text-amber-400\/35 { color: color-mix(in srgb, var(--color-accent-text) 35%, transparent); }
+      html .bg-amber-400 { background-color: var(--color-accent-text); }
+      html .bg-amber-500\/10 { background-color: color-mix(in srgb, var(--color-accent) 10%, transparent); }
+      html .bg-amber-600 { background-color: var(--color-accent); }
+      html .bg-amber-600:hover,
+      html .hover\:bg-amber-500:hover { background-color: var(--color-accent-hover); }
+      html .border-amber-500\/30 { border-color: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+      html .border-amber-500\/40 { border-color: color-mix(in srgb, var(--color-accent) 40%, transparent); }
+      html .border-amber-500\/50,
+      html .hover\:border-amber-500\/50:hover { border-color: color-mix(in srgb, var(--color-accent) 50%, transparent); }
+      html .shadow-amber-600\/15 { --tw-shadow-color: color-mix(in srgb, var(--color-accent) 15%, transparent); }
+      html .bg-amber-600.text-slate-950,
+      html .hover\:text-slate-950:hover,
+      html body .btn-interactive.bg-amber-600,
+      html body #header-cta,
+      html body #hero-main-cta,
+      html body #location-route-btn {
+        color: var(--color-on-accent) !important;
+      }
+      html .photo-glow {
+        background-image: linear-gradient(
+          to right,
+          color-mix(in srgb, var(--color-accent) 24%, transparent),
+          color-mix(in srgb, var(--color-accent) 10%, transparent)
+        );
+      }
+      ::selection {
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+      }
+
+      /* ================================================================= */
+      /* MODO ESCURO (navy-gold, sovereign-dark, espresso-amber)          */
+      /* ================================================================= */
+      html[data-mode="dark"] {
+        --shadow-strong: rgba(0, 0, 0, 0.55);
+        --map-line: rgba(148, 163, 184, 0.08);
+      }
+      html[data-mode="dark"] body {
+        background-color: var(--bg-primary);
+        color: var(--text-secondary);
+      }
+      html[data-mode="dark"] .text-white {
+        color: var(--text-primary);
+      }
+      html[data-mode="dark"] .text-slate-300,
+      html[data-mode="dark"] .text-slate-400 {
+        color: var(--text-secondary);
+      }
+      html[data-mode="dark"] .border-slate-800,
+      html[data-mode="dark"] .border-slate-800\/80,
+      html[data-mode="dark"] .border-slate-700 {
+        border-color: var(--border-color);
+      }
+      html[data-mode="dark"] .bg-slate-950,
+      html[data-mode="dark"] .bg-slate-950\/80,
+      html[data-mode="dark"] .bg-slate-950\/90,
+      html[data-mode="dark"] .bg-slate-900\/80 {
+        background-color: var(--bg-surface);
+      }
+      html[data-mode="dark"] .bg-slate-900 {
+        background-color: var(--bg-primary);
+      }
+      html[data-mode="dark"] header,
+      html[data-mode="dark"] header.bg-slate-950\/95 {
+        background-color: color-mix(in srgb, var(--bg-surface) 92%, transparent);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-color: var(--border-color);
+      }
+      html[data-mode="dark"] .bg-slate-900\/30,
+      html[data-mode="dark"] .bg-slate-900\/50 {
+        background-color: color-mix(in srgb, var(--bg-surface) 50%, var(--bg-primary));
+      }
+      html[data-mode="dark"] .theme-gradient-hero {
+        background-image: linear-gradient(to bottom, var(--bg-surface), var(--bg-primary));
+      }
+      html[data-mode="dark"] .theme-gradient-card {
+        background-image: linear-gradient(to bottom right, var(--bg-surface), var(--bg-primary));
+      }
+
+      /* ================================================================= */
+      /* MODO CLARO (oxford-linen, atlantic-blue): contraste, relevo, cor  */
+      /* ================================================================= */
+      html[data-mode="light"] {
+        --shadow-strong: rgba(15, 23, 42, 0.08);
+        --map-line: rgba(15, 32, 66, 0.08);
+      }
+      html[data-mode="light"] body {
+        background-color: var(--bg-primary);
+        color: var(--text-secondary);
+      }
+      html[data-mode="light"] .text-white,
+      html[data-mode="light"] .hover\:text-white:hover {
+        color: var(--text-primary);
+      }
+      html[data-mode="light"] .text-slate-200,
+      html[data-mode="light"] .text-slate-300 {
+        color: var(--text-secondary);
+      }
+      html[data-mode="light"] .text-slate-400 {
+        color: var(--text-secondary);
+      }
+      html[data-mode="light"] .text-slate-500 {
+        color: color-mix(in srgb, var(--text-secondary) 75%, transparent);
+      }
+      html[data-mode="light"] .text-emerald-400 {
+        color: #047857;
+      }
+      html[data-mode="light"] .border-slate-700,
+      html[data-mode="light"] .border-slate-800,
+      html[data-mode="light"] .border-slate-800\/80 {
+        border-color: var(--border-color);
+      }
+      html[data-mode="light"] .bg-slate-950,
+      html[data-mode="light"] .bg-slate-950\/80,
+      html[data-mode="light"] .bg-slate-950\/90,
+      html[data-mode="light"] .bg-slate-900\/80 {
+        background-color: var(--bg-surface);
+      }
+      html[data-mode="light"] .bg-slate-900 {
+        background-color: var(--bg-primary);
+      }
+      html[data-mode="light"] header,
+      html[data-mode="light"] header.bg-slate-950\/95 {
+        background-color: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-color: var(--border-color);
+      }
+      html[data-mode="light"] #header-business-name {
+        color: var(--text-primary);
+      }
+      html[data-mode="light"] .bg-slate-900\/30,
+      html[data-mode="light"] .bg-slate-900\/50 {
+        background-color: color-mix(in srgb, var(--border-color) 45%, var(--bg-primary));
+      }
+      html[data-mode="light"] .theme-gradient-hero {
+        background-image: linear-gradient(to bottom, var(--bg-surface), var(--bg-primary));
+      }
+      html[data-mode="light"] .theme-gradient-card {
+        background-image: linear-gradient(to bottom right, var(--bg-surface), var(--bg-primary));
+      }
+      html[data-mode="light"] .card-interactive,
+      html[data-mode="light"] .theme-surface {
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 6px 16px -4px rgba(15, 23, 42, 0.07);
+      }
+      html[data-mode="light"] details.faq-item.is-open {
+        background-color: var(--bg-surface);
+        border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+        box-shadow: 0 4px 14px -3px rgba(15, 23, 42, 0.08);
+      }
+      html[data-mode="light"] #testimonials-grid .card-interactive {
+        background-color: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-color: var(--border-color);
+      }
+      html[data-mode="light"] .ambient-glow::before {
+        background: radial-gradient(
+          ellipse at center,
+          color-mix(in srgb, var(--color-accent) 12%, transparent) 0%,
+          transparent 65%
+        );
+      }
+      /* Legenda sobre a foto permanece escura em qualquer tema */
+      html[data-mode="light"] .keep-dark .text-white {
+        color: #ffffff !important;
+      }
+      html[data-mode="light"] .keep-dark span {
+        color: #ffffff !important;
+      }
+
+      /* ================================================================= */
+      /* MICRO-INTERAÇÕES: CARDS                                           */
+      /* ================================================================= */
+      .card-interactive {
+        transition:
+          transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+          box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+          border-color 0.3s ease,
+          background-color 0.3s ease;
+      }
+      html body .card-interactive:hover {
+        transform: translateY(-4px) scale(1.015);
+        border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+        box-shadow:
+          0 18px 36px -10px var(--shadow-strong),
+          0 0 22px -6px color-mix(in srgb, var(--color-accent) 22%, transparent);
+      }
+
+      /* ================================================================= */
+      /* MICRO-INTERAÇÕES: BOTÕES (elevação + brilho na borda superior)    */
+      /* ================================================================= */
+      .btn-interactive {
+        transition:
+          transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+          box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+          background-color 0.25s ease,
+          border-color 0.25s ease,
+          color 0.25s ease;
+      }
+      html body .btn-interactive:hover {
+        transform: translateY(-2px) scale(1.025);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.35),
+          0 12px 28px -8px color-mix(in srgb, var(--color-accent) 45%, transparent),
+          0 4px 10px -4px var(--shadow-strong);
+      }
+      html body .btn-interactive:active {
+        transform: translateY(0) scale(0.99);
+      }
+
+      /* Botão Flutuante de WhatsApp com elevação */
+      #floating-whatsapp {
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+        box-shadow: 0 10px 28px -4px rgba(16, 185, 129, 0.35);
+      }
+      #floating-whatsapp:hover {
+        transform: scale(1.08) translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 16px 36px -4px rgba(16, 185, 129, 0.55);
+      }
+
+      /* ================================================================= */
+      /* SUBLINHADO DIRECIONAL NOS LINKS DO CABEÇALHO                      */
+      /* ================================================================= */
+      .nav-link {
+        position: relative;
+        padding-block: 0.35rem;
+      }
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 1.5px;
+        border-radius: 2px;
+        background: var(--color-accent-text);
+        transform: scaleX(0);
+        transform-origin: right center;
+        transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .nav-link:hover::after,
+      .nav-link:focus-visible::after {
+        transform: scaleX(1);
+        transform-origin: left center;
+      }
+
+      /* ================================================================= */
+      /* FOTO PROFISSIONAL: ZOOM CINEMATOGRÁFICO                           */
+      /* ================================================================= */
+      .photo-zoom {
+        transition: transform 700ms ease-out;
+        transform-origin: center top;
+      }
+      #hero:hover .photo-zoom {
+        transform: scale(1.04);
+      }
+
+      /* Iluminação Ambiental em Títulos (Subtle Glow) */
+      .ambient-glow {
+        position: relative;
+        isolation: isolate;
+      }
+      .ambient-glow::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 130%;
+        height: 150%;
+        background: radial-gradient(
+          ellipse at center,
+          color-mix(in srgb, var(--color-accent) 14%, transparent) 0%,
+          color-mix(in srgb, var(--color-accent) 4%, transparent) 45%,
+          transparent 70%
+        );
+        filter: blur(28px);
+        pointer-events: none;
+        z-index: -1;
+      }
+      html[data-mode="light"] .ambient-glow::before {
+        background: radial-gradient(
+          ellipse at center,
+          color-mix(in srgb, var(--color-accent) 9%, transparent) 0%,
+          transparent 65%
+        );
+      }
+
+      /* ================================================================= */
+      /* DEPOIMENTOS: 1 linha no desktop, máximo 2 no celular              */
+      /* ================================================================= */
+      #testimonials-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      #testimonials-grid.hidden {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        #testimonials-grid > :nth-child(n + 3) {
+          display: none;
+        }
+      }
+      @media (min-width: 769px) {
+        #testimonials-grid {
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          padding: 0.75rem 0.25rem 1.5rem;
+          scrollbar-width: thin;
+        }
+        /* Centraliza quando cabe; rola sem cortar quando não cabe (tablet) */
+        #testimonials-grid > :first-child { margin-left: auto; }
+        #testimonials-grid > :last-child { margin-right: auto; }
+        #testimonials-grid > * {
+          flex: 1 1 0;
+          min-width: 220px;
+          max-width: 400px;
+          scroll-snap-align: start;
+        }
+      }
+
+      /* ================================================================= */
+      /* LOCALIZAÇÃO: facade de mapa (só carrega o Google após clique)     */
+      /* ================================================================= */
+      .map-facade {
+        background-image:
+          linear-gradient(var(--map-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--map-line) 1px, transparent 1px),
+          linear-gradient(28deg, transparent 47%, color-mix(in srgb, var(--color-accent) 12%, transparent) 47.5%, color-mix(in srgb, var(--color-accent) 12%, transparent) 49.5%, transparent 50%),
+          linear-gradient(-62deg, transparent 58%, var(--map-line) 58.5%, var(--map-line) 61%, transparent 61.5%),
+          radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--color-accent) 16%, transparent), transparent 60%);
+        background-size: 32px 32px, 32px 32px, 100% 100%, 100% 100%, 100% 100%;
+      }
+      .map-pin {
+        animation: map-pin-float 3.2s ease-in-out infinite;
+      }
+      @keyframes map-pin-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .map-pin { animation: none; }
+      }
+      #map-frame iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+      html[data-mode="dark"] #map-frame iframe {
+        filter: grayscale(0.25) contrast(1.05);
+      }
+
+      /* ================================================================= */
+      /* ACORDEÃO SUAVE BIDIRECIONAL                                       */
+      /* ================================================================= */
+      details.faq-item {
+        transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+      }
+      details.faq-item.is-open {
+        border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+        box-shadow: 0 10px 25px -5px var(--shadow-strong);
+        background-color: rgba(15, 23, 42, 0.9);
+      }
+      .faq-content {
+        display: grid;
+        grid-template-rows: 0fr;
+        opacity: 0;
+        transition: grid-template-rows 320ms cubic-bezier(0.16, 1, 0.3, 1), opacity 260ms ease;
+      }
+      details.faq-item.is-open .faq-content {
+        grid-template-rows: 1fr;
+        opacity: 1;
+      }
+      .faq-content-inner {
+        overflow: hidden;
+      }
+      .faq-chevron {
+        transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      details.faq-item.is-open .faq-chevron {
+        transform: rotate(180deg);
+      }
+    </style>
+    <!-- Sem JavaScript, o conteúdo aparece imediatamente (nada fica invisível) -->
+    <noscript><style>.reveal{opacity:1!important;transform:none!important;filter:none!important}</style></noscript>
+  </head>
+  <body class="bg-noise min-h-screen selection:bg-amber-500 selection:text-slate-950 flex flex-col justify-between overflow-x-hidden">
+    <!-- =================================================================== -->
+    <!-- 1. HEADER: Identidade Institucional + OAB + Contato Superior        -->
+    <!-- =================================================================== -->
+    <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/95 backdrop-blur-md">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
+        <a href="#hero" class="flex items-center gap-3 group">
+          <!-- Monograma Heráldico Reduzido no Topo -->
+          <div
+            id="header-monogram-box"
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-amber-500/40 bg-amber-500/10 font-serif text-sm font-bold tracking-wider text-amber-400 shadow-sm"
+          >
+            <span id="header-initials">ADV</span>
+          </div>
+          <div>
+            <span
+              id="header-business-name"
+              class="block font-serif text-base font-bold tracking-tight text-white transition group-hover:text-amber-400 sm:text-lg"
+            >
+              Dr. Carlos Eduardo Advocacia
+            </span>
+            <div class="flex items-center gap-2 text-[11px] text-slate-400">
+              <span id="header-oab" class="font-semibold text-amber-400/90">OAB/MG Sob Consulta</span>
+              <span>•</span>
+              <span id="header-city">Uberlândia - MG</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Navegação Desktop -->
+        <nav class="hidden items-center gap-6 text-xs font-semibold uppercase tracking-wider text-slate-300 lg:flex xl:gap-7">
+          <a href="#atuacao" class="nav-link transition-colors duration-300 hover:text-amber-400">Áreas de Atuação</a>
+          <a href="#como-funciona" class="nav-link transition-colors duration-300 hover:text-amber-400">Como Funciona</a>
+          <a href="#avaliacoes" class="nav-link transition-colors duration-300 hover:text-amber-400">Reputação</a>
+          <a href="#faq" class="nav-link transition-colors duration-300 hover:text-amber-400">Dúvidas Éticas</a>
+          <a href="#localizacao" class="nav-link transition-colors duration-300 hover:text-amber-400">Localização</a>
+        </nav>
+
+        <!-- CTA Superior -->
+        <a
+          id="header-cta"
+          href="https://wa.me/5534998765432"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="touch-target btn-interactive inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2.5 text-xs font-bold text-slate-950 shadow-md sm:text-sm"
+        >
+          <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z" />
+          </svg>
+          <span>Falar com Advogado</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <!-- =================================================================== -->
+      <!-- 2. HERO SECTION ADAPTÁVEL: Cenário A (Com Foto) vs B (Monograma)     -->
+      <!-- =================================================================== -->
+      <section id="hero" class="theme-gradient-hero relative overflow-hidden border-b border-slate-800/80 bg-gradient-to-b from-slate-900/90 via-slate-950 to-slate-950 py-14 sm:py-20 lg:py-24">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+            <!-- Coluna de Texto e CTAs -->
+            <div class="reveal space-y-6 lg:col-span-7">
+              <div class="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3.5 py-1.5 text-xs font-semibold text-amber-300">
+                <span class="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+                <span id="hero-badge-location">Atendimento Presencial e Online em Todo o País</span>
+              </div>
+
+              <h1
+                id="hero-tagline"
+                class="ambient-glow font-serif text-3xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:leading-[1.18]"
+              >
+                Atuação Jurídica Estratégica, Ética e Personalizada
+              </h1>
+
+              <p
+                id="hero-subtitle"
+                class="max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg"
+              >
+                Defesa rigorosa dos seus direitos e assessoria consultiva transparente em <span id="hero-city-span" class="font-semibold text-white">Uberlândia</span>. Atendimento sigiloso pautado na celeridade técnica e no Provimento 205/2021 da OAB.
+              </p>
+
+              <!-- Ações Principais -->
+              <div class="flex flex-col gap-3.5 sm:flex-row sm:items-center pt-2">
+                <a
+                  id="hero-main-cta"
+                  href="https://wa.me/5534998765432"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="touch-target btn-interactive inline-flex items-center justify-center gap-2.5 rounded-xl bg-amber-600 px-6 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-amber-600/15"
+                >
+                  <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z" />
+                  </svg>
+                  <span>Agende uma Avaliação do Seu Caso</span>
+                </a>
+
+                <a
+                  href="#atuacao"
+                  class="touch-target btn-interactive inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900/80 px-5 py-3.5 text-sm font-semibold text-slate-200 hover:border-amber-500/50 hover:text-white"
+                >
+                  <span>Conhecer Especialidades</span>
+                  <svg class="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </a>
+              </div>
+
+              <!-- Garantia de Sigilo Ético -->
+              <div class="flex items-center gap-2 text-xs text-slate-400 pt-1">
+                <svg class="h-4 w-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span>Sigilo profissional resguardado por lei (Estatuto da OAB) • Sem mercantilização</span>
+              </div>
+            </div>
+
+            <!-- Coluna Visual Adaptável: Foto vs Monograma Editorial -->
+            <div class="reveal lg:col-span-5 flex justify-center" style="--reveal-delay: 180ms">
+              <!-- Cenário A: Com Foto Profissional -->
+              <div id="hero-photo-wrapper" class="hidden relative max-w-sm sm:max-w-md w-full">
+                <div class="photo-glow absolute -inset-1 rounded-3xl bg-gradient-to-r from-amber-500/20 to-amber-700/20 blur-xl opacity-75"></div>
+                <div class="photo-frame relative overflow-hidden rounded-2xl border border-amber-500/40 bg-slate-900 shadow-2xl ring-1 ring-inset ring-white/10">
+                  <img
+                    id="hero-photo-img"
+                    src="./assets/doutor.svg"
+                    alt="Advogado Responsável"
+                    class="photo-zoom h-auto w-full object-cover object-top max-h-[480px]"
+                  />
+                  <div class="keep-dark absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 text-center">
+                    <span id="hero-photo-name" class="block font-serif text-base font-bold text-white">
+                      Dr. Carlos Eduardo
+                    </span>
+                    <span id="hero-photo-oab" class="block text-xs font-semibold text-amber-400">
+                      Advogado Titular • OAB/MG
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cenário B: Modo Editorial (Monograma Heráldico de Prestígio) -->
+              <div id="hero-monogram-wrapper" class="relative max-w-md w-full">
+                <div class="absolute -inset-1 rounded-3xl bg-amber-500/10 blur-2xl opacity-60"></div>
+                <div class="theme-gradient-card relative rounded-2xl border border-amber-500/30 bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 p-8 shadow-2xl text-center">
+                  <!-- Selo Heráldico Vetorial -->
+                  <div class="mx-auto w-44 h-44 sm:w-52 sm:h-52 relative flex items-center justify-center">
+                    <img
+                      id="hero-monogram-svg"
+                      src="./assets/monograma.svg"
+                      alt="Monograma Heráldico Institucional"
+                      class="w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(197,160,89,0.15)]"
+                    />
+                    <!-- Iniciais sobrepostas caso necessário -->
+                    <span
+                      id="hero-monogram-initials"
+                      class="absolute font-serif text-3xl sm:text-4xl font-bold tracking-widest text-amber-400 mt-5 select-none"
+                    >CE</span>
+                  </div>
+
+                  <div class="mt-6 border-t border-slate-800 pt-5">
+                    <h2 id="hero-editorial-name" class="font-serif text-xl font-bold tracking-tight text-white">
+                      Dr. Carlos Eduardo Advocacia
+                    </h2>
+                    <p id="hero-editorial-oab" class="mt-1 text-xs font-semibold text-amber-400 uppercase tracking-widest">
+                      Inscrição OAB/MG Sob Consulta
+                    </p>
+                    <p class="mt-2 text-xs text-slate-400">
+                      Sede institucional com estrutura física e atendimento corporativo online.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 3. BARRA DE MÉTRICAS E PROVA SOCIAL                                 -->
+      <!-- =================================================================== -->
+      <section class="border-b border-slate-800 bg-slate-900/50 py-6 sm:py-8">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-4 lg:gap-8 text-center">
+            <div class="reveal" style="--reveal-delay: 0ms">
+              <div class="card-interactive h-full rounded-xl border border-slate-800/80 bg-slate-950/80 backdrop-blur-sm p-4 sm:p-5">
+                <div class="flex items-center justify-center gap-1.5 text-amber-400">
+                  <svg class="h-5 w-5 fill-current" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  <span id="metric-rating" class="font-serif text-2xl font-black text-white sm:text-3xl">4.9</span>
+                </div>
+                <p class="mt-1 text-xs text-slate-400 font-medium">Nota Média no Google</p>
+              </div>
+            </div>
+
+            <div class="reveal" style="--reveal-delay: 110ms">
+              <div class="card-interactive h-full rounded-xl border border-slate-800/80 bg-slate-950/80 backdrop-blur-sm p-4 sm:p-5">
+                <span id="metric-reviews" class="font-serif text-2xl font-black text-amber-400 sm:text-3xl">+48</span>
+                <p class="mt-1 text-xs text-slate-400 font-medium">Avaliações Verificadas</p>
+              </div>
+            </div>
+
+            <div class="reveal" style="--reveal-delay: 220ms">
+              <div class="card-interactive h-full rounded-xl border border-slate-800/80 bg-slate-950/80 backdrop-blur-sm p-4 sm:p-5">
+                <span id="metric-experience" class="font-serif text-2xl font-black text-white sm:text-3xl">+12</span>
+                <p class="mt-1 text-xs text-slate-400 font-medium">Anos de Atuação Jurídica</p>
+              </div>
+            </div>
+
+            <div class="reveal" style="--reveal-delay: 330ms">
+              <div class="card-interactive h-full rounded-xl border border-slate-800/80 bg-slate-950/80 backdrop-blur-sm p-4 sm:p-5">
+                <span id="metric-cases" class="font-serif text-2xl font-black text-amber-400 sm:text-3xl">+650</span>
+                <p class="mt-1 text-xs text-slate-400 font-medium">Casos e Clientes Atendidos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 4. ÁREAS DE ATUAÇÃO (BENTO GRID SÓBRIO COM ÍCONES SVG)              -->
+      <!-- =================================================================== -->
+      <section id="atuacao" class="border-b border-slate-800 py-16 sm:py-24">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="reveal max-w-2xl">
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Especialidades</span>
+            <h2 class="ambient-glow mt-2 font-serif text-2xl font-bold tracking-tight text-white sm:text-4xl">
+              Áreas de Atuação Estratégica
+            </h2>
+            <p class="mt-3 text-sm text-slate-300">
+              Atuação técnica orientada à resolução objetiva de conflitos e à segurança patrimonial de pessoas e empresas.
+            </p>
+          </div>
+
+          <div id="services-grid" class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Renderizado dinamicamente via JS a partir do site.config.json (com stagger) -->
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 5. PROCESSO DE ATENDIMENTO ("COMO FUNCIONA")                       -->
+      <!-- =================================================================== -->
+      <section id="como-funciona" class="border-b border-slate-800 bg-slate-900/30 py-16 sm:py-24">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="reveal text-center max-w-2xl mx-auto">
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Metodologia</span>
+            <h2 class="ambient-glow mt-2 font-serif text-2xl font-bold tracking-tight text-white sm:text-4xl">
+              Como Funciona o Nosso Atendimento
+            </h2>
+            <p class="mt-3 text-sm text-slate-300">
+              Processo claro e ético desde o primeiro contato até a conclusão do seu caso.
+            </p>
+          </div>
+
+          <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="reveal" style="--reveal-delay: 0ms">
+              <div class="card-interactive h-full rounded-2xl border border-slate-800 bg-slate-950/80 backdrop-blur-sm p-6 relative">
+                <span class="font-serif text-3xl font-black text-amber-500/30">01</span>
+                <h3 class="mt-3 font-serif text-lg font-bold text-white">Contato pelo WhatsApp</h3>
+                <p class="mt-2 text-xs leading-relaxed text-slate-400">
+                  Triagem preliminar rápida para entender a urgência e a matéria do seu caso com sigilo integral.
+                </p>
+              </div>
+            </div>
+            <div class="reveal" style="--reveal-delay: 170ms">
+              <div class="card-interactive h-full rounded-2xl border border-slate-800 bg-slate-950/80 backdrop-blur-sm p-6 relative">
+                <span class="font-serif text-3xl font-black text-amber-500/30">02</span>
+                <h3 class="mt-3 font-serif text-lg font-bold text-white">Análise Documental</h3>
+                <p class="mt-2 text-xs leading-relaxed text-slate-400">
+                  Avaliação minuciosa de contratos, certidões ou notificações para identificar a melhor estratégia jurídica.
+                </p>
+              </div>
+            </div>
+            <div class="reveal" style="--reveal-delay: 340ms">
+              <div class="card-interactive h-full rounded-2xl border border-slate-800 bg-slate-950/80 backdrop-blur-sm p-6 relative">
+                <span class="font-serif text-3xl font-black text-amber-500/30">03</span>
+                <h3 class="mt-3 font-serif text-lg font-bold text-white">Proposta Clara</h3>
+                <p class="mt-2 text-xs leading-relaxed text-slate-400">
+                  Apresentação formal do plano de ação e do contrato de honorários em estrita conformidade com a tabela da OAB.
+                </p>
+              </div>
+            </div>
+            <div class="reveal" style="--reveal-delay: 510ms">
+              <div class="card-interactive h-full rounded-2xl border border-slate-800 bg-slate-950/80 backdrop-blur-sm p-6 relative">
+                <span class="font-serif text-3xl font-black text-amber-500/30">04</span>
+                <h3 class="mt-3 font-serif text-lg font-bold text-white">Acompanhamento Ativo</h3>
+                <p class="mt-2 text-xs leading-relaxed text-slate-400">
+                  Atualizações periódicas sobre cada andamento processual diretamente com o advogado responsável.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 6. AVALIAÇÕES / DEPOIMENTOS COM FALLBACK INTELIGENTE (SEM FAKES)   -->
+      <!-- =================================================================== -->
+      <section id="avaliacoes" class="border-b border-slate-800 py-16 sm:py-24">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="reveal text-center max-w-2xl mx-auto">
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Prova Social</span>
+            <h2 class="ambient-glow mt-2 font-serif text-2xl font-bold tracking-tight text-white sm:text-4xl">
+              Reputação e Satisfação dos Clientes
+            </h2>
+            <p class="mt-3 text-sm text-slate-300">
+              Opiniões reais e espontâneas registradas na ficha oficial do Google Maps.
+            </p>
+          </div>
+
+          <!-- Cenário 1: Cards com Comentários Reais — 1 linha no desktop (até 5), máx. 2 no celular -->
+          <div id="testimonials-grid" class="mt-12">
+            <!-- Populado via JS se testimonials possuir texto -->
+          </div>
+
+          <!-- Cenário 2: Fallback Inteligente (se não houver depoimentos em texto) -->
+          <div id="testimonials-fallback-banner" class="theme-gradient-card theme-surface hidden mt-10 rounded-2xl border border-amber-500/30 bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-950 p-8 text-center max-w-3xl mx-auto shadow-xl">
+            <div class="flex items-center justify-center gap-1.5 text-amber-400">
+              <svg class="h-6 w-6 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <span id="fallback-rating-val" class="font-serif text-3xl font-black text-white">4.9</span>
+              <span class="text-sm font-semibold text-slate-400">/ 5.0</span>
+            </div>
+            <p id="fallback-text" class="mt-3 text-sm text-slate-200 leading-relaxed font-medium">
+              Excelente reputação no Google Maps — Nota 4.9 de 5.0 estrelas baseada em clientes atendidos na região.
+            </p>
+            <div class="mt-6">
+              <a
+                id="fallback-maps-link"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="touch-target btn-interactive inline-flex items-center gap-2 rounded-xl border border-amber-500/50 bg-amber-500/10 px-5 py-2.5 text-xs font-bold text-amber-300 hover:bg-amber-500 hover:text-slate-950"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Conferir Perfil Verificado no Google Maps</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 7. FAQ ÉTICO (ACORDEÃO NATIVO SUAVE <DETAILS>)                       -->
+      <!-- =================================================================== -->
+      <section id="faq" class="border-b border-slate-800 bg-slate-900/30 py-16 sm:py-24">
+        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div class="reveal text-center max-w-xl mx-auto">
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Perguntas Frequentes</span>
+            <h2 class="ambient-glow mt-2 font-serif text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              Dúvidas Éticas e Procedimentais
+            </h2>
+          </div>
+
+          <div id="faq-container" class="mt-10 space-y-4">
+            <!-- Renderizado dinamicamente via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 8. LOCALIZAÇÃO, MAPA E ROTA                                         -->
+      <!-- =================================================================== -->
+      <section id="localizacao" class="border-b border-slate-800 py-16 sm:py-24">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="reveal max-w-2xl">
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Localização</span>
+            <h2 class="ambient-glow mt-2 font-serif text-2xl font-bold tracking-tight text-white sm:text-4xl">
+              Como Chegar ao Escritório
+            </h2>
+            <p class="mt-3 text-sm text-slate-300">
+              Atendimento presencial com agendamento prévio, em ambiente reservado e com sigilo profissional.
+            </p>
+          </div>
+
+          <div class="mt-12 grid grid-cols-1 items-stretch gap-6 lg:grid-cols-12">
+            <!-- Endereço, horário e ações -->
+            <div class="reveal lg:col-span-5" style="--reveal-delay: 0ms">
+              <div class="card-interactive flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8">
+                <div class="flex items-start gap-3">
+                  <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-400">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h3 class="font-serif text-lg font-bold text-white">Endereço</h3>
+                    <p id="location-address" class="mt-1 text-sm leading-relaxed text-slate-300">
+                      Av. Rondon Pacheco, 2100 - Saraiva, Uberlândia - MG
+                    </p>
+                  </div>
+                </div>
+
+                <div class="mt-6 flex items-start gap-3 border-t border-slate-800/80 pt-6">
+                  <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-400">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h3 class="font-serif text-lg font-bold text-white">Horário de Atendimento</h3>
+                    <p id="location-hours" class="mt-1 text-sm text-slate-300">Segunda a Sexta, das 09h às 18h</p>
+                    <p class="mt-1 text-xs text-slate-500">Atendimento presencial somente com agendamento.</p>
+                  </div>
+                </div>
+
+                <div class="mt-8 flex flex-col gap-3 lg:mt-auto lg:pt-8">
+                  <a
+                    id="location-route-btn"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="touch-target btn-interactive inline-flex items-center justify-center gap-2 rounded-xl bg-amber-600 px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-amber-600/15"
+                  >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    <span>Abrir Rota no Google Maps</span>
+                  </a>
+                  <a
+                    id="location-whatsapp-btn"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="touch-target btn-interactive inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900/80 px-5 py-3 text-sm font-semibold text-slate-200 hover:border-amber-500/50 hover:text-white"
+                  >
+                    <svg class="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>Agendar Atendimento Presencial</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Prévia de mapa: facade leve; o iframe do Google só carrega com clique (LGPD + performance) -->
+            <div class="reveal lg:col-span-7" style="--reveal-delay: 170ms">
+              <div
+                id="map-frame"
+                class="theme-surface relative h-80 overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/80 shadow-xl sm:h-96 lg:h-full lg:min-h-[26rem]"
+              >
+                <div id="map-facade" class="map-facade absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
+                  <span class="map-pin flex h-14 w-14 items-center justify-center rounded-full border border-amber-500/40 bg-amber-500/10 text-amber-400 shadow-lg">
+                    <svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" />
+                    </svg>
+                  </span>
+                  <p id="map-facade-address" class="max-w-sm font-serif text-base font-bold text-white">
+                    Av. Rondon Pacheco, 2100 - Saraiva, Uberlândia - MG
+                  </p>
+                  <button
+                    type="button"
+                    id="map-load-btn"
+                    class="touch-target btn-interactive inline-flex items-center gap-2 rounded-xl border border-amber-500/50 bg-amber-500/10 px-5 py-2.5 text-xs font-bold text-amber-300"
+                  >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <span>Carregar mapa interativo</span>
+                  </button>
+                  <p class="max-w-xs text-[10px] leading-relaxed text-slate-500">
+                    O mapa é fornecido pelo Google e só é carregado após o seu clique, preservando a sua privacidade (LGPD).
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- =================================================================== -->
+    <!-- 8. FOOTER ÉTICO & TRANSPARÊNCIA LGPD (SEM POPUPS INVASIVOS)        -->
+    <!-- =================================================================== -->
+    <footer class="border-t border-slate-800 bg-slate-950 py-12 text-xs text-slate-400">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-12 items-start">
+          <div class="space-y-3 md:col-span-6">
+            <div class="flex items-center gap-2">
+              <span id="footer-business-name" class="font-serif text-base font-bold text-white">
+                Dr. Carlos Eduardo Advocacia
+              </span>
+              <span id="footer-oab-badge" class="rounded border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-400">
+                OAB/MG
+              </span>
+            </div>
+            <p id="footer-address" class="text-slate-400 text-xs leading-relaxed max-w-md">
+              Av. Rondon Pacheco, 2100 - Saraiva, Uberlândia - MG
+            </p>
+            <p id="footer-hours" class="text-slate-500 text-[11px]">
+              Horário de Atendimento: Segunda a Sexta, das 09h às 18h
+            </p>
+          </div>
+
+          <div class="space-y-2 md:col-span-3">
+            <span class="block font-serif text-sm font-bold text-white">Canais de Contato</span>
+            <p id="footer-phone" class="font-mono text-slate-300">(34) 99876-5432</p>
+            <p class="text-slate-400">Atendimento presencial com agendamento prévio</p>
+          </div>
+
+          <div class="space-y-2 md:col-span-3">
+            <span class="block font-serif text-sm font-bold text-white">Segurança &amp; Ética</span>
+            <p class="text-slate-400 leading-relaxed text-[11px]">
+              Atuação em estrita conformidade com o Provimento nº 205/2021 do Conselho Federal da OAB.
+            </p>
+          </div>
+        </div>
+
+        <!-- Nota Honesta sobre LGPD e Sigilo Profissional -->
+        <div class="border-t border-slate-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px] text-slate-500">
+          <p class="max-w-3xl leading-relaxed">
+            <strong class="text-slate-400">Privacidade e Sigilo:</strong> Este site tem caráter exclusivamente institucional e informativo, operando sem cookies de rastreamento de terceiros. As comunicações via WhatsApp são resguardadas pelo sigilo profissional (Lei nº 8.906/94) e tratadas em estrita conformidade com a LGPD.
+            <a href="./privacidade.html" class="text-amber-400/90 underline hover:text-amber-300 ml-1">Consulte nosso Aviso de Privacidade</a>.
+          </p>
+          <div class="shrink-0 text-slate-500 font-mono text-[10px]">
+            &copy; <span id="year-span">2026</span> • Todos os direitos reservados
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- =================================================================== -->
+    <!-- 9. BOTÃO FLUTUANTE DE WHATSAPP (TOUCH FRIENDLY)                    -->
+    <!-- =================================================================== -->
+    <a
+      id="floating-whatsapp"
+      href="https://wa.me/5534998765432"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Abrir conversa no WhatsApp"
+      class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-slate-950 shadow-2xl transition-all duration-200 hover:scale-105 hover:bg-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/30"
+    >
+      <svg class="h-7 w-7 fill-current" viewBox="0 0 24 24">
+        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z" />
+      </svg>
+    </a>
+
+    <!-- =================================================================== -->
+    <!-- 10. SCRIPT DE INGESTÃO REATIVA & FALLBACK COMPLETO (VANILLA JS)     -->
+    <!-- =================================================================== -->
+    <script>
+      // Fallback embutido caso fetch('./site.config.json') seja bloqueado pelo protocolo file://
+      const DEFAULT_CONFIG = {
+        theme: {
+          preset: "navy-gold",
+          mode: "dark",
+          backgroundColor: "#0f172a",
+          surfaceColor: "#162032",
+          primaryText: "#f8f6f0",
+          bodyText: "#94a3b8",
+          accentColor: "#c5a059",
+          borderColor: "#1e293b"
+        },
+        business: {
+          name: "Dr. Carlos Eduardo Advocacia & Consultoria",
+          tagline: "Atuação Jurídica Estratégica, Ética e Personalizada",
+          city: "Uberlândia",
+          state: "MG",
+          phone_display: "(34) 99876-5432",
+          whatsapp_number: "5534998765432",
+          whatsapp_default_message: "Olá! Gostaria de agendar uma avaliação jurídica sobre o meu caso.",
+          address_display: "Av. Rondon Pacheco, 2100 - Saraiva, Uberlândia - MG, 38408-404",
+          oab_number: "OAB/MG Sob Consulta",
+          office_hours: "Segunda a Sexta, das 09h às 18h"
+        },
+        visuals: {
+          theme_preset: "navy-gold",
+          primary_color: "#0b1329",
+          accent_color: "#c5a059",
+          background_color: "#0f172a",
+          use_profile_photo: false,
+          profile_photo_url: "./assets/doutor.svg",
+          monogram_initials: "CE"
+        },
+        metrics: {
+          rating: "4.9",
+          reviews_count: 48,
+          years_experience: "+12",
+          cases_count: "+650"
+        },
+        services: [
+          {
+            title: "Rescisão Indireta e Verbas Trabalhistas",
+            description: "Cálculo minucioso de rescisão, horas extras não quitadas, adicional noturno e proteção contra retenções ilegais."
+          },
+          {
+            title: "Acidentes de Trabalho e Doenças Ocupacionais",
+            description: "Reparação civil por danos materiais e morais decorrentes de LER/DORT, burnout e infortúnios em ambiente de trabalho."
+          },
+          {
+            title: "Consultoria Trabalhista Preventiva",
+            description: "Assessoria técnica para alinhamento de rotinas, adequação contratual e mitigação de riscos contenciosos."
+          }
+        ],
+        testimonials: [],
+        faq: [
+          {
+            question: "Como funciona o primeiro contato e a avaliação do caso?",
+            answer: "O primeiro contato é realizado diretamente pelo WhatsApp institucional do escritório. Nossa equipe realiza uma triagem inicial para entender a natureza da sua demanda e indicar a documentação necessária para a análise jurídica."
+          },
+          {
+            question: "O escritório realiza atendimento em formato 100% online?",
+            answer: "Sim. Além do atendimento presencial em nossa sede física, possuímos estrutura digital homologada para reuniões por videoconferência, envio seguro de documentos e acompanhamento de processos eletrônicos em todo o Brasil."
+          },
+          {
+            question: "Quais documentos preciso reunir antes do primeiro contato?",
+            answer: "Documento de identificação oficial com foto, comprovante de endereço recente e os documentos específicos relacionados à sua demanda (contratos, notificações, extratos ou carteira de trabalho digital)."
+          },
+          {
+            question: "Minhas informações e documentos estão resguardados pelo sigilo?",
+            answer: "Sim, com total rigor. Todas as consultas e dados compartilhados são protegidos pelo sigilo profissional inerente à advocacia (Lei nº 8.906/94 — Estatuto da OAB) e tratados em estrita observância à Lei Geral de Proteção de Dados (Lei nº 13.709/2018 — LGPD)."
+          }
+        ]
+      };
+
+      // 5 Presets de Prestígio Corporativo (3 Escuros e 2 Claros)
+      const THEME_PALETTES = {
+        'navy-gold': {
+          mode: 'dark',
+          name: 'Navy & Gold',
+          backgroundColor: '#0f172a',
+          surfaceColor: '#162032',
+          primaryText: '#f8f6f0',
+          bodyText: '#94a3b8',
+          accentColor: '#c5a059',
+          borderColor: '#1e293b',
+          accentHover: '#d4af6a',
+          accentText: '#d4af6a',
+          onAccent: '#0b1120'
+        },
+        'sovereign-dark': {
+          mode: 'dark',
+          name: 'Sovereign Dark',
+          backgroundColor: '#0d0f12',
+          surfaceColor: '#161a1f',
+          primaryText: '#f3f4f6',
+          bodyText: '#9ca3af',
+          accentColor: '#d4af37',
+          borderColor: '#242b35',
+          accentHover: '#e5c158',
+          accentText: '#e5c158',
+          onAccent: '#0d0f12'
+        },
+        'espresso-amber': {
+          mode: 'dark',
+          name: 'Espresso & Amber',
+          backgroundColor: '#120e0b',
+          surfaceColor: '#1c1712',
+          primaryText: '#faf6f0',
+          bodyText: '#a3988c',
+          accentColor: '#c28e46',
+          borderColor: '#332920',
+          accentHover: '#d49e54',
+          accentText: '#d49e54',
+          onAccent: '#120e0b'
+        },
+        'oxford-linen': {
+          mode: 'light',
+          name: 'Oxford Linen',
+          backgroundColor: '#f7f5f0',
+          surfaceColor: '#ffffff',
+          primaryText: '#0a192f',
+          bodyText: '#334155',
+          accentColor: '#8c6d3b',
+          borderColor: '#e2ded4',
+          accentHover: '#9d7c45',
+          accentText: '#8c6d3b',
+          onAccent: '#ffffff'
+        },
+        'atlantic-blue': {
+          mode: 'light',
+          name: 'Atlantic Blue',
+          backgroundColor: '#f1f4f8',
+          surfaceColor: '#ffffff',
+          primaryText: '#002244',
+          bodyText: '#1e293b',
+          accentColor: '#005088',
+          borderColor: '#cbd5e1',
+          accentHover: '#0066aa',
+          accentText: '#005088',
+          onAccent: '#ffffff'
+        }
+      };
+
+      // Pré-visualização comercial: ?theme=oxford-linen sobrescreve o preset da URL
+      function resolveThemeSettings(config) {
+        const previewKey = new URLSearchParams(window.location.search).get('theme');
+        const themeBlock = config.theme || {};
+        const visualsBlock = config.visuals || {};
+
+        let presetKey = previewKey || themeBlock.preset || visualsBlock.theme_preset || 'navy-gold';
+        if (!THEME_PALETTES[presetKey]) {
+          presetKey = 'navy-gold';
+        }
+
+        const base = THEME_PALETTES[presetKey];
+        const customAccent = visualsBlock.custom_accent_hex || null;
+
+        const mode = previewKey
+          ? base.mode
+          : (themeBlock.mode || visualsBlock.theme_mode || base.mode);
+
+        const backgroundColor = previewKey
+          ? base.backgroundColor
+          : (themeBlock.backgroundColor || visualsBlock.background_color || base.backgroundColor);
+
+        const surfaceColor = previewKey
+          ? base.surfaceColor
+          : (themeBlock.surfaceColor || visualsBlock.surface_color || base.surfaceColor);
+
+        const primaryText = previewKey
+          ? base.primaryText
+          : (themeBlock.primaryText || visualsBlock.primary_text || base.primaryText);
+
+        const bodyText = previewKey
+          ? base.bodyText
+          : (themeBlock.bodyText || visualsBlock.body_text || base.bodyText);
+
+        const accentColor = customAccent || (previewKey
+          ? base.accentColor
+          : (themeBlock.accentColor || visualsBlock.accent_color || base.accentColor));
+
+        const borderColor = previewKey
+          ? base.borderColor
+          : (themeBlock.borderColor || visualsBlock.border_color || base.borderColor);
+
+        return {
+          preset: presetKey,
+          mode,
+          backgroundColor,
+          surfaceColor,
+          primaryText,
+          bodyText,
+          accentColor,
+          borderColor,
+          accentHover: customAccent || base.accentHover,
+          accentText: customAccent || base.accentText,
+          onAccent: base.onAccent
+        };
+      }
+
+      function applyTheme(theme) {
+        const root = document.documentElement;
+
+        root.dataset.mode = theme.mode;
+
+        // Injeção explícita das 6 variáveis especificadas pelo contrato
+        root.style.setProperty('--bg-primary', theme.backgroundColor);
+        root.style.setProperty('--bg-surface', theme.surfaceColor);
+        root.style.setProperty('--text-primary', theme.primaryText);
+        root.style.setProperty('--text-secondary', theme.bodyText);
+        root.style.setProperty('--color-accent', theme.accentColor);
+        root.style.setProperty('--border-color', theme.borderColor);
+
+        // Variáveis de compatibilidade e utilitários
+        root.style.setProperty('--color-primary', theme.primaryText);
+        root.style.setProperty('--color-accent-hover', theme.accentHover);
+        root.style.setProperty('--color-accent-text', theme.accentText);
+        root.style.setProperty('--color-on-accent', theme.onAccent);
+        root.style.setProperty('--color-bg', theme.backgroundColor);
+        root.style.setProperty('--color-surface', theme.surfaceColor);
+        root.style.setProperty('--color-border', theme.borderColor);
+        root.style.setProperty('--color-text', theme.bodyText);
+        root.style.setProperty('--color-heading', theme.primaryText);
+        root.style.setProperty('--color-muted', theme.bodyText);
+      }
+
+      function buildWhatsAppUrl(number, defaultMessage) {
+        const cleanNumber = String(number || '').replace(/\D/g, '');
+        const message = encodeURIComponent(defaultMessage || 'Olá! Gostaria de agendar uma avaliação jurídica sobre o meu caso.');
+        return `https://wa.me/${cleanNumber}?text=${message}`;
+      }
+
+      function renderTemplate(config) {
+        const b = config.business || {};
+        const v = config.visuals || {};
+        const m = config.metrics || {};
+        const s = config.services || [];
+        const t = config.testimonials || [];
+        const f = config.faq || [];
+
+        // 1. Aplicar Paleta
+        applyTheme(resolveThemeSettings(config));
+
+        // 2. Título da Página e Meta
+        document.title = `${b.name || 'Advocacia'} | Atendimento Jurídico Especializado`;
+        const metaDesc = document.getElementById('page-description');
+        if (metaDesc && b.tagline) metaDesc.content = `${b.tagline} — Atendimento em ${b.city || 'sua região'}.`;
+
+        // 3. Links de WhatsApp
+        const waUrl = buildWhatsAppUrl(b.whatsapp_number, b.whatsapp_default_message);
+        ['header-cta', 'hero-main-cta', 'floating-whatsapp'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.href = waUrl;
+        });
+
+        // 4. Header
+        const headerName = document.getElementById('header-business-name');
+        if (headerName) headerName.textContent = b.name;
+        const headerOab = document.getElementById('header-oab');
+        if (headerOab) headerOab.textContent = b.oab_number || 'OAB Sob Consulta';
+        const headerCity = document.getElementById('header-city');
+        if (headerCity) headerCity.textContent = `${b.city || ''} - ${b.state || 'Brasil'}`;
+        const headerInitials = document.getElementById('header-initials');
+        if (headerInitials) headerInitials.textContent = v.monogram_initials || 'ADV';
+
+        // 5. Hero Section
+        const heroTagline = document.getElementById('hero-tagline');
+        if (heroTagline) heroTagline.textContent = b.tagline || 'Atuação Jurídica Estratégica, Ética e Personalizada';
+        const heroCitySpan = document.getElementById('hero-city-span');
+        if (heroCitySpan) heroCitySpan.textContent = b.city || 'sua região';
+
+        // 6. Layout Adaptável: Foto vs Monograma Editorial
+        const photoWrapper = document.getElementById('hero-photo-wrapper');
+        const monogramWrapper = document.getElementById('hero-monogram-wrapper');
+
+        if (v.use_profile_photo && v.profile_photo_url) {
+          if (photoWrapper) photoWrapper.classList.remove('hidden');
+          if (monogramWrapper) monogramWrapper.classList.add('hidden');
+          const photoImg = document.getElementById('hero-photo-img');
+          if (photoImg) photoImg.src = v.profile_photo_url;
+          const photoName = document.getElementById('hero-photo-name');
+          if (photoName) photoName.textContent = b.name;
+          const photoOab = document.getElementById('hero-photo-oab');
+          if (photoOab) photoOab.textContent = b.oab_number || 'Advocacia Especializada';
+        } else {
+          if (photoWrapper) photoWrapper.classList.add('hidden');
+          if (monogramWrapper) monogramWrapper.classList.remove('hidden');
+          const editorialInitials = document.getElementById('hero-monogram-initials');
+          if (editorialInitials) editorialInitials.textContent = v.monogram_initials || 'ADV';
+          const editorialName = document.getElementById('hero-editorial-name');
+          if (editorialName) editorialName.textContent = b.name;
+          const editorialOab = document.getElementById('hero-editorial-oab');
+          if (editorialOab) editorialOab.textContent = b.oab_number || 'Inscrição OAB Sob Consulta';
+        }
+
+        // 7. Métricas
+        const ratingEl = document.getElementById('metric-rating');
+        if (ratingEl) ratingEl.textContent = m.rating || '4.9';
+        const reviewsEl = document.getElementById('metric-reviews');
+        if (reviewsEl) reviewsEl.textContent = `+${m.reviews_count || 48}`;
+        const expEl = document.getElementById('metric-experience');
+        if (expEl) expEl.textContent = m.years_experience || '+10';
+        const casesEl = document.getElementById('metric-cases');
+        if (casesEl) casesEl.textContent = m.cases_count || '+500';
+
+        // 8. Áreas de Atuação (Bento Grid) — reveal em cascata
+        const servicesGrid = document.getElementById('services-grid');
+        if (servicesGrid && Array.isArray(s)) {
+          servicesGrid.innerHTML = s.map((service, idx) => `
+            <div class="reveal" style="--reveal-delay: ${idx * 170}ms">
+              <div class="card-interactive h-full rounded-2xl border border-slate-800 bg-slate-950/80 backdrop-blur-sm p-6">
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-400">
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                  </svg>
+                </div>
+                <h3 class="mt-4 font-serif text-lg font-bold text-white">${service.title || 'Especialidade'}</h3>
+                <p class="mt-2 text-xs leading-relaxed text-slate-400">${service.description || ''}</p>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // 9. Avaliações com Fallback Inteligente (Sem Depoimentos Fakes)
+        const testimonialsGrid = document.getElementById('testimonials-grid');
+        const fallbackBanner = document.getElementById('testimonials-fallback-banner');
+        const validTestimonials = (Array.isArray(t) ? t : []).filter(item => item && item.text && item.text.trim().length > 0);
+        // Desktop: até 5 cards em uma única linha. Mobile: o CSS limita a 2 (:nth-child(n+3)).
+        const displayTestimonials = validTestimonials.slice(0, 5);
+        const hasTextTestimonials = displayTestimonials.length > 0;
+        const mapsSearchQuery = b.map_query || b.address_display || `${b.name || ''} ${b.city || ''}`;
+        const mapsRouteUrl = b.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsSearchQuery)}`;
+
+        if (hasTextTestimonials && testimonialsGrid) {
+          testimonialsGrid.classList.remove('hidden');
+          if (fallbackBanner) fallbackBanner.classList.add('hidden');
+          testimonialsGrid.innerHTML = displayTestimonials.map((item, idx) => `
+            <div class="reveal" style="--reveal-delay: ${idx * 150}ms">
+              <div class="card-interactive h-full rounded-2xl border border-slate-800 bg-slate-900/80 backdrop-blur-md p-6 flex flex-col gap-4 shadow-xl relative overflow-hidden group">
+                <div class="text-amber-400/20 font-serif text-5xl leading-none absolute top-3 right-4 select-none pointer-events-none group-hover:text-amber-400/35 transition">“</div>
+                <div class="flex text-amber-400 gap-1">
+                  ${Array.from({ length: Math.min(5, Math.max(1, Number(item.stars) || 5)) }).map(() => `
+                    <svg class="h-4 w-4 fill-current drop-shadow-sm" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                  `).join('')}
+                </div>
+                <p class="flex-1 text-xs sm:text-sm leading-relaxed text-slate-200 italic font-medium relative z-10">“${item.text}”</p>
+                <div class="border-t border-slate-800/80 pt-3 flex items-center justify-between gap-2">
+                  <div class="min-w-0">
+                    <span class="block truncate font-serif text-xs sm:text-sm font-bold text-white">${item.author || 'Cliente Atendido'}</span>
+                    <span class="block text-[10px] text-slate-400 mt-0.5">Avaliação no Google Maps</span>
+                  </div>
+                  <span class="shrink-0 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 text-[9px] font-bold text-emerald-400 tracking-wider">Verificado</span>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          if (testimonialsGrid) testimonialsGrid.classList.add('hidden');
+          if (fallbackBanner) {
+            fallbackBanner.classList.remove('hidden');
+            const fallbackRating = document.getElementById('fallback-rating-val');
+            if (fallbackRating) fallbackRating.textContent = m.rating || '4.9';
+            const fallbackText = document.getElementById('fallback-text');
+            if (fallbackText) fallbackText.textContent = `Excelente reputação no Google Maps — Nota ${m.rating || '4.9'} de 5.0 estrelas baseada em ${m.reviews_count || 48} clientes atendidos na região de ${b.city || 'Uberlândia'}.`;
+            const mapsLink = document.getElementById('fallback-maps-link');
+            if (mapsLink) mapsLink.href = mapsRouteUrl;
+          }
+        }
+
+        // 10. FAQ (Acordeão Nativo Suave <details>) — wrapper .reveal evita conflito de transição
+        const faqContainer = document.getElementById('faq-container');
+        if (faqContainer && Array.isArray(f)) {
+          faqContainer.innerHTML = f.map((item, idx) => `
+            <div class="reveal" style="--reveal-delay: ${idx * 90}ms">
+              <details class="faq-item group rounded-xl border border-slate-800 bg-slate-950/90 p-4">
+                <summary class="touch-target flex cursor-pointer items-center justify-between font-serif text-sm font-bold text-white list-none select-none">
+                  <span>${item.question}</span>
+                  <span class="ml-4 shrink-0 rounded-full border border-slate-800 bg-slate-900 p-1 text-amber-400 faq-chevron">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </span>
+                </summary>
+                <div class="faq-content">
+                  <div class="faq-content-inner">
+                    <p class="mt-3 text-xs leading-relaxed text-slate-300 border-t border-slate-800/80 pt-3">
+                      ${item.answer}
+                    </p>
+                  </div>
+                </div>
+              </details>
+            </div>
+          `).join('');
+        }
+
+        // 10b. Localização, mapa (facade) e rota
+        const locationAddress = b.address_display || `${b.city || ''} - ${b.state || ''}`;
+        const locationAddressEl = document.getElementById('location-address');
+        if (locationAddressEl) locationAddressEl.textContent = locationAddress;
+        const mapFacadeAddress = document.getElementById('map-facade-address');
+        if (mapFacadeAddress) mapFacadeAddress.textContent = locationAddress;
+        const locationHours = document.getElementById('location-hours');
+        if (locationHours && b.office_hours) locationHours.textContent = b.office_hours;
+        const routeBtn = document.getElementById('location-route-btn');
+        if (routeBtn) routeBtn.href = mapsRouteUrl;
+        const locationWaBtn = document.getElementById('location-whatsapp-btn');
+        if (locationWaBtn) {
+          locationWaBtn.href = buildWhatsAppUrl(
+            b.whatsapp_number,
+            'Olá! Gostaria de agendar um atendimento presencial no escritório.'
+          );
+        }
+        setupMapFacade(mapsSearchQuery, b.name);
+
+        // 11. Rodapé
+        const footerName = document.getElementById('footer-business-name');
+        if (footerName) footerName.textContent = b.name;
+        const footerOab = document.getElementById('footer-oab-badge');
+        if (footerOab) footerOab.textContent = b.oab_number || 'OAB Sob Consulta';
+        const footerAddress = document.getElementById('footer-address');
+        if (footerAddress) footerAddress.textContent = b.address_display || `${b.city} - ${b.state}`;
+        const footerPhone = document.getElementById('footer-phone');
+        if (footerPhone) footerPhone.textContent = b.phone_display || '';
+        const footerHours = document.getElementById('footer-hours');
+        if (footerHours && b.office_hours) footerHours.textContent = `Horário de Atendimento: ${b.office_hours}`;
+        const yearSpan = document.getElementById('year-span');
+        if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+        // Selo heráldico inline: herda a cor de acento do tema (fallback mantém <img>)
+        inlineMonogramSeal();
+
+        // Inicializa acordeão bidirecional suave
+        setupSmoothAccordion();
+
+        // Inicializa observador de scroll reveal
+        initScrollReveal();
+      }
+
+      function setupSmoothAccordion() {
+        document.querySelectorAll('details.faq-item').forEach((details) => {
+          const summary = details.querySelector('summary');
+          const content = details.querySelector('.faq-content');
+          if (!summary || !content) return;
+
+          summary.onclick = (e) => {
+            e.preventDefault();
+            const isOpen = details.classList.contains('is-open');
+
+            if (isOpen) {
+              // Fechamento suave bidirecional
+              details.classList.remove('is-open');
+              setTimeout(() => {
+                details.removeAttribute('open');
+              }, 320);
+            } else {
+              // Abertura suave bidirecional
+              details.setAttribute('open', '');
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  details.classList.add('is-open');
+                });
+              });
+            }
+          };
+        });
+      }
+
+      function setupMapFacade(query, businessName) {
+        const loadBtn = document.getElementById('map-load-btn');
+        const frame = document.getElementById('map-frame');
+        const facade = document.getElementById('map-facade');
+        if (!loadBtn || !frame || !facade) return;
+        loadBtn.onclick = () => {
+          if (frame.querySelector('iframe')) return;
+          const iframe = document.createElement('iframe');
+          iframe.src = `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=16&output=embed`;
+          iframe.title = `Mapa de localização — ${businessName || 'Escritório'}`;
+          iframe.loading = 'lazy';
+          iframe.referrerPolicy = 'no-referrer-when-downgrade';
+          iframe.allowFullscreen = true;
+          frame.appendChild(iframe);
+          facade.remove();
+        };
+      }
+
+      function inlineMonogramSeal() {
+        const img = document.getElementById('hero-monogram-svg');
+        if (!img || window.location.protocol === 'file:') return;
+        fetch(img.getAttribute('src'))
+          .then(res => (res.ok ? res.text() : Promise.reject()))
+          .then(svgText => {
+            const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
+            const svg = doc.querySelector('svg');
+            if (!svg) return;
+            svg.setAttribute('class', img.className);
+            svg.setAttribute('role', 'img');
+            svg.setAttribute('aria-label', img.alt || 'Monograma Institucional');
+            img.replaceWith(document.importNode(svg, true));
+          })
+          .catch(() => { /* mantém o <img> com a cor padrão */ });
+      }
+
+      function initScrollReveal() {
+        const elements = document.querySelectorAll('.reveal:not(.revealed)');
+        if (!('IntersectionObserver' in window)) {
+          elements.forEach(el => el.classList.add('revealed'));
+          return;
+        }
+        const observer = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+        elements.forEach(el => observer.observe(el));
+      }
+
+      // Ingestão assíncrona com fallback automático
+      document.addEventListener('DOMContentLoaded', () => {
+        fetch('./site.config.json')
+          .then(res => {
+            if (!res.ok) throw new Error('Falha ao carregar site.config.json');
+            return res.json();
+          })
+          .then(data => renderTemplate(data))
+          .catch(() => {
+            // Renderiza com DEFAULT_CONFIG caso aberto via file:// ou ausente
+            renderTemplate(DEFAULT_CONFIG);
+          });
+      });
+    </script>
+  </body>
+</html>

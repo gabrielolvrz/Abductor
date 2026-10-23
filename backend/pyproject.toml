@@ -1,0 +1,30 @@
+[project]
+name = "abductor-backend"
+version = "0.1.0"
+description = "Abductor Backend API"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "sqlalchemy[asyncio]>=2.0.35",
+    "asyncpg>=0.29.0",
+    "httpx>=0.27.0",
+    "pydantic-settings>=2.5.0",
+    "python-dotenv>=1.0.0",
+    "phonenumbers>=8.13.0",
+    "tldextract>=5.1.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true

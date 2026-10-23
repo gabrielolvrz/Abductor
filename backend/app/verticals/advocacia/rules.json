@@ -1,0 +1,29 @@
+{
+  "slug": "advocacia",
+  "display_name": "Advogados e Escritórios de Advocacia",
+  "search_terms": [
+    "Advogado Trabalhista",
+    "Advogado Imobiliário",
+    "Advogado Previdenciário",
+    "Advogado de Família",
+    "Escritório de Advocacia"
+  ],
+  "scoring": {
+    "reviews_threshold_high": 15,
+    "reviews_points_high": 25,
+    "reviews_threshold_mid": 5,
+    "reviews_points_mid": 15,
+    "rating_ideal_min": 4.5
+  },
+  "blocked_terms_in_name": [
+    "Defensoria",
+    "OAB",
+    "Tribunal",
+    "Fórum",
+    "Sindicato",
+    "Ministério Público",
+    "Procon",
+    "Juizado"
+  ],
+  "dork_pattern": "\"{name}\" \"{city}\" (site:instagram.com OR site:linkedin.com)"
+}

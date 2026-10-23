@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" class="w-full h-full">
+  <defs>
+    <radialGradient id="sealGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="var(--color-accent, #c5a059)" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="var(--color-accent, #c5a059)" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="goldEdge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="var(--color-accent, #c5a059)" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="var(--color-accent, #c5a059)" stop-opacity="0.7" />
+    </linearGradient>
+  </defs>
+
+  <!-- Aura de Iluminação de Fundo -->
+  <circle cx="120" cy="120" r="110" fill="url(#sealGlow)" />
+
+  <!-- Borda Dupla Heráldica Clássica -->
+  <circle cx="120" cy="120" r="102" stroke="url(#goldEdge)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6" />
+  <circle cx="120" cy="120" r="95" stroke="var(--color-accent, #c5a059)" stroke-width="2.5" />
+  <circle cx="120" cy="120" r="87" stroke="var(--color-accent, #c5a059)" stroke-width="1" opacity="0.4" />
+
+  <!-- Coroa de Louros Discreta (Topo e Laterais) -->
+  <g stroke="var(--color-accent, #c5a059)" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.75">
+    <path d="M50 120 C 50 65, 80 45, 110 38" />
+    <path d="M190 120 C 190 65, 160 45, 130 38" />
+    <!-- Folhas da Esquerda -->
+    <path d="M60 90 C 50 82, 52 75, 62 80" />
+    <path d="M72 70 C 62 62, 65 56, 75 62" />
+    <path d="M88 52 C 80 44, 85 39, 93 46" />
+    <!-- Folhas da Direita -->
+    <path d="M180 90 C 190 82, 188 75, 178 80" />
+    <path d="M168 70 C 178 62, 175 56, 165 62" />
+    <path d="M152 52 C 160 44, 155 39, 147 46" />
+  </g>
+
+  <!-- Balança da Justiça Vetorial Sóbria (Topo) -->
+  <g stroke="var(--color-accent, #c5a059)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Pilar Central -->
+    <line x1="120" y1="52" x2="120" y2="92" />
+    <!-- Haste Horizontal -->
+    <line x1="94" y1="64" x2="146" y2="64" />
+    <!-- Prato Esquerdo -->
+    <line x1="94" y1="64" x2="84" y2="82" />
+    <line x1="94" y1="64" x2="104" y2="82" />
+    <path d="M80 82 Q 94 90 108 82 Z" fill="var(--color-accent, #c5a059)" fill-opacity="0.2" />
+    <!-- Prato Direito -->
+    <line x1="146" y1="64" x2="136" y2="82" />
+    <line x1="146" y1="64" x2="156" y2="82" />
+    <path d="M132 82 Q 146 90 160 82 Z" fill="var(--color-accent, #c5a059)" fill-opacity="0.2" />
+  </g>
+
+  <!-- Estrelas de Autoridade -->
+  <path d="M120 40 L121.5 44.5 L126 44.5 L122.5 47 L124 51.5 L120 48.5 L116 51.5 L117.5 47 L114 44.5 L118.5 44.5 Z" fill="var(--color-accent, #c5a059)" opacity="0.9" />
+
+  <!-- Espaço Central do Monograma (Texto renderizado dinamicamente via JS ou fallback) -->
+  <text
+    id="monogram-text"
+    x="120"
+    y="148"
+    font-family="'Playfair Display', 'Cinzel', 'Georgia', serif"
+    font-size="44"
+    font-weight="bold"
+    letter-spacing="4"
+    text-anchor="middle"
+    fill="var(--color-accent, #c5a059)"
+  >ADV</text>
+
+  <!-- Subtítulo Heráldico Inferior -->
+  <text
+    x="120"
+    y="172"
+    font-family="'Plus Jakarta Sans', system-ui, sans-serif"
+    font-size="9"
+    font-weight="700"
+    letter-spacing="3"
+    text-anchor="middle"
+    fill="var(--color-accent, #c5a059)"
+    opacity="0.8"
+  >ADVOCACIA</text>
+</svg>

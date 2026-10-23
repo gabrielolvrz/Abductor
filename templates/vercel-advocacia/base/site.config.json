@@ -1,0 +1,80 @@
+{
+  "business": {
+    "name": "Dr. Carlos Eduardo Advocacia & Consultoria",
+    "tagline": "Atuação Jurídica Estratégica, Ética e Personalizada",
+    "city": "Uberlândia",
+    "state": "MG",
+    "phone_display": "(34) 99876-5432",
+    "whatsapp_number": "5534998765432",
+    "whatsapp_default_message": "Olá! Gostaria de agendar uma avaliação jurídica sobre o meu caso.",
+    "address_display": "Av. Rondon Pacheco, 2100 - Saraiva, Uberlândia - MG, 38408-404",
+    "oab_number": "OAB/MG Sob Consulta",
+    "office_hours": "Segunda a Sexta, das 09h às 18h"
+  },
+  "theme": {
+    "preset": "navy-gold",
+    "mode": "dark",
+    "backgroundColor": "#0f172a",
+    "surfaceColor": "#162032",
+    "primaryText": "#f8f6f0",
+    "bodyText": "#94a3b8",
+    "accentColor": "#c5a059",
+    "borderColor": "#1e293b"
+  },
+  "visuals": {
+    "theme_preset": "navy-gold",
+    "theme_mode": "dark",
+    "primary_color": "#0b1329",
+    "accent_color": "#c5a059",
+    "background_color": "#0f172a",
+    "surface_color": "#162032",
+    "border_color": "#1e293b",
+    "custom_accent_hex": null,
+    "use_profile_photo": false,
+    "profile_photo_url": "./assets/doutor.svg",
+    "monogram_initials": "CE"
+  },
+  "metrics": {
+    "rating": "4.9",
+    "reviews_count": 48,
+    "years_experience": "+12",
+    "cases_count": "+650"
+  },
+  "services": [
+    {
+      "title": "Rescisão Indireta e Verbas Trabalhistas",
+      "description": "Cálculo detalhado de haveres rescisórios, equiparação salarial, horas extras não quitadas e proteção integral contra retenções indevidas."
+    },
+    {
+      "title": "Acidentes de Trabalho e Doenças Ocupacionais",
+      "description": "Reparação civil por danos materiais e morais decorrentes de LER/DORT, burnout e infortúnios em ambiente laboral com estabilidade provisória."
+    },
+    {
+      "title": "Consultoria Trabalhista Preventiva",
+      "description": "Assessoria e pareceres técnicos para alinhamento de rotinas, adequação contratual e mitigação de passivos jurídicos futuros."
+    }
+  ],
+  "testimonials": [],
+  "faq": [
+    {
+      "question": "Como funciona o primeiro contato e a avaliação do caso?",
+      "answer": "O primeiro contato é realizado diretamente pelo WhatsApp institucional do escritório. Nossa equipe realiza uma triagem inicial para entender a natureza da sua demanda e indicar a documentação necessária para a análise jurídica."
+    },
+    {
+      "question": "O escritório realiza atendimento em formato 100% online?",
+      "answer": "Sim. Além do atendimento presencial em nossa sede física, possuímos estrutura digital homologada para reuniões por videoconferência, envio seguro de documentos e acompanhamento de processos eletrônicos em todo o Brasil."
+    },
+    {
+      "question": "Quais documentos preciso reunir antes do primeiro contato?",
+      "answer": "Documento de identificação oficial com foto, comprovante de endereço recente e os documentos específicos relacionados à sua demanda (contratos, notificações, extratos ou carteira de trabalho digital)."
+    },
+    {
+      "question": "Minhas informações e documentos estão resguardados pelo sigilo?",
+      "answer": "Sim, com total rigor. Todas as consultas e dados compartilhados são protegidos pelo sigilo profissional inerente à advocacia (Lei nº 8.906/94 — Estatuto da OAB) e tratados em estrita observância à Lei Geral de Proteção de Dados (Lei nº 13.709/2018 — LGPD)."
+    }
+  ],
+  "compliance": {
+    "enable_lgpd_banner": false,
+    "privacy_policy_url": "/privacidade.html"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "slug": "imobiliario",
+  "display_name": "Corretores de Imóveis e Imobiliárias",
+  "search_terms": [
+    "Corretor de Imóveis",
+    "Imobiliária",
+    "Consultor Imobiliário"
+  ],
+  "scoring": {
+    "reviews_threshold_high": 15,
+    "reviews_points_high": 25,
+    "reviews_threshold_mid": 5,
+    "reviews_points_mid": 15,
+    "rating_ideal_min": 4.5
+  },
+  "blocked_terms_in_name": [
+    "Defensoria",
+    "OAB",
+    "Tribunal",
+    "Fórum",
+    "Sindicato",
+    "CRECI",
+    "Cartório",
+    "Registro de Imóveis"
+  ],
+  "dork_pattern": "\"{name}\" \"{city}\" site:instagram.com"
+}
