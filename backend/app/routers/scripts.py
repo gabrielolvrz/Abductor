@@ -5,7 +5,7 @@ import uuid
 from typing import Annotated
 from urllib.parse import quote
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -84,14 +84,19 @@ async def list_scripts(
     db: DbSession,
     category: str | None = Query(default=None),
     website_condition: str | None = Query(default=None),
+    script_type: str | None = Query(default=None),
 ) -> list[PitchScriptResponse]:
-    """Lista os templates de abordagem cadastrados no banco."""
+    """Lista os templates de abordagem e quebras de objeção cadastrados no banco."""
     stmt = select(PitchScript).order_by(PitchScript.created_at.asc())
     if category:
         stmt = stmt.where(PitchScript.category.ilike(f"%{category.strip()}%"))
     if website_condition:
         stmt = stmt.where(
             PitchScript.website_condition == website_condition.strip().upper()
+        )
+    if script_type:
+        stmt = stmt.where(
+            PitchScript.script_type == script_type.strip().upper()
         )
 
     res = await db.execute(stmt)
@@ -106,11 +111,13 @@ async def create_script(
     payload: PitchScriptCreateRequest,
     db: DbSession,
 ) -> PitchScriptResponse:
-    """Cria um novo template de script de abordagem."""
+    """Cria um novo template de script de abordagem ou quebra de objeção."""
     script = PitchScript(
         title=payload.title.strip(),
         category=payload.category.strip(),
+        script_type=payload.script_type,
         website_condition=payload.website_condition,
+        situation=payload.situation.strip() if payload.situation else None,
         message_template=payload.message_template,
         upsell_focus=payload.upsell_focus,
     )
@@ -126,7 +133,7 @@ async def update_script(
     payload: PitchScriptUpdateRequest,
     db: DbSession,
 ) -> PitchScriptResponse:
-    """Atualiza um script de abordagem existente."""
+    """Atualiza um script de abordagem ou quebra de objeção existente."""
     res = await db.execute(
         select(PitchScript).where(PitchScript.id == script_id)
     )
@@ -141,8 +148,14 @@ async def update_script(
         script.title = payload.title.strip()
     if payload.category is not None:
         script.category = payload.category.strip()
+    if payload.script_type is not None:
+        script.script_type = payload.script_type
     if payload.website_condition is not None:
         script.website_condition = payload.website_condition
+    if "situation" in payload.model_fields_set:
+        script.situation = (
+            payload.situation.strip() if payload.situation else None
+        )
     if payload.message_template is not None:
         script.message_template = payload.message_template
     if payload.upsell_focus is not None:
@@ -151,6 +164,26 @@ async def update_script(
     await db.commit()
     await db.refresh(script)
     return PitchScriptResponse.model_validate(script)
+
+
+@router.delete("/{script_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_script(
+    script_id: uuid.UUID,
+    db: DbSession,
+) -> Response:
+    """Remove um script ou quebra de objeção do catálogo."""
+    res = await db.execute(
+        select(PitchScript).where(PitchScript.id == script_id)
+    )
+    script = res.scalar_one_or_none()
+    if script is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Script {script_id} não encontrado.",
+        )
+    await db.delete(script)
+    await db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.post("/interpolate", response_model=PitchInterpolateResponse)
@@ -213,6 +246,7 @@ async def interpolate_script(
         )
         s_res = await db.execute(
             select(PitchScript)
+            .where(PitchScript.script_type == "PITCH")
             .where(PitchScript.website_condition.in_([cond, "GERAL"]))
             .order_by(PitchScript.created_at.asc())
         )

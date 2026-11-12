@@ -1,13 +1,24 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type DragEvent,
+  type KeyboardEvent,
+} from 'react'
 import {
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
+  Check,
   CheckCircle2,
   Clock,
+  DollarSign,
+  GripVertical,
   Kanban,
   Lock,
   MessageCircle,
+  Pencil,
   RefreshCw,
   Sliders,
   Star,
@@ -21,8 +32,8 @@ import {
   exportLeadSiteConfig,
   getPipelineLeads,
   isAdvocaciaLead,
+  isPetshopLead,
   updateLeadDetails,
-  updateLeadPipeline,
   type Lead,
   type LeadUpdateRequest,
   type PipelineStatus,
@@ -51,7 +62,7 @@ const KANBAN_COLUMNS: KanbanColumnConfig[] = [
   {
     status: 'NEGOCIANDO',
     title: '3. Negociando',
-    subtitle: 'Avaliando prévia / ajustes',
+    subtitle: 'Avaliando prévia / proposta',
     accentClass: 'border-emerald-600/40 text-emerald-400',
   },
   {
@@ -75,6 +86,14 @@ const STATUS_SEQUENCE: PipelineStatus[] = [
   'FECHADO',
   'RECUSADO',
 ]
+
+const DEFAULT_DEAL_VALUE = 350
+
+function resolveDealValue(lead: Lead): number {
+  return typeof lead.deal_value === 'number' && lead.deal_value > 0
+    ? lead.deal_value
+    : DEFAULT_DEAL_VALUE
+}
 
 function renderSlaBadge(days: number, status: PipelineStatus) {
   if (status === 'FECHADO' || status === 'RECUSADO') {
@@ -120,6 +139,14 @@ export function Pipeline() {
   const [exportModalLead, setExportModalLead] = useState<Lead | null>(null)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
+  // Estado de Drag & Drop Nativo HTML5
+  const [draggedLeadId, setDraggedLeadId] = useState<string | null>(null)
+  const [dragOverColumn, setDragOverColumn] = useState<PipelineStatus | null>(null)
+
+  // Estado de Edição Rápida de Valor do Negócio (deal_value) no Card
+  const [editingPriceLeadId, setEditingPriceLeadId] = useState<string | null>(null)
+  const [editingPriceValue, setEditingPriceValue] = useState<string>('350')
+
   const showToast = useCallback((msg: string) => {
     setToastMessage(msg)
     window.setTimeout(() => {
@@ -152,25 +179,138 @@ export function Pipeline() {
   }, [])
 
   const handleMoveStatus = async (leadId: string, newStatus: PipelineStatus) => {
-    const updated = await updateLeadPipeline(leadId, newStatus)
+    const targetLead = leads.find((l) => l.id === leadId)
+    if (targetLead && targetLead.pipeline_status === newStatus) {
+      return
+    }
+
+    // Atualização otimista instantânea no Kanban
+    const previousLeads = leads
     if (newStatus === 'NOVO') {
       setLeads((prev) => prev.filter((l) => l.id !== leadId))
     } else {
-      setLeads((prev) => prev.map((l) => (l.id === leadId ? updated : l)))
+      setLeads((prev) =>
+        prev.map((l) =>
+          l.id === leadId
+            ? { ...l, pipeline_status: newStatus, days_in_status: 0 }
+            : l,
+        ),
+      )
     }
-    setDrawerLead((prev) => (prev?.id === leadId ? updated : prev))
-    showToast(`Contato movido para ${newStatus}.`)
+
+    try {
+      const updated = await updateLeadDetails(leadId, { pipeline_status: newStatus })
+      if (newStatus === 'NOVO') {
+        setLeads((prev) => prev.filter((l) => l.id !== leadId))
+      } else {
+        setLeads((prev) => prev.map((l) => (l.id === leadId ? updated : l)))
+      }
+      setDrawerLead((prev) => (prev?.id === leadId ? updated : prev))
+      window.dispatchEvent(new CustomEvent('abductor:pipeline-updated'))
+      showToast(`Contato movido para ${newStatus}.`)
+    } catch {
+      setLeads(previousLeads)
+      showToast('Falha ao atualizar etapa do lead no banco.')
+    }
+  }
+
+  const handleStartEditPrice = (lead: Lead) => {
+    setEditingPriceLeadId(lead.id)
+    setEditingPriceValue(String(resolveDealValue(lead)))
+  }
+
+  const handleCommitEditPrice = async (lead: Lead) => {
+    if (editingPriceLeadId !== lead.id) return
+    setEditingPriceLeadId(null)
+
+    const parsed = Number.parseInt(editingPriceValue.replace(/\D/g, ''), 10)
+    const nextValue = Number.isNaN(parsed) || parsed <= 0 ? DEFAULT_DEAL_VALUE : parsed
+    const currentValue = resolveDealValue(lead)
+
+    if (nextValue === currentValue) return
+
+    // Atualização otimista instantânea
+    const previousLeads = leads
+    setLeads((prev) =>
+      prev.map((l) => (l.id === lead.id ? { ...l, deal_value: nextValue } : l)),
+    )
+
+    try {
+      const updated = await updateLeadDetails(lead.id, { deal_value: nextValue })
+      setLeads((prev) => prev.map((l) => (l.id === lead.id ? updated : l)))
+      setDrawerLead((prev) => (prev?.id === lead.id ? updated : prev))
+      window.dispatchEvent(new CustomEvent('abductor:pipeline-updated'))
+      showToast(
+        `Ticket atualizado para R$ ${nextValue.toLocaleString('pt-BR')} (${cleanNameClientSide(lead.name)}).`,
+      )
+    } catch {
+      setLeads(previousLeads)
+      showToast('Falha ao salvar o valor do negócio.')
+    }
+  }
+
+  const handlePriceKeyDown = (e: KeyboardEvent<HTMLInputElement>, lead: Lead) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      void handleCommitEditPrice(lead)
+    } else if (e.key === 'Escape') {
+      e.preventDefault()
+      setEditingPriceLeadId(null)
+    }
+  }
+
+  // Handlers de Drag & Drop Nativo HTML5
+  const handleDragStart = (e: DragEvent<HTMLElement>, lead: Lead) => {
+    if (editingPriceLeadId === lead.id) {
+      e.preventDefault()
+      return
+    }
+    setDraggedLeadId(lead.id)
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', lead.id)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedLeadId(null)
+    setDragOverColumn(null)
+  }
+
+  const handleColumnDragOver = (e: DragEvent<HTMLElement>, status: PipelineStatus) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    if (dragOverColumn !== status) {
+      setDragOverColumn(status)
+    }
+  }
+
+  const handleColumnDragLeave = (e: DragEvent<HTMLElement>, status: PipelineStatus) => {
+    const related = e.relatedTarget as Node | null
+    if (!related || !e.currentTarget.contains(related)) {
+      if (dragOverColumn === status) {
+        setDragOverColumn(null)
+      }
+    }
+  }
+
+  const handleColumnDrop = (e: DragEvent<HTMLElement>, targetStatus: PipelineStatus) => {
+    e.preventDefault()
+    setDragOverColumn(null)
+    const droppedId = draggedLeadId || e.dataTransfer.getData('text/plain')
+    setDraggedLeadId(null)
+    if (!droppedId) return
+    void handleMoveStatus(droppedId, targetStatus)
   }
 
   const handleUpdateDetails = async (leadId: string, payload: LeadUpdateRequest) => {
     const updated = await updateLeadDetails(leadId, payload)
     setLeads((prev) => prev.map((l) => (l.id === leadId ? updated : l)))
     setDrawerLead((prev) => (prev?.id === leadId ? updated : prev))
+    window.dispatchEvent(new CustomEvent('abductor:pipeline-updated'))
     showToast(`Override salvo! Novo Score: ${updated.score} pts.`)
   }
 
   const handleExportSiteConfig = async (lead: Lead) => {
-    if (isAdvocaciaLead(lead)) {
+    if (isAdvocaciaLead(lead) || isPetshopLead(lead)) {
       setExportModalLead(lead)
     } else {
       try {
@@ -210,6 +350,19 @@ export function Pipeline() {
     return map
   }, [leads])
 
+  const pipelineRevenueSummary = useMemo(() => {
+    const closedRevenue = (groupedByColumn.FECHADO ?? []).reduce(
+      (sum, l) => sum + resolveDealValue(l),
+      0,
+    )
+    const activeForecast = [
+      ...(groupedByColumn.RESPONDEU ?? []),
+      ...(groupedByColumn.NEGOCIANDO ?? []),
+    ].reduce((sum, l) => sum + resolveDealValue(l), 0)
+
+    return { closedRevenue, activeForecast }
+  }, [groupedByColumn])
+
   return (
     <main className="mx-auto max-w-[1920px] space-y-6 px-6 py-6">
       {toastMessage && (
@@ -229,12 +382,30 @@ export function Pipeline() {
             </h1>
           </div>
           <p className="mt-1 text-xs text-stone-400">
-            Acompanhe cada conversa ativa, identifique leads esfriando (4+ dias sem retorno) e
-            avance negócios até o Pix.
+            Arraste os cards entre colunas (Drag &amp; Drop) e clique no valor em R$ para ajustar o
+            ticket negociado em tempo real com o Dashboard.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Resumo Financeiro Sincronizado */}
+          <div className="flex items-center gap-3 rounded-xl border border-emerald-600/35 bg-stone-950 px-3.5 py-2 text-xs">
+            <div className="flex items-center gap-1.5">
+              <DollarSign className="h-3.5 w-3.5 text-emerald-400" />
+              <span className="text-stone-400">Fechado:</span>
+              <strong className="font-mono font-black tabular-nums text-emerald-400">
+                R$ {pipelineRevenueSummary.closedRevenue.toLocaleString('pt-BR')}
+              </strong>
+            </div>
+            <span className="text-stone-700">|</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-stone-400">Em Negociação:</span>
+              <strong className="font-mono font-bold tabular-nums text-amber-400">
+                R$ {pipelineRevenueSummary.activeForecast.toLocaleString('pt-BR')}
+              </strong>
+            </div>
+          </div>
+
           <div className="flex items-center gap-2 rounded-xl border border-stone-800 bg-stone-950 px-3.5 py-2 text-xs">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
             <span className="text-stone-300">0–3d Em dia</span>
@@ -276,11 +447,20 @@ export function Pipeline() {
               colIdx >= 0 && colIdx < STATUS_SEQUENCE.length - 1
                 ? STATUS_SEQUENCE[colIdx + 1]
                 : null
+            const isDropTarget = dragOverColumn === col.status
+            const columnTotalBrl = colLeads.reduce((sum, l) => sum + resolveDealValue(l), 0)
 
             return (
               <section
                 key={col.status}
-                className="flex min-h-[540px] flex-col rounded-2xl border border-stone-800 bg-[#1c1917]/90 p-3.5"
+                onDragOver={(e) => handleColumnDragOver(e, col.status)}
+                onDragLeave={(e) => handleColumnDragLeave(e, col.status)}
+                onDrop={(e) => handleColumnDrop(e, col.status)}
+                className={`flex min-h-[560px] flex-col rounded-2xl border p-3.5 transition-all duration-150 ${
+                  isDropTarget
+                    ? 'border-amber-500/70 bg-amber-950/15 shadow-lg shadow-amber-950/30 ring-1 ring-amber-500/40 -translate-y-0.5'
+                    : 'border-stone-800 bg-[#1c1917]/90'
+                }`}
               >
                 {/* Topo da Coluna */}
                 <div
@@ -292,32 +472,60 @@ export function Pipeline() {
                     </h2>
                     <p className="text-[11px] text-stone-400">{col.subtitle}</p>
                   </div>
-                  <span className="rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-1 font-mono text-xs font-black tabular-nums text-stone-200">
-                    {colLeads.length}
-                  </span>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-0.5 font-mono text-xs font-black tabular-nums text-stone-200">
+                      {colLeads.length}
+                    </span>
+                    {colLeads.length > 0 && col.status !== 'RECUSADO' && (
+                      <span className="font-mono text-[10px] font-semibold tabular-nums text-stone-400">
+                        R$ {columnTotalBrl.toLocaleString('pt-BR')}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Cards da Coluna */}
                 <div className="flex-1 space-y-3">
                   {colLeads.length === 0 ? (
-                    <div className="flex h-36 items-center justify-center rounded-xl border border-dashed border-stone-800/80 p-4 text-center text-xs text-stone-500">
-                      Sem contatos nesta etapa
+                    <div
+                      className={`flex h-36 items-center justify-center rounded-xl border border-dashed p-4 text-center text-xs transition ${
+                        isDropTarget
+                          ? 'border-amber-500/60 bg-amber-500/5 font-semibold text-amber-300'
+                          : 'border-stone-800/80 text-stone-500'
+                      }`}
+                    >
+                      {isDropTarget
+                        ? `Solte aqui para mover para ${col.title}`
+                        : 'Arraste um card para esta etapa'}
                     </div>
                   ) : (
                     colLeads.map((lead) => {
-                      const quickMsg = buildQuickPitchMessage(lead)
+                      const dealValue = resolveDealValue(lead)
+                      const quickMsg = buildQuickPitchMessage(lead, dealValue)
                       const waHref = lead.phone_sanitized
                         ? `https://wa.me/55${lead.phone_sanitized}?text=${encodeURIComponent(quickMsg)}`
                         : null
+                      const isDraggingThis = draggedLeadId === lead.id
+                      const isEditingPrice = editingPriceLeadId === lead.id
 
                       return (
                         <article
                           key={lead.id}
-                          className="group rounded-xl border border-stone-800 bg-stone-950/90 p-3.5 shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-stone-700"
+                          draggable={editingPriceLeadId !== lead.id}
+                          onDragStart={(e) => handleDragStart(e, lead)}
+                          onDragEnd={handleDragEnd}
+                          className={`group cursor-grab active:cursor-grabbing rounded-xl border p-3.5 shadow-md transition-all duration-200 ease-out ${
+                            isDraggingThis
+                              ? 'scale-[0.98] border-amber-500/60 bg-stone-900/60 opacity-50'
+                              : 'border-stone-800 bg-stone-950/90 hover:-translate-y-0.5 hover:border-stone-700'
+                          }`}
                         >
-                          {/* SLA Badge + Score */}
+                          {/* SLA Badge + Score + Grip */}
                           <div className="flex items-center justify-between gap-2">
-                            {renderSlaBadge(lead.days_in_status ?? 0, lead.pipeline_status)}
+                            <div className="flex items-center gap-1">
+                              <GripVertical className="h-3.5 w-3.5 shrink-0 text-stone-600 transition group-hover:text-stone-400" />
+                              {renderSlaBadge(lead.days_in_status ?? 0, lead.pipeline_status)}
+                            </div>
                             <span className="rounded border border-stone-700 bg-stone-900 px-2 py-0.5 font-mono text-xs font-bold tabular-nums text-emerald-400">
                               {lead.score} pts
                             </span>
@@ -345,6 +553,53 @@ export function Pipeline() {
                               <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                               {lead.rating.toFixed(1)} ({lead.reviews_count})
                             </span>
+                          </div>
+
+                          {/* Ticket Negociado (Edição Rápida Inline do deal_value) */}
+                          <div className="mt-2.5 flex items-center justify-between rounded-lg border border-stone-800/90 bg-stone-900/80 px-2.5 py-1.5">
+                            <span className="text-[11px] font-semibold text-stone-400">
+                              Ticket Negociado:
+                            </span>
+
+                            {isEditingPrice ? (
+                              <div className="flex items-center gap-1">
+                                <span className="font-mono text-xs font-bold text-emerald-400">
+                                  R$
+                                </span>
+                                <input
+                                  type="number"
+                                  min={0}
+                                  step={50}
+                                  autoFocus
+                                  value={editingPriceValue}
+                                  onChange={(e) => setEditingPriceValue(e.target.value)}
+                                  onBlur={() => void handleCommitEditPrice(lead)}
+                                  onKeyDown={(e) => handlePriceKeyDown(e, lead)}
+                                  className="w-20 rounded border border-amber-500 bg-stone-950 px-2 py-0.5 font-mono text-xs font-bold text-stone-100 outline-none"
+                                />
+                                <button
+                                  type="button"
+                                  onMouseDown={(e) => {
+                                    e.preventDefault()
+                                    void handleCommitEditPrice(lead)
+                                  }}
+                                  className="rounded bg-emerald-600 p-1 text-stone-950 hover:bg-emerald-500"
+                                  title="Salvar valor"
+                                >
+                                  <Check className="h-3 w-3" />
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleStartEditPrice(lead)}
+                                title="Clique para editar o valor negociado deste lead"
+                                className="inline-flex items-center gap-1.5 rounded-md border border-emerald-600/30 bg-emerald-600/10 px-2 py-0.5 font-mono text-xs font-black tabular-nums text-emerald-400 transition hover:border-amber-500/60 hover:bg-amber-500/15 hover:text-amber-300"
+                              >
+                                <span>R$ {dealValue.toLocaleString('pt-BR')}</span>
+                                <Pencil className="h-2.5 w-2.5 opacity-75" />
+                              </button>
+                            )}
                           </div>
 
                           {lead.notes && (

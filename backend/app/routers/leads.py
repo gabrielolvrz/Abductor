@@ -22,7 +22,7 @@ from app.schemas.lead_dto import (
     LeadUpdateRequest,
 )
 from app.services.ingestion import LINK_SEARCH_LEAD_SQL, UPDATE_SEARCH_TOTAL_SQL
-from app.verticals import load_vertical_rules
+from app.verticals import load_vertical_rules, resolve_vertical_slug
 
 router = APIRouter(prefix="/leads", tags=["Leads & Mini-CRM"])
 DbSession = Annotated[AsyncSession, Depends(get_db)]
@@ -50,9 +50,12 @@ SELECT_SINGLE_LEAD_SQL = text(
         l.rating,
         l.reviews_count,
         l.is_claimed,
+        l.opening_hours,
+        l.extracted_reviews,
         l.score,
         l.score_breakdown,
         l.pipeline_status,
+        l.deal_value,
         l.notes,
         l.created_manually,
         l.is_manually_edited,
@@ -96,9 +99,12 @@ SELECT_PIPELINE_LEADS_SQL = text(
         l.rating,
         l.reviews_count,
         l.is_claimed,
+        l.opening_hours,
+        l.extracted_reviews,
         l.score,
         l.score_breakdown,
         l.pipeline_status,
+        l.deal_value,
         l.notes,
         l.created_manually,
         l.is_manually_edited,
@@ -167,18 +173,28 @@ async def update_lead_pipeline(
     db: DbSession,
 ) -> LeadResponse:
     """Atualiza a etapa do funil comercial do Lead e registra last_status_change_at = NOW()."""
-    await _get_lead_or_404(db, lead_id)
+    current = await _get_lead_or_404(db, lead_id)
+    deal_value = (
+        int(payload.deal_value)
+        if payload.deal_value is not None
+        else int(current.deal_value or 350)
+    )
 
     await db.execute(
         text(
             """
             UPDATE leads
             SET pipeline_status = :pipeline_status,
+                deal_value = :deal_value,
                 last_status_change_at = NOW()
             WHERE id = :lead_id;
             """
         ),
-        {"lead_id": lead_id, "pipeline_status": payload.pipeline_status},
+        {
+            "lead_id": lead_id,
+            "pipeline_status": payload.pipeline_status,
+            "deal_value": deal_value,
+        },
     )
     await db.commit()
 
@@ -191,9 +207,10 @@ async def update_lead_details(
     payload: LeadUpdateRequest,
     db: DbSession,
 ) -> LeadResponse:
-    """Edição manual e Override de Diagnóstico de Lead (RF15).
+    """Edição manual e Override de Diagnóstico de Lead (RF15), Status do Funil e Ticket (deal_value).
 
-    Permite editar website_status, website_url, phone_raw, notes, rating e reviews_count.
+    Permite editar website_status, website_url, phone_raw, notes, rating, reviews_count,
+    pipeline_status e deal_value.
     Se dados de site, telefone ou avaliações forem alterados:
     - Marca is_manually_edited = TRUE (protege contra sobrescritas de futuros scrapings).
     - Recalcula imediatamente o score e o score_breakdown via scorer.py.
@@ -214,6 +231,10 @@ async def update_lead_details(
     rating = current.rating
     reviews_count = current.reviews_count
     is_manually_edited = current.is_manually_edited
+
+    pipeline_status = current.pipeline_status
+    deal_value = int(current.deal_value or 350)
+    status_changed = False
 
     recalculate_score = False
 
@@ -255,6 +276,14 @@ async def update_lead_details(
         reviews_count = int(payload.reviews_count)
         recalculate_score = True
         is_manually_edited = True
+
+    if "pipeline_status" in fields_set and payload.pipeline_status is not None:
+        if payload.pipeline_status != current.pipeline_status:
+            status_changed = True
+        pipeline_status = payload.pipeline_status
+
+    if "deal_value" in fields_set and payload.deal_value is not None:
+        deal_value = max(0, int(payload.deal_value))
 
     instagram_url = (
         payload.instagram_url
@@ -298,10 +327,16 @@ async def update_lead_details(
                 linkedin_url = :linkedin_url,
                 rating = :rating,
                 reviews_count = :reviews_count,
+                pipeline_status = :pipeline_status,
+                deal_value = :deal_value,
                 notes = :notes,
                 score = :score,
                 score_breakdown = CAST(:score_breakdown AS jsonb),
                 is_manually_edited = :is_manually_edited,
+                last_status_change_at = CASE
+                    WHEN :status_changed THEN NOW()
+                    ELSE last_status_change_at
+                END,
                 last_checked_at = NOW()
             WHERE id = :lead_id;
             """
@@ -319,10 +354,13 @@ async def update_lead_details(
             "linkedin_url": linkedin_url,
             "rating": Decimal(str(round(rating, 1))),
             "reviews_count": reviews_count,
+            "pipeline_status": pipeline_status,
+            "deal_value": deal_value,
             "notes": notes,
             "score": score,
             "score_breakdown": json.dumps(score_breakdown),
             "is_manually_edited": is_manually_edited,
+            "status_changed": status_changed,
         },
     )
     await db.commit()
@@ -361,14 +399,14 @@ async def create_manual_lead(
                 phone_raw, phone_sanitized, phone_type, whatsapp_url,
                 google_maps_url, website_url, website_status, website_http_code,
                 instagram_url, linkedin_url, rating, reviews_count, is_claimed,
-                score, score_breakdown, pipeline_status, notes, created_manually,
+                score, score_breakdown, pipeline_status, deal_value, notes, created_manually,
                 first_seen_at, last_checked_at
             ) VALUES (
                 :place_id, :name, :category, :address, :neighborhood, :city,
                 :phone_raw, :phone_sanitized, :phone_type, :whatsapp_url,
                 :google_maps_url, :website_url, :website_status, :website_http_code,
                 :instagram_url, :linkedin_url, :rating, :reviews_count, :is_claimed,
-                :score, CAST(:score_breakdown AS jsonb), 'NOVO', :notes, TRUE,
+                :score, CAST(:score_breakdown AS jsonb), 'NOVO', :deal_value, :notes, TRUE,
                 NOW(), NOW()
             )
             RETURNING id;
@@ -400,6 +438,7 @@ async def create_manual_lead(
             "is_claimed": payload.is_claimed,
             "score": score,
             "score_breakdown": json.dumps(score_breakdown),
+            "deal_value": max(0, int(payload.deal_value or 350)),
             "notes": payload.notes,
         },
     )
@@ -437,8 +476,12 @@ async def export_lead_site_config(
     """
     lead = await _get_lead_or_404(db, lead_id)
 
+    vertical_slug = resolve_vertical_slug(lead.category)
+    template_folder = (
+        "vercel-petshop" if vertical_slug == "petshop" else "vercel-advocacia"
+    )
     template_config_path = (
-        PROJECT_ROOT / "templates" / "vercel-advocacia" / "base" / "site.config.json"
+        PROJECT_ROOT / "templates" / template_folder / "base" / "site.config.json"
     )
 
     if template_config_path.exists():
@@ -469,6 +512,12 @@ async def export_lead_site_config(
     )
 
     business_section = dict(base_config.get("business") or {})
+    default_hours = (
+        business_section.get("opening_hours")
+        or business_section.get("office_hours")
+        or "Segunda a Sexta das 08:00–18:00 • Sábados das 08:00–13:00"
+    )
+    resolved_hours = lead.opening_hours or default_hours
     business_section.update(
         {
             "name": cleaned_name,
@@ -477,6 +526,8 @@ async def export_lead_site_config(
             "phone_display": lead.phone_raw or "",
             "whatsapp_number": whatsapp_number,
             "address_display": lead.address or lead.neighborhood or "",
+            "opening_hours": resolved_hours,
+            "office_hours": resolved_hours,
         }
     )
     base_config["business"] = business_section
@@ -489,6 +540,20 @@ async def export_lead_site_config(
         }
     )
     base_config["metrics"] = metrics_section
+
+    # Injeta apenas avaliações reais extraídas da coluna user_reviews do Google Maps (zero fake reviews)
+    valid_reviews = [
+        {
+            "author": str(rev.get("author") or "").strip(),
+            "text": str(rev.get("text") or "").strip(),
+            "stars": int(rev.get("stars") or 5),
+        }
+        for rev in (lead.extracted_reviews or [])
+        if isinstance(rev, dict)
+        and str(rev.get("author") or "").strip()
+        and str(rev.get("text") or "").strip()
+    ][:5]
+    base_config["testimonials"] = valid_reviews
 
     compliance_section = dict(base_config.get("compliance") or {})
     compliance_section.update(

@@ -18,15 +18,60 @@ import {
   type SystemNote,
 } from '../services/api'
 
+const NOTES_DRAFT_STORAGE_KEY = 'abductor_notes_draft'
+
+interface NotesDraft {
+  title: string
+  content: string
+  tag: NoteTag
+}
+
+function loadNotesDraft(): NotesDraft {
+  const defaults: NotesDraft = {
+    title: '',
+    content: '',
+    tag: 'IDEIA',
+  }
+  try {
+    const raw = window.localStorage.getItem(NOTES_DRAFT_STORAGE_KEY)
+    if (!raw) return defaults
+    const parsed = JSON.parse(raw) as Partial<NotesDraft>
+    return {
+      title: parsed.title ?? '',
+      content: parsed.content ?? '',
+      tag: parsed.tag ?? 'IDEIA',
+    }
+  } catch {
+    return defaults
+  }
+}
+
 export function Notes() {
+  const initialDraft = loadNotesDraft()
+
   const [notes, setNotes] = useState<SystemNote[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [filterTag, setFilterTag] = useState<NoteTag | 'TODAS'>('TODAS')
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
 
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [tag, setTag] = useState<NoteTag>('IDEIA')
+  const [title, setTitle] = useState(initialDraft.title)
+  const [content, setContent] = useState(initialDraft.content)
+  const [tag, setTag] = useState<NoteTag>(initialDraft.tag)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Salva rascunho continuamente no localStorage
+  useEffect(() => {
+    try {
+      if (!title.trim() && !content.trim() && tag === 'IDEIA') {
+        window.localStorage.removeItem(NOTES_DRAFT_STORAGE_KEY)
+      } else {
+        const draft: NotesDraft = { title, content, tag }
+        window.localStorage.setItem(NOTES_DRAFT_STORAGE_KEY, JSON.stringify(draft))
+      }
+    } catch {
+      // ignore
+    }
+  }, [title, content, tag])
 
   useEffect(() => {
     let active = true
@@ -55,6 +100,14 @@ export function Notes() {
       setNotes((prev) => [created, ...prev])
       setTitle('')
       setContent('')
+      setTag('IDEIA')
+      try {
+        window.localStorage.removeItem(NOTES_DRAFT_STORAGE_KEY)
+      } catch {
+        // ignore
+      }
+      setToastMessage('Anotação salva no backlog!')
+      window.setTimeout(() => setToastMessage(null), 3000)
     } finally {
       setIsSubmitting(false)
     }
@@ -98,6 +151,13 @@ export function Notes() {
 
   return (
     <main className="mx-auto max-w-[1440px] space-y-6 px-6 py-6">
+      {toastMessage && (
+        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-xl border border-amber-600/50 bg-stone-900 px-4 py-3 text-xs font-semibold text-amber-300 shadow-2xl">
+          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+          {toastMessage}
+        </div>
+      )}
+
       {/* Topo */}
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-stone-800 bg-[#1c1917] p-5">
         <div>

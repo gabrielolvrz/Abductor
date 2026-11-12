@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <circle cx="60" cy="60" r="56" stroke="currentColor" stroke-width="2.5" stroke-opacity="0.35"/>
+  <circle cx="60" cy="60" r="48" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" stroke-opacity="0.5"/>
+  <!-- Paw pads -->
+  <ellipse cx="60" cy="70" rx="16" ry="13" fill="currentColor" fill-opacity="0.9"/>
+  <ellipse cx="39" cy="52" rx="6.5" ry="8.5" transform="rotate(-20 39 52)" fill="currentColor" fill-opacity="0.9"/>
+  <ellipse cx="52" cy="43" rx="6.5" ry="8.5" transform="rotate(-7 52 43)" fill="currentColor" fill-opacity="0.9"/>
+  <ellipse cx="68" cy="43" rx="6.5" ry="8.5" transform="rotate(7 68 43)" fill="currentColor" fill-opacity="0.9"/>
+  <ellipse cx="81" cy="52" rx="6.5" ry="8.5" transform="rotate(20 81 52)" fill="currentColor" fill-opacity="0.9"/>
+</svg>

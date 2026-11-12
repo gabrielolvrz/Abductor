@@ -1,0 +1,27 @@
+{
+  "slug": "petshop",
+  "display_name": "Pet Shops, Banho e Tosa e Clínicas Veterinárias",
+  "search_terms": [
+    "Pet Shop",
+    "Banho e Tosa",
+    "Clínica Veterinária",
+    "Hospital Veterinário"
+  ],
+  "scoring": {
+    "reviews_threshold_high": 40,
+    "reviews_points_high": 25,
+    "reviews_threshold_mid": 15,
+    "reviews_points_mid": 15,
+    "rating_ideal_min": 4.5
+  },
+  "blocked_terms_in_name": [
+    "Prefeitura",
+    "Zoonoses",
+    "Centro de Controle",
+    "ONG",
+    "Associação",
+    "Defensoria",
+    "Sindicato"
+  ],
+  "dork_pattern": "\"{name}\" \"{city}\" site:instagram.com"
+}

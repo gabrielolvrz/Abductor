@@ -61,6 +61,10 @@ class Lead(Base):
     is_claimed: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False
     )
+    opening_hours: Mapped[str | None] = mapped_column(Text, nullable=True)
+    extracted_reviews: Mapped[list[dict[str, Any]]] = mapped_column(
+        JSONB, nullable=False, default=list
+    )
     score: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     score_breakdown: Mapped[dict[str, Any]] = mapped_column(
         JSONB, nullable=False, default=dict
@@ -68,6 +72,7 @@ class Lead(Base):
     pipeline_status: Mapped[str] = mapped_column(
         String(30), nullable=False, default="NOVO"
     )
+    deal_value: Mapped[int] = mapped_column(Integer, nullable=False, default=350)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_manually: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False

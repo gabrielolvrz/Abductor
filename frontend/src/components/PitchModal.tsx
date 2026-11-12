@@ -38,14 +38,20 @@ export function PitchModal({ lead, onClose, onMarkContacted }: PitchModalProps) 
     if (!lead) return
     let active = true
 
+    const initialPrice =
+      typeof lead.deal_value === 'number' && lead.deal_value > 0
+        ? lead.deal_value
+        : 350
+
     const loadInitialInterpolation = async () => {
       setIsLoading(true)
       try {
         const [allScripts, interp] = await Promise.all([
           listScripts(),
-          interpolateScript({ lead_id: lead.id, price: 350 }),
+          interpolateScript({ lead_id: lead.id, price: initialPrice }),
         ])
         if (!active) return
+        setTicketPrice(initialPrice)
         setScripts(allScripts)
         setSelectedScriptId(interp.script_id ?? '')
         setMessageText(interp.interpolated_message)
@@ -72,6 +78,15 @@ export function PitchModal({ lead, onClose, onMarkContacted }: PitchModalProps) 
       active = false
     }
   }, [lead])
+
+  useEffect(() => {
+    if (!lead) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [lead, onClose])
 
   if (!lead) return null
 
@@ -140,6 +155,12 @@ export function PitchModal({ lead, onClose, onMarkContacted }: PitchModalProps) 
       aria-modal="true"
       aria-labelledby="pitch-modal-title"
     >
+      {copied && (
+        <div className="fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-xl border border-emerald-600/50 bg-stone-900 px-4 py-3 text-xs font-semibold text-emerald-300 shadow-2xl">
+          <Check className="h-4 w-4 text-emerald-400" />
+          Copiado para a área de transferência!
+        </div>
+      )}
       <div className="w-full max-w-2xl rounded-2xl border border-stone-700 bg-stone-900 p-6 shadow-2xl">
         {/* Cabeçalho */}
         <div className="flex items-start justify-between gap-4 border-b border-stone-800 pb-4">
@@ -233,7 +254,8 @@ export function PitchModal({ lead, onClose, onMarkContacted }: PitchModalProps) 
             >
               {scripts.map((s) => (
                 <option key={s.id} value={s.id}>
-                  [{s.category} / {s.website_condition}] {s.title}
+                  [{s.script_type === 'OBJECTION' ? 'OBJEÇÃO' : 'PITCH'} • {s.category} /{' '}
+                  {s.website_condition}] {s.title}
                 </option>
               ))}
             </select>

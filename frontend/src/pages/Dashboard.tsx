@@ -6,6 +6,7 @@ import {
   Filter,
   Flame,
   Kanban,
+  Layers,
   LayoutGrid,
   List,
   Lock,
@@ -26,6 +27,7 @@ import { LeadDrawer } from '../components/LeadDrawer'
 import { PitchModal } from '../components/PitchModal'
 import { SearchForm } from '../components/SearchForm'
 import { ExportConfigModal } from '../components/ExportConfigModal'
+import { NicheManagerModal } from '../components/NicheManagerModal'
 import {
   HOMOLOGATED_CATEGORIES,
   buildQuickPitchMessage,
@@ -37,6 +39,8 @@ import {
   getSearchLeads,
   getSearchStatus,
   isAdvocaciaLead,
+  isPetshopLead,
+  listNiches,
   listSearches,
   revalidateSearchUrls,
   updateLeadDetails,
@@ -44,6 +48,7 @@ import {
   type Lead,
   type LeadCreateManualRequest,
   type LeadUpdateRequest,
+  type Niche,
   type PipelineStatus,
   type SearchCreateRequest,
   type SearchStatusResponse,
@@ -60,13 +65,47 @@ interface DashboardProps {
 
 const PAGE_SIZE = 60
 const VIEW_MODE_STORAGE_KEY = 'abductor_view_mode'
+const ACTIVE_SEARCH_STORAGE_KEY = 'abductor_last_active_search_id'
+const DASHBOARD_FILTERS_STORAGE_KEY = 'abductor_dashboard_filters'
 const BASE_TICKET_BRL = 350
+
+interface PersistedDashboardFilters {
+  hideContacted: boolean
+  onlyMobile: boolean
+  onlyNoSiteOrImprovised: boolean
+  hideBrokenSite: boolean
+  pipelineStatusFilter: 'ALL' | PipelineStatus
+  sortBy: SortField
+  searchTerm: string
+}
+
+function loadPersistedDashboardFilters(): PersistedDashboardFilters {
+  const defaults: PersistedDashboardFilters = {
+    hideContacted: false,
+    onlyMobile: false,
+    onlyNoSiteOrImprovised: false,
+    hideBrokenSite: false,
+    pipelineStatusFilter: 'ALL',
+    sortBy: 'score',
+    searchTerm: '',
+  }
+  try {
+    const raw = window.localStorage.getItem(DASHBOARD_FILTERS_STORAGE_KEY)
+    if (!raw) return defaults
+    const parsed = JSON.parse(raw) as Partial<PersistedDashboardFilters>
+    return { ...defaults, ...parsed }
+  } catch {
+    return defaults
+  }
+}
 
 export function Dashboard({
   showManualLeadModal,
   onCloseManualLeadModal,
   onNavigate,
 }: DashboardProps) {
+  const initialFilters = loadPersistedDashboardFilters()
+
   const [savedSearches, setSavedSearches] = useState<SearchStatusResponse[]>([])
   const [activeSearch, setActiveSearch] = useState<SearchStatusResponse | null>(null)
   const [leads, setLeads] = useState<Lead[]>([])
@@ -76,19 +115,26 @@ export function Dashboard({
   const [exportModalLead, setExportModalLead] = useState<Lead | null>(null)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [showSearchForm, setShowSearchForm] = useState<boolean>(true)
+  const [niches, setNiches] = useState<Niche[]>([])
+  const [showNicheModal, setShowNicheModal] = useState<boolean>(false)
 
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     const saved = window.localStorage.getItem(VIEW_MODE_STORAGE_KEY)
     return saved === 'list' ? 'list' : 'grid'
   })
 
-  // Filtros e Ordenação Client-Side
-  const [hideContacted, setHideContacted] = useState<boolean>(false)
-  const [onlyMobile, setOnlyMobile] = useState<boolean>(false)
-  const [onlyNoSiteOrImprovised, setOnlyNoSiteOrImprovised] = useState<boolean>(false)
-  const [hideBrokenSite, setHideBrokenSite] = useState<boolean>(false)
-  const [searchTerm, setSearchTerm] = useState<string>('')
-  const [sortBy, setSortBy] = useState<SortField>('score')
+  // Filtros e Ordenação Client-Side (hidratados do localStorage)
+  const [hideContacted, setHideContacted] = useState<boolean>(initialFilters.hideContacted)
+  const [onlyMobile, setOnlyMobile] = useState<boolean>(initialFilters.onlyMobile)
+  const [onlyNoSiteOrImprovised, setOnlyNoSiteOrImprovised] = useState<boolean>(
+    initialFilters.onlyNoSiteOrImprovised,
+  )
+  const [hideBrokenSite, setHideBrokenSite] = useState<boolean>(initialFilters.hideBrokenSite)
+  const [pipelineStatusFilter, setPipelineStatusFilter] = useState<'ALL' | PipelineStatus>(
+    initialFilters.pipelineStatusFilter,
+  )
+  const [searchTerm, setSearchTerm] = useState<string>(initialFilters.searchTerm)
+  const [sortBy, setSortBy] = useState<SortField>(initialFilters.sortBy)
   const [visibleCount, setVisibleCount] = useState<number>(PAGE_SIZE)
 
   // Modal de Cadastro Manual
@@ -104,6 +150,42 @@ export function Dashboard({
   const [manualClaimed, setManualClaimed] = useState(true)
   const [manualNotes, setManualNotes] = useState('')
   const [isCreatingManual, setIsCreatingManual] = useState(false)
+
+  // Persistir filtros da listagem no localStorage
+  useEffect(() => {
+    try {
+      const payload: PersistedDashboardFilters = {
+        hideContacted,
+        onlyMobile,
+        onlyNoSiteOrImprovised,
+        hideBrokenSite,
+        pipelineStatusFilter,
+        sortBy,
+        searchTerm,
+      }
+      window.localStorage.setItem(DASHBOARD_FILTERS_STORAGE_KEY, JSON.stringify(payload))
+    } catch {
+      // ignore
+    }
+  }, [
+    hideContacted,
+    onlyMobile,
+    onlyNoSiteOrImprovised,
+    hideBrokenSite,
+    pipelineStatusFilter,
+    sortBy,
+    searchTerm,
+  ])
+
+  // Fechar Modal de Cadastro Manual com tecla Escape
+  useEffect(() => {
+    if (!showManualLeadModal) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCloseManualLeadModal()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [showManualLeadModal, onCloseManualLeadModal])
 
   const handleToggleViewMode = (mode: ViewMode) => {
     setViewMode(mode)
@@ -130,19 +212,27 @@ export function Dashboard({
     let active = true
     const init = async () => {
       try {
-        const [history, pLeads] = await Promise.all([
+        const [history, pLeads, nichesList] = await Promise.all([
           listSearches(),
           getPipelineLeads(),
+          listNiches().catch(() => [] as Niche[]),
         ])
         if (!active) return
         setSavedSearches(history)
         setPipelineLeads(pLeads)
-        if (history.length > 0) {
-          const first = history[0]
-          setActiveSearch(first)
-          if (first.job_status === 'COMPLETED' || first.job_status === 'PARTIAL') {
-            const fetchedLeads = await getSearchLeads(first.search_id)
-            if (active) setLeads(fetchedLeads)
+        setNiches(nichesList)
+
+        // Restaura exclusivamente a última busca ativa salva no localStorage.
+        // Caso não exista busca salva, mantém o painel em estado limpo/neutro.
+        const savedSearchId = window.localStorage.getItem(ACTIVE_SEARCH_STORAGE_KEY)
+        if (savedSearchId && history.length > 0) {
+          const restored = history.find((s) => s.search_id === savedSearchId)
+          if (restored) {
+            setActiveSearch({ ...restored, cached: true })
+            if (restored.job_status === 'COMPLETED' || restored.job_status === 'PARTIAL') {
+              const fetchedLeads = await getSearchLeads(restored.search_id)
+              if (active) setLeads(fetchedLeads)
+            }
           }
         }
       } catch {
@@ -192,6 +282,11 @@ export function Dashboard({
     try {
       const { status, data } = await createOrGetSearch(payload)
       setActiveSearch(data)
+      try {
+        window.localStorage.setItem(ACTIVE_SEARCH_STORAGE_KEY, data.search_id)
+      } catch {
+        // ignore
+      }
 
       if (status === 200 && data.leads) {
         setLeads(data.leads)
@@ -211,6 +306,11 @@ export function Dashboard({
   const handleSelectSavedSearch = async (search: SearchStatusResponse) => {
     setVisibleCount(PAGE_SIZE)
     setActiveSearch({ ...search, cached: true })
+    try {
+      window.localStorage.setItem(ACTIVE_SEARCH_STORAGE_KEY, search.search_id)
+    } catch {
+      // ignore
+    }
     if (search.job_status === 'COMPLETED' || search.job_status === 'PARTIAL') {
       const fetchedLeads = await getSearchLeads(search.search_id)
       setLeads(fetchedLeads)
@@ -246,7 +346,7 @@ export function Dashboard({
   }
 
   const handleExportSiteConfig = async (lead: Lead) => {
-    if (isAdvocaciaLead(lead)) {
+    if (isAdvocaciaLead(lead) || isPetshopLead(lead)) {
       setExportModalLead(lead)
     } else {
       // Exportação turnkey padrão para outros nichos
@@ -311,6 +411,9 @@ export function Dashboard({
       if (hideContacted && lead.pipeline_status !== 'NOVO') {
         return false
       }
+      if (pipelineStatusFilter !== 'ALL' && lead.pipeline_status !== pipelineStatusFilter) {
+        return false
+      }
       if (onlyMobile && lead.phone_type !== 'MOBILE') {
         return false
       }
@@ -349,6 +452,7 @@ export function Dashboard({
   }, [
     leads,
     hideContacted,
+    pipelineStatusFilter,
     onlyMobile,
     onlyNoSiteOrImprovised,
     hideBrokenSite,
@@ -361,14 +465,38 @@ export function Dashboard({
     [filteredAndSortedLeads, visibleCount],
   )
 
-  // 4 Métricas de Topo (Combinando oportunidades na bancada + funil global)
+  useEffect(() => {
+    const onPipelineSync = () => {
+      void refreshPipelineSnapshot()
+    }
+    window.addEventListener('abductor:pipeline-updated', onPipelineSync)
+    window.addEventListener('focus', onPipelineSync)
+    return () => {
+      window.removeEventListener('abductor:pipeline-updated', onPipelineSync)
+      window.removeEventListener('focus', onPipelineSync)
+    }
+  }, [refreshPipelineSnapshot])
+
+  // 4 Métricas de Topo (Combinando oportunidades na bancada + funil global com deal_value real)
   const topMetrics = useMemo(() => {
     const opportunitiesCount = leads.filter((l) => l.score >= 50).length || leads.length
-    const inNegotiationCount = pipelineLeads.filter(
+    const inNegotiationLeads = pipelineLeads.filter(
       (l) => l.pipeline_status === 'RESPONDEU' || l.pipeline_status === 'NEGOCIANDO',
-    ).length
-    const closedCount = pipelineLeads.filter((l) => l.pipeline_status === 'FECHADO').length
-    const closedRevenueBrl = closedCount * BASE_TICKET_BRL
+    )
+    const inNegotiationCount = inNegotiationLeads.length
+    const negotiationForecastBrl = inNegotiationLeads.reduce(
+      (sum, l) =>
+        sum + (typeof l.deal_value === 'number' && l.deal_value > 0 ? l.deal_value : BASE_TICKET_BRL),
+      0,
+    )
+
+    const closedLeads = pipelineLeads.filter((l) => l.pipeline_status === 'FECHADO')
+    const closedCount = closedLeads.length
+    const closedRevenueBrl = closedLeads.reduce(
+      (sum, l) =>
+        sum + (typeof l.deal_value === 'number' && l.deal_value > 0 ? l.deal_value : BASE_TICKET_BRL),
+      0,
+    )
 
     const totalContacted = pipelineLeads.length
     const totalReplied = pipelineLeads.filter(
@@ -383,6 +511,7 @@ export function Dashboard({
     return {
       opportunitiesCount,
       inNegotiationCount,
+      negotiationForecastBrl,
       closedCount,
       closedRevenueBrl,
       responseRate,
@@ -435,8 +564,8 @@ export function Dashboard({
             <p className="mt-1 font-mono text-2xl font-black tabular-nums text-amber-400">
               {topMetrics.inNegotiationCount}
             </p>
-            <span className="text-[11px] text-stone-400">
-              Responderam ou avaliando prévia
+            <span className="font-mono text-[11px] tabular-nums text-stone-400">
+              Previsão: R$ {topMetrics.negotiationForecastBrl.toLocaleString('pt-BR')}
             </span>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-stone-700 bg-stone-950 text-amber-400">
@@ -447,13 +576,13 @@ export function Dashboard({
         <div className="flex items-center justify-between rounded-2xl border border-emerald-600/35 bg-[#1c1917] px-5 py-4 shadow-sm">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
-              Fechados (R$ Acumulado)
+              Faturamento Fechado / Previsão
             </span>
             <p className="mt-1 font-mono text-2xl font-black tabular-nums text-emerald-400">
               R$ {topMetrics.closedRevenueBrl.toLocaleString('pt-BR')}
             </p>
             <span className="font-mono text-[11px] tabular-nums text-stone-400">
-              {topMetrics.closedCount} venda(s) • Ticket médio flexível
+              {topMetrics.closedCount} venda(s) • Sincronizado com o Kanban
             </span>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-600/40 bg-emerald-600/15 text-emerald-400">
@@ -499,6 +628,15 @@ export function Dashboard({
             <Kanban className="h-4 w-4 text-amber-500" />
             Abrir Kanban ({pipelineLeads.length})
           </button>
+
+          <button
+            type="button"
+            onClick={() => setShowNicheModal(true)}
+            className="inline-flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-950 px-4 py-2 text-xs font-bold text-stone-200 transition hover:border-amber-600/60 hover:text-amber-400"
+          >
+            <Layers className="h-4 w-4 text-amber-500" />
+            Nichos ({niches.length || HOMOLOGATED_CATEGORIES.length})
+          </button>
         </div>
 
         {/* Últimas 3 buscas salvas como pills rápidas */}
@@ -538,6 +676,7 @@ export function Dashboard({
       {/* Painel de Busca e Controle de Cache-First */}
       {showSearchForm && (
         <SearchForm
+          key={`${activeSearch?.search_id ?? 'neutral'}-${niches.length}`}
           onSubmitSearch={(payload) => void handleSearchSubmit(payload)}
           onRevalidateUrls={(id) => void handleRevalidateUrls(id)}
           onSelectSavedSearch={(s) => void handleSelectSavedSearch(s)}
@@ -611,6 +750,24 @@ export function Dashboard({
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            {/* Filtro por Status no Funil */}
+            <select
+              aria-label="Filtrar por status no funil"
+              value={pipelineStatusFilter}
+              onChange={(e) =>
+                setPipelineStatusFilter(e.target.value as 'ALL' | PipelineStatus)
+              }
+              className="rounded-xl border border-stone-700 bg-stone-950 px-3 py-1.5 text-xs font-semibold text-stone-100 outline-none focus:border-amber-600"
+            >
+              <option value="ALL">Todos os Status</option>
+              <option value="NOVO">Status: NOVO</option>
+              <option value="CONTATADO">Status: CONTATADO</option>
+              <option value="RESPONDEU">Status: RESPONDEU</option>
+              <option value="NEGOCIANDO">Status: NEGOCIANDO</option>
+              <option value="FECHADO">Status: FECHADO</option>
+              <option value="RECUSADO">Status: RECUSADO</option>
+            </select>
+
             {/* Busca textual */}
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-stone-500" />
@@ -1115,6 +1272,13 @@ export function Dashboard({
           </div>
         </div>
       )}
+
+      <NicheManagerModal
+        isOpen={showNicheModal}
+        onClose={() => setShowNicheModal(false)}
+        niches={niches}
+        onNichesChange={setNiches}
+      />
     </main>
   )
 }

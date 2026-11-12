@@ -26,6 +26,53 @@ interface SearchFormProps {
   isRunning: boolean
 }
 
+const SEARCH_FORM_DRAFT_KEY = 'abductor_search_form_draft'
+
+interface SearchFormDraft {
+  selectedCategory: string
+  customCategory: string
+  city: string
+  neighborhood: string
+}
+
+function loadSearchFormDraft(
+  activeSearch: SearchStatusResponse | null,
+): SearchFormDraft {
+  if (activeSearch) {
+    return {
+      selectedCategory: activeSearch.category,
+      customCategory: '',
+      city: activeSearch.city,
+      neighborhood: activeSearch.neighborhood ?? '',
+    }
+  }
+  try {
+    const raw = window.localStorage.getItem(SEARCH_FORM_DRAFT_KEY)
+    if (!raw) {
+      return {
+        selectedCategory: '',
+        customCategory: '',
+        city: '',
+        neighborhood: '',
+      }
+    }
+    const parsed = JSON.parse(raw) as Partial<SearchFormDraft>
+    return {
+      selectedCategory: parsed.selectedCategory ?? '',
+      customCategory: parsed.customCategory ?? '',
+      city: parsed.city ?? '',
+      neighborhood: parsed.neighborhood ?? '',
+    }
+  } catch {
+    return {
+      selectedCategory: '',
+      customCategory: '',
+      city: '',
+      neighborhood: '',
+    }
+  }
+}
+
 export function SearchForm({
   onSubmitSearch,
   onRevalidateUrls,
@@ -34,11 +81,14 @@ export function SearchForm({
   activeSearch,
   isRunning,
 }: SearchFormProps) {
+  const initialDraft = loadSearchFormDraft(activeSearch)
   const [niches, setNiches] = useState<Niche[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string>('Advogado')
-  const [customCategory, setCustomCategory] = useState<string>('')
-  const [city, setCity] = useState<string>('Uberlândia')
-  const [neighborhood, setNeighborhood] = useState<string>('Centro')
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    initialDraft.selectedCategory,
+  )
+  const [customCategory, setCustomCategory] = useState<string>(initialDraft.customCategory)
+  const [city, setCity] = useState<string>(initialDraft.city)
+  const [neighborhood, setNeighborhood] = useState<string>(initialDraft.neighborhood)
   const [isSavingNiche, setIsSavingNiche] = useState<boolean>(false)
 
   useEffect(() => {
@@ -59,6 +109,21 @@ export function SearchForm({
 
   const categoryOptions =
     niches.length > 0 ? niches.map((n) => n.name) : [...HOMOLOGATED_CATEGORIES]
+
+  // Persiste alterações do formulário no localStorage
+  useEffect(() => {
+    try {
+      const draft: SearchFormDraft = {
+        selectedCategory,
+        customCategory,
+        city,
+        neighborhood,
+      }
+      window.localStorage.setItem(SEARCH_FORM_DRAFT_KEY, JSON.stringify(draft))
+    } catch {
+      // ignore
+    }
+  }, [selectedCategory, customCategory, city, neighborhood])
 
   const isCustomMode = selectedCategory === '__CUSTOM__'
   const effectiveCategory = isCustomMode ? customCategory.trim() : selectedCategory
@@ -139,6 +204,9 @@ export function SearchForm({
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2.5 text-sm font-medium text-stone-100 outline-none transition focus:border-amber-600 disabled:opacity-60"
           >
+            <option value="" disabled>
+              Selecione o nicho / vertical...
+            </option>
             {categoryOptions.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}

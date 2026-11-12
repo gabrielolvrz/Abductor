@@ -58,9 +58,12 @@ CREATE TABLE IF NOT EXISTS leads (
     rating NUMERIC(2,1) NOT NULL DEFAULT 0.0,
     reviews_count INTEGER NOT NULL DEFAULT 0,
     is_claimed BOOLEAN NOT NULL DEFAULT FALSE,
+    opening_hours TEXT,
+    extracted_reviews JSONB NOT NULL DEFAULT '[]'::jsonb,
     score INTEGER NOT NULL DEFAULT 0,
     score_breakdown JSONB NOT NULL DEFAULT '{}'::jsonb,
     pipeline_status VARCHAR(30) NOT NULL DEFAULT 'NOVO',
+    deal_value INTEGER NOT NULL DEFAULT 350,
     notes TEXT,
     created_manually BOOLEAN NOT NULL DEFAULT FALSE,
     is_manually_edited BOOLEAN NOT NULL DEFAULT FALSE,
@@ -94,17 +97,22 @@ CREATE TABLE IF NOT EXISTS search_leads (
 );
 
 -- ============================================================================
--- 4. TABELA: pitch_scripts (Roteiros de Abordagem Contextuais)
+-- 4. TABELA: pitch_scripts (Roteiros de Abordagem e Quebra de Objeções)
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS pitch_scripts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     category CITEXT NOT NULL,
-    website_condition VARCHAR(30) NOT NULL,
+    script_type VARCHAR(30) NOT NULL DEFAULT 'PITCH',
+    website_condition VARCHAR(30) NOT NULL DEFAULT 'GERAL',
     title VARCHAR(150) NOT NULL,
+    situation TEXT,
     message_template TEXT NOT NULL,
     upsell_focus VARCHAR(50) NOT NULL DEFAULT 'NONE',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
+    CONSTRAINT chk_pitch_script_type CHECK (
+        script_type IN ('PITCH', 'OBJECTION')
+    ),
     CONSTRAINT chk_pitch_condition CHECK (
         website_condition IN ('SEM_SITE', 'IMPROVISADO', 'QUEBRADO', 'GERAL')
     ),
@@ -168,6 +176,9 @@ INSERT INTO niches (name, slug) VALUES
     ('Corretor de Imoveis', 'corretor-de-imoveis'),
     ('Psicologo', 'psicologo'),
     ('Clinica de Estetica', 'clinica-de-estetica'),
+    ('Pet Shop & Veterinária', 'pet-shop-veterinaria'),
+    ('Pet Shop', 'pet-shop'),
+    ('Banho e Tosa', 'banho-e-tosa'),
     ('Veterinaria', 'veterinaria'),
     ('Arquiteto', 'arquiteto')
 ON CONFLICT (name) DO NOTHING;
@@ -204,5 +215,61 @@ INSERT INTO pitch_scripts (category, website_condition, title, message_template,
     'Imobiliário - Site Vitrine Institucional e Carteira de Imóveis',
     'Olá, {name}! Vi seu trabalho no mercado imobiliário aqui em {city} e o perfil bem recomendado no Google.\n\nPercebi que o botão de site aponta para o Instagram. Redes sociais são ótimas para audiência, mas quem pesquisa no Google com intenção imediata de compra quer ver autoridade institucional, imóveis em destaque e um botão direto para falar com você.\n\nDesenvolvo Sites Vitrine One-Page turnkey para corretores (Base Turnkey R$ 350 | Customização de Marca +R$ 150, total R$ 500), já com conformidade LGPD nativa e agendamento de visitas no WhatsApp.\n\nSe fizer sentido, te envio uma prévia rápida no celular.',
     'ADS'
+),
+-- 5. Pet Shop & Clínica Veterinária (Banho e Tosa, Clínica e Farmácia)
+(
+    'Pet Shop & Veterinária',
+    'IMPROVISADO',
+    'Pet Shop & Vet - Vitrine dos 4 Pilares com Agendamento Direto no WhatsApp',
+    'Olá, pessoal da {name}, tudo bem? Vi o perfil de vocês no Google Maps com {reviews_count} avaliações excelentes (nota {rating}) aqui em {city}!\n\nPercebi que o link da ficha aponta para uma página improvisada/Instagram. Tutores que pesquisam no Google querem ver rapidamente a estrutura de Banho & Tosa (higiene, toalhas esterilizadas), Clínica/Vacinas, Farmácia Delivery e um botão direto de agendamento no WhatsApp.\n\nEu desenvolvo Sites Vitrine One-Page perenes específicos para Pet Shops e Clínicas Veterinárias (Base Turnkey R$ 350 | Com Customização de Marca R$ 500), sem mensalidades e já em conformidade com o CFMV e LGPD.\n\nPosso enviar um link de demonstração de 1 minuto no celular para vocês verem como fica?',
+    'GMB'
+)
+ON CONFLICT (category, website_condition, title) DO NOTHING;
+
+INSERT INTO pitch_scripts (category, script_type, website_condition, title, situation, message_template, upsell_focus) VALUES
+(
+    'Geral',
+    'OBJECTION',
+    'GERAL',
+    '“Já tenho Instagram / Linktree”',
+    'Cliente acha que perfil social ou agregador de links substitui sede própria.',
+    'Perfeito, o Instagram é ótimo para relacionamento! A questão é quem pesquisa no Google procurando especialista na sua cidade: quando o cliente clica na sua ficha e cai num Linktree ou precisa logar no Instagram, parte dessas pessoas desiste no caminho. O Site Vitrine One-Page funciona como sua sede própria no Google — carrega em 1 segundo, já vem com adequação LGPD nativa e joga o cliente filtrado direto no seu WhatsApp. Posso te mandar o link da prévia que montei para você testar no celular?',
+    'NONE'
+),
+(
+    'Geral',
+    'OBJECTION',
+    'GERAL',
+    '“Tá caro / Não está no orçamento”',
+    'Cliente traumatizado com agências que cobram R$ 2.500 + mensalidade eterna.',
+    'Compreendo totalmente. Inclusive criei esse formato justamente para eliminar custos fixos de agência: não tem mensalidade nem taxa de manutenção. O pacote Turnkey completo (já com aviso e Política de Privacidade LGPD inclusos) é pagamento único de R$ {price} (ou R$ 500 se quiser customização exclusiva de cores e fotos), e podemos dividir em 2x no Pix: metade hoje na aprovação da prévia e metade quando já estiver no ar no seu domínio.',
+    'NONE'
+),
+(
+    'Geral',
+    'OBJECTION',
+    'GERAL',
+    '“Preciso falar com meu sócio / secretária”',
+    'Filtro de recepção ou sociedade pedindo tempo ou apresentação por e-mail.',
+    'Combinado! Para facilitar a avaliação sem tomar tempo com PDF longo, eu já deixei uma demonstração funcional pronta no ar com os dados públicos de vocês. Vou te mandar o link aqui mesmo em 3 linhas: basta encaminhar no WhatsApp do seu sócio(a), abre em 3 segundos no celular.',
+    'NONE'
+),
+(
+    'Advogado',
+    'OBJECTION',
+    'GERAL',
+    '“Não posso fazer propaganda (Provimento OAB)”',
+    'Advogado receoso com as regras de publicidade do Provimento 205/2021 da OAB.',
+    'Exatamente por isso nossa estrutura para Advocacia segue 100% o Provimento 205/2021 da OAB: zero promessa de resultado, zero mercantilização e foco estritamente informativo e institucional (áreas de atuação, formação, endereço e canal de atendimento), além de já vir com a blindagem LGPD nativa. É uma carta de apresentação sóbria para quem já procura seu nome no Google.',
+    'NONE'
+),
+(
+    'Pet Shop & Veterinária',
+    'OBJECTION',
+    'GERAL',
+    '“Os tutores já agendam direto pelo WhatsApp”',
+    'Dono de Pet Shop ou Clínica Vet que acha que só ter telefone na ficha basta.',
+    'E é justamente no WhatsApp que o fechamento acontece! O ponto é que quando um tutor novo pesquisa "banho e tosa" ou "veterinário" no Google, ele compara 3 fichas em 30 segundos. Ter uma vitrine própria mostrando seus 4 pilares (Estética segura, Clínica/Vacinas, Boutique e Táxi Dog) + avaliações reais 5 estrelas passa uma confiança imediata que faz o tutor clicar no SEU WhatsApp em vez do concorrente.',
+    'NONE'
 )
 ON CONFLICT (category, website_condition, title) DO NOTHING;

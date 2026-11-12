@@ -27,6 +27,8 @@ def resolve_vertical_slug(category: str | None) -> str:
         return "odonto"
     if any(k in norm for k in ("corretor", "imobili", "imoveis", "imovel")):
         return "imobiliario"
+    if any(k in norm for k in ("pet", "banho", "tosa", "veterin", "animal")):
+        return "petshop"
     return "_shared"
 
 

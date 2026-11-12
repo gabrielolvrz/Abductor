@@ -30,15 +30,21 @@
     "surface_color": "#162032",
     "border_color": "#1e293b",
     "custom_accent_hex": null,
+    "use_photo": false,
     "use_profile_photo": false,
-    "profile_photo_url": "./assets/doutor.svg",
+    "photo_url": "./assets/foto-advogado.jpg",
+    "profile_photo_url": "./assets/foto-advogado.jpg",
+    "office_image": "./assets/escritorio-fachada.jpg",
+    "logo_url": "./assets/logo-escritorio.png",
     "monogram_initials": "CE"
   },
   "metrics": {
     "rating": "4.9",
     "reviews_count": 48,
     "years_experience": "+12",
-    "cases_count": "+650"
+    "cases_count": "+650",
+    "experience_years": "+12 anos",
+    "cases_handled": "+650 casos conduzidos"
   },
   "services": [
     {
@@ -54,7 +60,33 @@
       "description": "Assessoria e pareceres técnicos para alinhamento de rotinas, adequação contratual e mitigação de passivos jurídicos futuros."
     }
   ],
-  "testimonials": [],
+  "testimonials": [
+    {
+      "author": "Marcos Vinícius Oliveira",
+      "stars": 5,
+      "text": "Atendimento extremamente ético, claro e objetivo. Recebi todas as orientações necessárias sobre o meu caso com total transparência e sigilo."
+    },
+    {
+      "author": "Patrícia Helena Mendes",
+      "stars": 5,
+      "text": "Excelente estrutura de atendimento e pontualidade exemplar. O acompanhamento de cada etapa foi repassado com muita seriedade e dedicação técnica."
+    },
+    {
+      "author": "Roberto Carlos Silveira",
+      "stars": 5,
+      "text": "Profissionalismo impecável desde a primeira reunião. Explicam os termos jurídicos de forma acessível e transmitem total segurança na condução da demanda."
+    },
+    {
+      "author": "Luciana Costa Ferreira",
+      "stars": 5,
+      "text": "Escritório sério, organizado e muito atencioso. A comunicação pelo WhatsApp institucional é ágil e todas as dúvidas foram esclarecidas com rigor."
+    },
+    {
+      "author": "Henrique Duarte Souza",
+      "stars": 5,
+      "text": "Referência em postura ética e conhecimento técnico na região. Atendimento humanizado, discreto e com excelente estrutura física e digital."
+    }
+  ],
   "faq": [
     {
       "question": "Como funciona o primeiro contato e a avaliação do caso?",

@@ -39,4 +39,23 @@ if command -v xdg-open >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}${DISPLAY:-
   xdg-open "http://localhost:3000" >/dev/null 2>&1 &
 fi
 
-echo "✅ Ecossistema Abductor em execução!"
+cd "/home/gabrielolvr/Projects/personal/Abductor/templates" || exit 1
+
+cat << 'EOF'
+
+🛸 ECOSSISTEMA ABDUCTOR OPERACIONAL
+────────────────────────────────────────────────────────────
+📍 Diretório atual: templates/
+
+Comandos Rápidos:
+• Testar site local:   npx serve .  (ou python -m http.server 5000)
+• Deploy na Vercel:    npx vercel --prod
+• Nova instância:      cp -r vercel-advocacia/base vercel-advocacia/clientes/<nome>
+                       cp -r vercel-petshop/base vercel-petshop/clientes/<nome>
+────────────────────────────────────────────────────────────
+
+EOF
+
+if [[ "${1:-}" != "--no-shell" ]] && [[ -t 0 ]]; then
+  exec "${SHELL:-zsh}" -i
+fi

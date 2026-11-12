@@ -25,3 +25,5 @@ frontend/dist-ssr/
 # Instâncias geradas de sites de clientes (dados locais do operador)
 templates/vercel-advocacia/clientes/*
 !templates/vercel-advocacia/clientes/.gitkeep
+templates/vercel-petshop/clientes/*
+!templates/vercel-petshop/clientes/.gitkeep

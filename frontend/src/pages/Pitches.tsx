@@ -3,19 +3,24 @@ import {
   Check,
   Copy,
   Edit3,
+  Layers,
   MessageSquarePlus,
   Save,
   Sparkles,
+  Trash2,
   X,
 } from 'lucide-react'
+import { NicheManagerModal } from '../components/NicheManagerModal'
 import {
   HOMOLOGATED_CATEGORIES,
   createScript,
+  deleteScript,
   listNiches,
   listScripts,
   updateScript,
   type Niche,
   type PitchScript,
+  type ScriptType,
   type ScriptWebsiteCondition,
   type UpsellFocus,
 } from '../services/api'
@@ -28,9 +33,12 @@ export function Pitches() {
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [editingScript, setEditingScript] = useState<PitchScript | null>(null)
   const [showCreateForm, setShowCreateForm] = useState<boolean>(false)
+  const [showNicheModal, setShowNicheModal] = useState<boolean>(false)
 
   // Campos de criação
+  const [newScriptType, setNewScriptType] = useState<ScriptType>('PITCH')
   const [newTitle, setNewTitle] = useState('')
+  const [newSituation, setNewSituation] = useState('')
   const [newCategory, setNewCategory] = useState('Advogado')
   const [newCondition, setNewCondition] = useState<ScriptWebsiteCondition>('IMPROVISADO')
   const [newUpsell, setNewUpsell] = useState<UpsellFocus>('GMB')
@@ -52,6 +60,17 @@ export function Pitches() {
     return () => {
       active = false
     }
+  }, [])
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setEditingScript(null)
+        setShowCreateForm(false)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
   }, [])
 
   const categoryOptions =
@@ -78,6 +97,8 @@ export function Pitches() {
     const updated = await updateScript(editingScript.id, {
       title: editingScript.title,
       category: editingScript.category,
+      script_type: editingScript.script_type,
+      situation: editingScript.situation,
       website_condition: editingScript.website_condition,
       message_template: editingScript.message_template,
       upsell_focus: editingScript.upsell_focus,
@@ -92,17 +113,31 @@ export function Pitches() {
     const created = await createScript({
       title: newTitle.trim(),
       category: newCategory.trim(),
-      website_condition: newCondition,
+      script_type: newScriptType,
+      situation: newSituation.trim() || null,
+      website_condition: newScriptType === 'OBJECTION' ? 'GERAL' : newCondition,
       message_template: newTemplate,
-      upsell_focus: newUpsell,
+      upsell_focus: newScriptType === 'OBJECTION' ? 'NONE' : newUpsell,
     })
     setScripts((prev) => [...prev, created])
     setNewTitle('')
+    setNewSituation('')
     setShowCreateForm(false)
+  }
+
+  const handleDelete = async (scriptId: string) => {
+    await deleteScript(scriptId)
+    setScripts((prev) => prev.filter((s) => s.id !== scriptId))
   }
 
   return (
     <main className="mx-auto max-w-[1600px] space-y-6 px-6 py-6">
+      {copiedId && (
+        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-xl border border-emerald-600/50 bg-stone-900 px-4 py-3 text-xs font-semibold text-emerald-300 shadow-2xl">
+          <Check className="h-4 w-4 text-emerald-400" />
+          Copiado para a área de transferência!
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-stone-800 bg-[#1c1917] p-5">
         <div>
           <div className="flex items-center gap-2">
@@ -149,11 +184,20 @@ export function Pitches() {
 
           <button
             type="button"
+            onClick={() => setShowNicheModal(true)}
+            className="inline-flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2 text-xs font-bold text-stone-200 transition hover:border-amber-600/60 hover:text-amber-400"
+          >
+            <Layers className="h-4 w-4 text-amber-500" />
+            Nichos
+          </button>
+
+          <button
+            type="button"
             onClick={() => setShowCreateForm((prev) => !prev)}
             className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-xs font-bold text-stone-950 transition hover:bg-amber-500"
           >
             <MessageSquarePlus className="h-4 w-4" />
-            Novo Roteiro
+            + Novo Roteiro / Objeção
           </button>
         </div>
       </div>
@@ -175,7 +219,18 @@ export function Pitches() {
               <X className="h-4 w-4" />
             </button>
           </div>
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
+            <div>
+              <label className="block text-xs font-semibold text-stone-300">Tipo *</label>
+              <select
+                value={newScriptType}
+                onChange={(e) => setNewScriptType(e.target.value as ScriptType)}
+                className="mt-1 w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs font-bold text-stone-100 outline-none focus:border-amber-600"
+              >
+                <option value="PITCH">Abordagem Inicial (Pitch)</option>
+                <option value="OBJECTION">Quebra de Objeção</option>
+              </select>
+            </div>
             <div>
               <label className="block text-xs font-semibold text-stone-300">Título *</label>
               <input
@@ -365,6 +420,15 @@ export function Pitches() {
                   <div>
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
+                        <span
+                          className={`rounded-md px-2 py-0.5 text-[10px] font-bold uppercase ${
+                            script.script_type === 'OBJECTION'
+                              ? 'border border-rose-500/40 bg-rose-500/15 text-rose-300'
+                              : 'border border-emerald-500/40 bg-emerald-500/15 text-emerald-300'
+                          }`}
+                        >
+                          {script.script_type === 'OBJECTION' ? 'Objeção' : 'Pitch'}
+                        </span>
                         <span className="rounded-md bg-amber-600/15 px-2.5 py-0.5 text-xs font-bold text-amber-300">
                           {script.category}
                         </span>
@@ -386,6 +450,14 @@ export function Pitches() {
                         >
                           <Edit3 className="h-3.5 w-3.5" />
                           Editar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => void handleDelete(script.id)}
+                          title="Excluir roteiro"
+                          className="inline-flex items-center gap-1 rounded-lg border border-stone-700 bg-stone-950 px-2 py-1 text-xs font-medium text-stone-400 hover:border-rose-600/50 hover:text-rose-400"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
                         </button>
                         <button
                           type="button"
@@ -421,6 +493,13 @@ export function Pitches() {
           })}
         </div>
       )}
+
+      <NicheManagerModal
+        isOpen={showNicheModal}
+        onClose={() => setShowNicheModal(false)}
+        niches={niches}
+        onNichesChange={setNiches}
+      />
     </main>
   )
 }

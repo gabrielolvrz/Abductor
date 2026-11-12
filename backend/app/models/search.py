@@ -91,8 +91,14 @@ class PitchScript(Base):
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     category: Mapped[str] = mapped_column(CITEXT(), nullable=False)
-    website_condition: Mapped[str] = mapped_column(String(30), nullable=False)
+    script_type: Mapped[str] = mapped_column(
+        String(30), nullable=False, default="PITCH"
+    )
+    website_condition: Mapped[str] = mapped_column(
+        String(30), nullable=False, default="GERAL"
+    )
     title: Mapped[str] = mapped_column(String(150), nullable=False)
+    situation: Mapped[str | None] = mapped_column(Text, nullable=True)
     message_template: Mapped[str] = mapped_column(Text, nullable=False)
     upsell_focus: Mapped[str] = mapped_column(
         String(50), nullable=False, default="NONE"

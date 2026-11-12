@@ -1,0 +1,247 @@
+{
+  "business": {
+    "name": "Villa Pet Center & Clínica Veterinária",
+    "tagline": "Estética Animal Segura, Carinho Genuíno e Saúde Veterinária Integrada",
+    "city": "Uberlândia",
+    "state": "MG",
+    "phone_display": "(34) 99876-5432",
+    "whatsapp_number": "5534998765432",
+    "whatsapp_default_message": "Olá! Vi o site de vocês e gostaria de informações sobre o atendimento para o meu pet.",
+    "address_display": "Av. Rondon Pacheco, 1850 - Saraiva, Uberlândia - MG, 38408-404",
+    "crmv_number": "Responsável Técnico(a) Médico(a) Veterinário(a) — CRMV/MG Sob Consulta",
+    "opening_hours": "Segunda a Sexta: 08:00 às 18:00 • Sábado: 08:00 às 13:00",
+    "office_hours": "Segunda a Sexta: 08:00 às 18:00 • Sábado: 08:00 às 13:00",
+    "has_taxi_dog": true,
+    "taxi_dog_enabled": true,
+    "has_vet": true,
+    "has_grooming": true,
+    "has_shop": true,
+    "has_hotel": false,
+    "taxi_dog_message": "Olá! Gostaria de agendar um horário utilizando o serviço de Táxi Dog (Leva e Traz)."
+  },
+  "theme": {
+    "preset": "teal-honey",
+    "mode": "light",
+    "backgroundColor": "#f8fafc",
+    "surfaceColor": "#ffffff",
+    "primaryColor": "#1e293b",
+    "bodyText": "#475569",
+    "accentColor": "#0d9488",
+    "highlightColor": "#f59e0b",
+    "borderColor": "#e2e8f0"
+  },
+  "visuals": {
+    "theme_preset": "teal-honey",
+    "theme_mode": "light",
+    "hero_image": "./assets/hero-principal.jpg",
+    "hero_image_url": "./assets/hero-principal.jpg",
+    "service_grooming_image": "./assets/especialidade-banho-tosa.jpg",
+    "service_clinic_image": "./assets/especialidade-clinica-vet.jpg",
+    "service_shop_image": "./assets/especialidade-pet-farmacia.jpg",
+    "service_hotel_image": "./assets/especialidade-hotel-daycare.jpg",
+    "about_image": "./assets/ambiente-equipe.jpg",
+    "use_custom_photo": false,
+    "monogram_initials": "VP"
+  },
+  "metrics": {
+    "rating": "4.9",
+    "reviews_count": 64,
+    "years_experience": "+8",
+    "pets_cared": "+2.400"
+  },
+  "pricing": {
+    "grooming_starting_at": null,
+    "plans_starting_at": null,
+    "taxi_dog_fee": null
+  },
+  "pillars": [
+    {
+      "id": "grooming",
+      "enabled": true,
+      "image": "./assets/especialidade-banho-tosa.jpg",
+      "badge": "Estética & Bem-Estar",
+      "title": "Estética Animal & Banho e Tosa",
+      "subtitle": "Higiene rigorosa, produtos hipoalergênicos e manejo livre de estresse.",
+      "description": "Transformamos o momento do banho em uma experiência relaxante e segura. Utilizamos água morna controlada, secagem silenciosa e toalhas 100% esterilizadas e lacradas individualmente.",
+      "items": [
+        "Banho terapêutico e relaxante com linha hipoalergênica",
+        "Tosa da raça, tosa na tesoura e tosa higiênica delicada",
+        "Hidratação profunda de pelagem e desembolo sem dor",
+        "Corte de unhas, limpeza auricular e escovação dental"
+      ],
+      "details": {
+        "protocol_title": "Protocolo de Segurança e Higiene no Banho",
+        "protocol_text": "Todas as lâminas, tesouras e pentes passam por esterilização a cada atendimento. Seu pet nunca compartilha toalhas e permanece em ambiente visível, climatizado e com manejo gentil.",
+        "highlights": [
+          "Toalhas individuais lacradas",
+          "Cosméticos biodegradáveis pH neutro",
+          "Secagem com temperatura monitorada",
+          "Inspeção de pele e ouvidos inclusa"
+        ]
+      },
+      "cta_label": "Agendar Banho & Tosa",
+      "whatsapp_message": "Olá! Gostaria de agendar um horário de banho e tosa para o meu pet."
+    },
+    {
+      "id": "veterinary",
+      "enabled": true,
+      "image": "./assets/especialidade-clinica-vet.jpg",
+      "badge": "Saúde & Prevenção",
+      "title": "Clínica Veterinária & Vacinação",
+      "subtitle": "Medicina veterinária preventiva, diagnósticos precisos e vacinas importadas.",
+      "description": "Acompanhamento clínico completo em todas as fases da vida do seu cão ou gato, com foco em longevidade, prevenção de doenças e atendimento acolhedor.",
+      "items": [
+        "Consultas clínicas preventivas e check-up geriátrico",
+        "Protocolo completo de vacinação importada (V8, V10, Giárdia, Raiva, V4/V5)",
+        "Exames laboratoriais de sangue, bioquímicos e check-up rápido",
+        "Controle parasitário, vermifugação e orientação nutricional"
+      ],
+      "details": {
+        "protocol_title": "Rigor Técnico e Conservação de Imunobiológicos",
+        "protocol_text": "Nossas vacinas são exclusivamente importadas de laboratórios éticos e armazenadas em câmara refrigerada com controle térmico digital contínuo, garantindo máxima resposta imunológica.",
+        "highlights": [
+          "Vacinas importadas refrigeradas",
+          "Carteira de vacinação revisada",
+          "Manejo Cat-Friendly e Dog-Friendly",
+          "Atendimento com hora marcada"
+        ]
+      },
+      "cta_label": "Agendar Consulta ou Vacina",
+      "whatsapp_message": "Olá! Gostaria de informações sobre consulta veterinária e vacinação."
+    },
+    {
+      "id": "petshop",
+      "enabled": true,
+      "image": "./assets/especialidade-pet-farmacia.jpg",
+      "badge": "Nutrição & Farmácia",
+      "title": "Pet Shop & Farmácia Veterinária",
+      "subtitle": "Rações Super Premium, medicamentos veterinários e entrega rápida no bairro.",
+      "description": "Tudo o que o seu melhor amigo precisa no dia a dia sem você sair de casa. Trabalhamos com as marcas mais recomendadas por veterinários e entrega ágil pelo WhatsApp.",
+      "items": [
+        "Rações Super Premium, Premium Especial e linhas coadjuvantes/medicamentosas",
+        "Farmácia veterinária completa: antipulgas, carrapaticidas e suplementos",
+        "Petiscos naturais, tapetes higiênicos e areias biodegradáveis",
+        "Acessórios ergonômicos, guias seguras, camas e brinquedos interativos"
+      ],
+      "details": {
+        "protocol_title": "Curadoria Nutricional e Delivery Rápido",
+        "protocol_text": "Todos os lotes de ração e medicamentos possuem procedência direta dos fabricantes oficiais e validade monitorada. Consulte disponibilidade pelo WhatsApp e receba em casa.",
+        "highlights": [
+          "Lotes frescos com validade longa",
+          "Antipulgas originais lacrados",
+          "Orientação sobre porte e idade",
+          "Delivery expresso na região"
+        ]
+      },
+      "cta_label": "Pedir Ração ou Medicamento",
+      "whatsapp_message": "Olá! Gostaria de consultar a disponibilidade de ração/medicamento para entrega."
+    },
+    {
+      "id": "hotel",
+      "enabled": false,
+      "image": "./assets/especialidade-hotel-daycare.jpg",
+      "badge": "Socialização & Hospedagem",
+      "title": "Hotelzinho, Daycare & Creche",
+      "subtitle": "Rotina alegre de atividades, monitoramento constante e espaço livre sem gaiolas.",
+      "description": "Mais do que hospedagem: um ambiente seguro de enriquecimento ambiental onde o seu pet gasta energia com saúde, interage com supervisão e recebe carinho o dia inteiro.",
+      "items": [
+        "Creche diurna (Daycare) com cronograma de brincadeiras e descanso",
+        "Hospedagem assistida com envio diário de fotos e vídeos no WhatsApp",
+        "Espaço amplo, higienizado e 100% livre de confinamento em baias frias",
+        "Exigência rigorosa de carteira de vacinação e controle de ectoparasitas"
+      ],
+      "details": {
+        "protocol_title": "Adaptação Gradual e Segurança Coletiva",
+        "protocol_text": "Todos os hóspedes passam por avaliação comportamental prévia e conferência de vacinas em dia, garantindo uma convivência pacífica, saudável e divertida para toda a matilha.",
+        "highlights": [
+          "Envio de vídeos diários ao tutor",
+          "Zero confinamento em gaiolas",
+          "Separação por porte e energia",
+          "Higienização hospitalar do espaço"
+        ]
+      },
+      "cta_label": "Consultar Vaga na Creche/Hotel",
+      "whatsapp_message": "Olá! Gostaria de saber como funciona a hospedagem/creche para o meu pet."
+    }
+  ],
+  "trust_badges": [
+    {
+      "category": "taxi_dog",
+      "icon": "🚗",
+      "title": "Táxi Dog Climatizado com Caixas Individuais",
+      "description": "Busca e entrega com segurança, caixas higienizadas a cada viagem e ar-condicionado."
+    },
+    {
+      "category": "grooming",
+      "icon": "🧼",
+      "title": "Toalhas 100% Esterilizadas e Lacradas",
+      "description": "Higienizadas em alta temperatura e embaladas individualmente para cada pet."
+    },
+    {
+      "category": "veterinary",
+      "icon": "🩺",
+      "title": "Atendimento Clínico Sem Estresse",
+      "description": "Consultórios acolhedores com manejo humanizado e equipamentos modernos."
+    },
+    {
+      "category": "petshop",
+      "icon": "🛡️",
+      "title": "Produtos Originais com Procedência",
+      "description": "Rações Super Premium e farmácia veterinária com validade e lotes monitorados."
+    }
+  ],
+  "testimonials": [
+    {
+      "author": "Camila Andrade",
+      "stars": 5,
+      "text": "Atendimento impecável! Meu golden volta sempre cheiroso, tranquilo e fazendo festa para a equipe. As toalhas lacradas dão muita segurança."
+    },
+    {
+      "author": "Rodrigo Peixoto",
+      "stars": 5,
+      "text": "Excelente estrutura e cuidado de verdade com os animais. O serviço de busca em casa é super pontual e o cuidado veterinário é nota dez."
+    },
+    {
+      "author": "Fernanda Vasconcelos",
+      "stars": 5,
+      "text": "Minha gatinha sempre ficava estressada em outros lugares, mas aqui o manejo foi super calmo e carinhoso. Recomendo de olhos fechados!"
+    },
+    {
+      "author": "Lucas Martins",
+      "stars": 5,
+      "text": "Higiene exemplar, ambiente climatizado e preços justos. Sempre peço a ração e os antipulgas pelo WhatsApp e chega rapidinho."
+    },
+    {
+      "author": "Patrícia Nogueira",
+      "stars": 5,
+      "text": "Melhor banho e tosa da região! Usam produtos hipoalergênicos que acabaram com a coceira da minha shih-tzu. Equipe muito atenciosa."
+    }
+  ],
+  "faq": [
+    {
+      "category": "grooming",
+      "question": "Preciso agendar horário para o Banho & Tosa ou posso levar direto?",
+      "answer": "Recomendamos agendar previamente pelo nosso WhatsApp. Assim garantimos atendimento pontual e reduzimos o tempo de espera, proporcionando uma experiência muito mais tranquila e sem estresse para o seu pet."
+    },
+    {
+      "category": "taxi_dog",
+      "question": "Como funciona o serviço de Táxi Dog (Leva e Traz)?",
+      "answer": "Nosso transporte busca e entrega o seu pet com total segurança em caixas de transporte individuais, higienizadas a cada viagem e em veículo climatizado. Basta solicitar o Táxi Dog no momento do agendamento pelo WhatsApp."
+    },
+    {
+      "category": "grooming",
+      "question": "Quais cuidados de higiene são tomados para evitar alergias ou contaminações?",
+      "answer": "Utilizamos exclusivamente toalhas esterilizadas em embalagens individuais lacradas, produtos hipoalergênicos aprovados para uso veterinário e desinfecção completa de mesas, banheiras e instrumentais entre cada atendimento."
+    },
+    {
+      "category": "veterinary",
+      "question": "A clínica aplica vacinas importadas? Preciso levar a carteirinha?",
+      "answer": "Sim! Trabalhamos com vacinas importadas armazenadas sob rigoroso controle de temperatura. Sempre traga a carteirinha de vacinação anterior para que o Médico Veterinário avalie o protocolo ideal."
+    }
+  ],
+  "compliance": {
+    "enable_lgpd_banner": false,
+    "privacy_policy_url": "./privacidade.html",
+    "cfmv_compliance": true
+  }
+}

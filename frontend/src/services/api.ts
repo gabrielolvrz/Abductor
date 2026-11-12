@@ -12,11 +12,14 @@ export const apiClient = axios.create({
 
 export const HOMOLOGATED_CATEGORIES = [
   'Advogado',
+  'Pet Shop & Veterinária',
+  'Pet Shop',
+  'Banho e Tosa',
+  'Veterinária',
   'Dentista',
   'Corretor de Imóveis',
   'Psicólogo',
   'Clínica de Estética',
-  'Veterinária',
   'Arquiteto',
 ] as const
 
@@ -62,6 +65,12 @@ export interface ScoreBreakdown {
   hard_gate_triggered?: boolean
 }
 
+export interface ExtractedReview {
+  author: string
+  text: string
+  stars: number
+}
+
 export interface Lead {
   id: string
   place_id: string
@@ -83,9 +92,12 @@ export interface Lead {
   rating: number
   reviews_count: number
   is_claimed: boolean
+  opening_hours?: string | null
+  extracted_reviews?: ExtractedReview[]
   score: number
   score_breakdown: ScoreBreakdown
   pipeline_status: PipelineStatus
+  deal_value: number
   notes: string | null
   created_manually: boolean
   is_manually_edited: boolean
@@ -129,6 +141,8 @@ export interface LeadUpdateRequest {
   website_status?: WebsiteStatus | null
   rating?: number | null
   reviews_count?: number | null
+  pipeline_status?: PipelineStatus | null
+  deal_value?: number | null
   notes?: string | null
 }
 
@@ -144,18 +158,22 @@ export interface LeadCreateManualRequest {
   rating?: number
   reviews_count?: number
   is_claimed?: boolean
+  deal_value?: number
   notes?: string
   search_id?: string | null
 }
 
 export type ScriptWebsiteCondition = 'SEM_SITE' | 'IMPROVISADO' | 'QUEBRADO' | 'GERAL'
 export type UpsellFocus = 'NONE' | 'GMB' | 'ADS' | 'COMBO'
+export type ScriptType = 'PITCH' | 'OBJECTION'
 
 export interface PitchScript {
   id: string
   category: string
+  script_type: ScriptType
   website_condition: ScriptWebsiteCondition
   title: string
+  situation: string | null
   message_template: string
   upsell_focus: UpsellFocus
   created_at: string
@@ -163,16 +181,20 @@ export interface PitchScript {
 
 export interface PitchScriptCreateRequest {
   category: string
-  website_condition: ScriptWebsiteCondition
+  script_type?: ScriptType
+  website_condition?: ScriptWebsiteCondition
   title: string
+  situation?: string | null
   message_template: string
   upsell_focus?: UpsellFocus
 }
 
 export interface PitchScriptUpdateRequest {
   category?: string
+  script_type?: ScriptType
   website_condition?: ScriptWebsiteCondition
   title?: string
+  situation?: string | null
   message_template?: string
   upsell_focus?: UpsellFocus
 }
@@ -326,6 +348,7 @@ export async function exportLeadSiteConfig(leadId: string): Promise<SiteConfigEx
 export async function listScripts(params?: {
   category?: string
   website_condition?: string
+  script_type?: ScriptType
 }): Promise<PitchScript[]> {
   const { data } = await apiClient.get<PitchScript[]>('/scripts', { params })
   return data
@@ -344,6 +367,10 @@ export async function updateScript(
   return data
 }
 
+export async function deleteScript(scriptId: string): Promise<void> {
+  await apiClient.delete(`/scripts/${scriptId}`)
+}
+
 export async function interpolateScript(
   payload: PitchInterpolateRequest,
 ): Promise<PitchInterpolateResponse> {
@@ -359,8 +386,11 @@ export async function listNiches(): Promise<Niche[]> {
   return data
 }
 
-export async function createNiche(name: string): Promise<Niche> {
-  const { data } = await apiClient.post<Niche>('/niches', { name })
+export async function createNiche(name: string, slug?: string): Promise<Niche> {
+  const { data } = await apiClient.post<Niche>('/niches', {
+    name,
+    ...(slug ? { slug } : {}),
+  })
   return data
 }
 
@@ -472,6 +502,25 @@ export function isAdvocaciaLead(lead: Lead): boolean {
     name.includes('advogada') ||
     name.includes('jurídico') ||
     name.includes('juridico')
+  )
+}
+
+export function isPetshopLead(lead: Lead): boolean {
+  const cat = (lead.category || '').toLowerCase()
+  const name = (lead.name || '').toLowerCase()
+  return (
+    cat.includes('pet') ||
+    cat.includes('banho') ||
+    cat.includes('tosa') ||
+    cat.includes('veterin') ||
+    cat.includes('animal') ||
+    name.includes('pet shop') ||
+    name.includes('petshop') ||
+    name.includes('banho e tosa') ||
+    name.includes('veterinár') ||
+    name.includes('veterinar') ||
+    name.includes('clínica vet') ||
+    name.includes('clinica vet')
   )
 }
 

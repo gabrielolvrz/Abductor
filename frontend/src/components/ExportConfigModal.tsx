@@ -4,14 +4,17 @@ import {
   Code2,
   Download,
   Palette,
+  RotateCcw,
   Shield,
   Sparkles,
   X,
 } from 'lucide-react'
 import {
   cleanNameClientSide,
+  isPetshopLead,
   type Lead,
 } from '../services/api'
+import { PetExportConfigModalInner } from './PetExportConfigModal'
 
 interface ExportConfigModalProps {
   lead: Lead | null
@@ -34,6 +37,36 @@ export type ColorThemePreset =
   | 'espresso-amber'
   | 'oxford-linen'
   | 'atlantic-blue'
+  | 'custom'
+
+export interface CustomAdvocaciaPalette {
+  backgroundColor: string
+  surfaceColor: string
+  primaryText: string
+  bodyText: string
+  accentColor: string
+  borderColor: string
+}
+
+const DEFAULT_CUSTOM_ADVOCACIA_PALETTE: CustomAdvocaciaPalette = {
+  backgroundColor: '#0f172a',
+  surfaceColor: '#162032',
+  primaryText: '#f8f6f0',
+  bodyText: '#94a3b8',
+  accentColor: '#c5a059',
+  borderColor: '#1e293b',
+}
+
+function isDarkHexColor(hex: string): boolean {
+  const clean = hex.replace('#', '').trim()
+  if (clean.length !== 6) return true
+  const r = parseInt(clean.slice(0, 2), 16)
+  const g = parseInt(clean.slice(2, 4), 16)
+  const b = parseInt(clean.slice(4, 6), 16)
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return true
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+  return luminance < 0.45
+}
 
 interface PresetData {
   tagline: string
@@ -282,6 +315,17 @@ export function ExportConfigModal(props: ExportConfigModalProps) {
 
   if (!lead) return null
 
+  if (isPetshopLead(lead)) {
+    return (
+      <PetExportConfigModalInner
+        key={lead.id}
+        lead={lead}
+        onClose={props.onClose}
+        onSuccess={props.onSuccess}
+      />
+    )
+  }
+
   return (
     <ExportConfigModalInner
       key={lead.id}
@@ -296,51 +340,295 @@ interface ExportConfigModalInnerProps extends Omit<ExportConfigModalProps, 'lead
   lead: Lead
 }
 
+interface AdvocaciaReviewInput {
+  author: string
+  stars: number
+  text: string
+}
+
+interface AdvocaciaModalDraft {
+  subniche: JuridicalSubniche
+  themePreset: ColorThemePreset
+  customPalette: CustomAdvocaciaPalette
+  customAccentHex: string
+  useProfilePhoto: boolean
+  profilePhotoUrl: string
+  monogramInitials: string
+  oabNumber: string
+  baseTicket: number
+  experienceYears: string
+  casesHandled: string
+  includeRealReviews: boolean
+  realReviews: AdvocaciaReviewInput[]
+  customizePresetServices: boolean
+  presetService1Title: string
+  presetService1Desc: string
+  presetService2Title: string
+  presetService2Desc: string
+  presetService3Title: string
+  presetService3Desc: string
+  customTagline: string
+  customService1Title: string
+  customService1Desc: string
+  customService2Title: string
+  customService2Desc: string
+  customService3Title: string
+  customService3Desc: string
+}
+
+function getAdvocaciaDraftKey(leadId: string): string {
+  return `abductor_modal_draft_${leadId}`
+}
+
+function buildDefaultAdvocaciaDraft(lead: Lead): AdvocaciaModalDraft {
+  const extracted = Array.isArray(lead.extracted_reviews) ? lead.extracted_reviews : []
+  const fiveStarExtracted = extracted.filter((r) => (r.stars || 5) >= 5)
+  const prioritizedExtracted = fiveStarExtracted.length > 0 ? fiveStarExtracted : extracted
+  const hasExtracted = prioritizedExtracted.length > 0
+
+  const defaultReviews: AdvocaciaReviewInput[] = hasExtracted
+    ? prioritizedExtracted.slice(0, 5).map((r) => ({
+        author: r.author || 'Cliente Verificado',
+        stars: r.stars || 5,
+        text: r.text || '',
+      }))
+    : [
+        { author: '', stars: 5, text: '' },
+        { author: '', stars: 5, text: '' },
+        { author: '', stars: 5, text: '' },
+      ]
+
+  while (defaultReviews.length < 3) {
+    defaultReviews.push({ author: '', stars: 5, text: '' })
+  }
+
+  return {
+    subniche: 'Trabalhista',
+    themePreset: 'navy-gold',
+    customPalette: { ...DEFAULT_CUSTOM_ADVOCACIA_PALETTE },
+    customAccentHex: '',
+    useProfilePhoto: false,
+    profilePhotoUrl: './assets/foto-advogado.jpg',
+    monogramInitials: extractInitials(lead.name),
+    oabNumber: 'OAB/MG Sob Consulta',
+    baseTicket: 350,
+    experienceYears: '+12 anos',
+    casesHandled: '+650 casos conduzidos',
+    includeRealReviews: hasExtracted,
+    realReviews: defaultReviews,
+    customizePresetServices: false,
+    presetService1Title: SUBNICHE_PRESETS['Trabalhista'].services[0].title,
+    presetService1Desc: SUBNICHE_PRESETS['Trabalhista'].services[0].description,
+    presetService2Title: SUBNICHE_PRESETS['Trabalhista'].services[1].title,
+    presetService2Desc: SUBNICHE_PRESETS['Trabalhista'].services[1].description,
+    presetService3Title: SUBNICHE_PRESETS['Trabalhista'].services[2].title,
+    presetService3Desc: SUBNICHE_PRESETS['Trabalhista'].services[2].description,
+    customTagline: '',
+    customService1Title: '',
+    customService1Desc: '',
+    customService2Title: '',
+    customService2Desc: '',
+    customService3Title: '',
+    customService3Desc: '',
+  }
+}
+
+function loadAdvocaciaDraft(lead: Lead): AdvocaciaModalDraft {
+  const defaults = buildDefaultAdvocaciaDraft(lead)
+  try {
+    const raw = localStorage.getItem(getAdvocaciaDraftKey(lead.id))
+    if (!raw) return defaults
+    const parsed = JSON.parse(raw) as Partial<AdvocaciaModalDraft>
+    return {
+      ...defaults,
+      ...parsed,
+      customPalette: {
+        ...defaults.customPalette,
+        ...(parsed.customPalette ?? {}),
+      },
+      realReviews:
+        Array.isArray(parsed.realReviews) && parsed.realReviews.length >= 3
+          ? parsed.realReviews
+          : defaults.realReviews,
+    }
+  } catch {
+    return defaults
+  }
+}
+
 function ExportConfigModalInner({
   lead,
   onClose,
   onSuccess,
 }: ExportConfigModalInnerProps) {
-  const [subniche, setSubniche] = useState<JuridicalSubniche>('Trabalhista')
-  const [themePreset, setThemePreset] = useState<ColorThemePreset>('navy-gold')
-  const [customAccentHex, setCustomAccentHex] = useState('')
-  const [useProfilePhoto, setUseProfilePhoto] = useState(false)
-  const [profilePhotoUrl, setProfilePhotoUrl] = useState('./assets/profile.jpg')
-  const [monogramInitials, setMonogramInitials] = useState(() => extractInitials(lead.name))
-  const [oabNumber, setOabNumber] = useState('OAB/MG Sob Consulta')
+  const initialDraft = loadAdvocaciaDraft(lead)
+
+  const [subniche, setSubniche] = useState<JuridicalSubniche>(initialDraft.subniche)
+  const [themePreset, setThemePreset] = useState<ColorThemePreset>(initialDraft.themePreset)
+  const [customPalette, setCustomPalette] = useState<CustomAdvocaciaPalette>(
+    initialDraft.customPalette,
+  )
+  const [customAccentHex, setCustomAccentHex] = useState(initialDraft.customAccentHex)
+  const [useProfilePhoto, setUseProfilePhoto] = useState(initialDraft.useProfilePhoto)
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState(initialDraft.profilePhotoUrl)
+  const [monogramInitials, setMonogramInitials] = useState(initialDraft.monogramInitials)
+  const [oabNumber, setOabNumber] = useState(initialDraft.oabNumber)
+
+  // Métricas de Autoridade Jurídica
+  const [experienceYears, setExperienceYears] = useState(initialDraft.experienceYears)
+  const [casesHandled, setCasesHandled] = useState(initialDraft.casesHandled)
+
+  // Avaliações Reais do Google Maps (Carrossel Infinito)
+  const [includeRealReviews, setIncludeRealReviews] = useState<boolean>(
+    initialDraft.includeRealReviews,
+  )
+  const [realReviews, setRealReviews] = useState<AdvocaciaReviewInput[]>(initialDraft.realReviews)
 
   // Precificação Dinâmica
-  const [baseTicket, setBaseTicket] = useState<number>(350)
+  const [baseTicket, setBaseTicket] = useState<number>(initialDraft.baseTicket)
 
   // Customização de Serviços do Preset
-  const [customizePresetServices, setCustomizePresetServices] = useState(false)
-  const [presetService1Title, setPresetService1Title] = useState(
-    () => SUBNICHE_PRESETS['Trabalhista'].services[0].title,
+  const [customizePresetServices, setCustomizePresetServices] = useState(
+    initialDraft.customizePresetServices,
   )
-  const [presetService1Desc, setPresetService1Desc] = useState(
-    () => SUBNICHE_PRESETS['Trabalhista'].services[0].description,
-  )
-  const [presetService2Title, setPresetService2Title] = useState(
-    () => SUBNICHE_PRESETS['Trabalhista'].services[1].title,
-  )
-  const [presetService2Desc, setPresetService2Desc] = useState(
-    () => SUBNICHE_PRESETS['Trabalhista'].services[1].description,
-  )
-  const [presetService3Title, setPresetService3Title] = useState(
-    () => SUBNICHE_PRESETS['Trabalhista'].services[2].title,
-  )
-  const [presetService3Desc, setPresetService3Desc] = useState(
-    () => SUBNICHE_PRESETS['Trabalhista'].services[2].description,
-  )
+  const [presetService1Title, setPresetService1Title] = useState(initialDraft.presetService1Title)
+  const [presetService1Desc, setPresetService1Desc] = useState(initialDraft.presetService1Desc)
+  const [presetService2Title, setPresetService2Title] = useState(initialDraft.presetService2Title)
+  const [presetService2Desc, setPresetService2Desc] = useState(initialDraft.presetService2Desc)
+  const [presetService3Title, setPresetService3Title] = useState(initialDraft.presetService3Title)
+  const [presetService3Desc, setPresetService3Desc] = useState(initialDraft.presetService3Desc)
 
   // Campos expandidos apenas para 'Outro / Personalizar'
-  const [customTagline, setCustomTagline] = useState('')
-  const [customService1Title, setCustomService1Title] = useState('')
-  const [customService1Desc, setCustomService1Desc] = useState('')
-  const [customService2Title, setCustomService2Title] = useState('')
-  const [customService2Desc, setCustomService2Desc] = useState('')
-  const [customService3Title, setCustomService3Title] = useState('')
-  const [customService3Desc, setCustomService3Desc] = useState('')
+  const [customTagline, setCustomTagline] = useState(initialDraft.customTagline)
+  const [customService1Title, setCustomService1Title] = useState(initialDraft.customService1Title)
+  const [customService1Desc, setCustomService1Desc] = useState(initialDraft.customService1Desc)
+  const [customService2Title, setCustomService2Title] = useState(initialDraft.customService2Title)
+  const [customService2Desc, setCustomService2Desc] = useState(initialDraft.customService2Desc)
+  const [customService3Title, setCustomService3Title] = useState(initialDraft.customService3Title)
+  const [customService3Desc, setCustomService3Desc] = useState(initialDraft.customService3Desc)
+
+  const handleUpdateCustomColor = (field: keyof CustomAdvocaciaPalette, value: string) => {
+    setCustomPalette((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleUpdateReview = (
+    idx: number,
+    field: keyof AdvocaciaReviewInput,
+    value: string | number,
+  ) => {
+    setRealReviews((prev) =>
+      prev.map((item, i) => (i === idx ? { ...item, [field]: value } : item)),
+    )
+  }
+
+  // Sincronização automática do rascunho por Lead no localStorage
+  useEffect(() => {
+    const currentDraft: AdvocaciaModalDraft = {
+      subniche,
+      themePreset,
+      customPalette,
+      customAccentHex,
+      useProfilePhoto,
+      profilePhotoUrl,
+      monogramInitials,
+      oabNumber,
+      baseTicket,
+      experienceYears,
+      casesHandled,
+      includeRealReviews,
+      realReviews,
+      customizePresetServices,
+      presetService1Title,
+      presetService1Desc,
+      presetService2Title,
+      presetService2Desc,
+      presetService3Title,
+      presetService3Desc,
+      customTagline,
+      customService1Title,
+      customService1Desc,
+      customService2Title,
+      customService2Desc,
+      customService3Title,
+      customService3Desc,
+    }
+    const defaults = buildDefaultAdvocaciaDraft(lead)
+    const isDefault = JSON.stringify(currentDraft) === JSON.stringify(defaults)
+    try {
+      if (isDefault) {
+        localStorage.removeItem(getAdvocaciaDraftKey(lead.id))
+      } else {
+        localStorage.setItem(getAdvocaciaDraftKey(lead.id), JSON.stringify(currentDraft))
+      }
+    } catch {
+      // Ignora erro de quota do localStorage
+    }
+  }, [
+    lead,
+    subniche,
+    themePreset,
+    customPalette,
+    customAccentHex,
+    useProfilePhoto,
+    profilePhotoUrl,
+    monogramInitials,
+    oabNumber,
+    baseTicket,
+    experienceYears,
+    casesHandled,
+    includeRealReviews,
+    realReviews,
+    customizePresetServices,
+    presetService1Title,
+    presetService1Desc,
+    presetService2Title,
+    presetService2Desc,
+    presetService3Title,
+    presetService3Desc,
+    customTagline,
+    customService1Title,
+    customService1Desc,
+    customService2Title,
+    customService2Desc,
+    customService3Title,
+    customService3Desc,
+  ])
+
+  const handleResetDefaults = () => {
+    const defaults = buildDefaultAdvocaciaDraft(lead)
+    setSubniche(defaults.subniche)
+    setThemePreset(defaults.themePreset)
+    setCustomPalette(defaults.customPalette)
+    setCustomAccentHex(defaults.customAccentHex)
+    setUseProfilePhoto(defaults.useProfilePhoto)
+    setProfilePhotoUrl(defaults.profilePhotoUrl)
+    setMonogramInitials(defaults.monogramInitials)
+    setOabNumber(defaults.oabNumber)
+    setExperienceYears(defaults.experienceYears)
+    setCasesHandled(defaults.casesHandled)
+    setIncludeRealReviews(defaults.includeRealReviews)
+    setRealReviews(defaults.realReviews)
+    setBaseTicket(defaults.baseTicket)
+    setCustomizePresetServices(defaults.customizePresetServices)
+    setPresetService1Title(defaults.presetService1Title)
+    setPresetService1Desc(defaults.presetService1Desc)
+    setPresetService2Title(defaults.presetService2Title)
+    setPresetService2Desc(defaults.presetService2Desc)
+    setPresetService3Title(defaults.presetService3Title)
+    setPresetService3Desc(defaults.presetService3Desc)
+    setCustomTagline(defaults.customTagline)
+    setCustomService1Title(defaults.customService1Title)
+    setCustomService1Desc(defaults.customService1Desc)
+    setCustomService2Title(defaults.customService2Title)
+    setCustomService2Desc(defaults.customService2Desc)
+    setCustomService3Title(defaults.customService3Title)
+    setCustomService3Desc(defaults.customService3Desc)
+    try {
+      localStorage.removeItem(getAdvocaciaDraftKey(lead.id))
+    } catch {
+      // ignore
+    }
+  }
 
   const cleanedName = cleanNameClientSide(lead.name) || lead.name
   const isCustomSubniche = subniche === 'Outro / Personalizar'
@@ -408,6 +696,45 @@ function ExportConfigModalInner({
     const selectedTheme =
       THEME_OPTIONS.find((t) => t.id === themePreset) ?? THEME_OPTIONS[0]
 
+    const isCustomTheme = themePreset === 'custom'
+    const customIsDark = isDarkHexColor(customPalette.backgroundColor)
+
+    const resolvedTheme = isCustomTheme
+      ? {
+          preset: 'custom' as const,
+          mode: customIsDark ? ('dark' as const) : ('light' as const),
+          backgroundColor: customPalette.backgroundColor || '#0f172a',
+          surfaceColor: customPalette.surfaceColor || '#162032',
+          primaryText: customPalette.primaryText || '#f8f6f0',
+          bodyText: customPalette.bodyText || (customIsDark ? '#94a3b8' : '#334155'),
+          accentColor: customPalette.accentColor || '#c5a059',
+          borderColor: customPalette.borderColor || (customIsDark ? '#1e293b' : '#e2ded4'),
+        }
+      : {
+          preset: selectedTheme.id,
+          mode: selectedTheme.mode,
+          backgroundColor: selectedTheme.backgroundColor,
+          surfaceColor: selectedTheme.surfaceColor,
+          primaryText: selectedTheme.primaryText,
+          bodyText: selectedTheme.bodyText,
+          accentColor: customAccentHex.trim() || selectedTheme.accentColor,
+          borderColor: selectedTheme.borderColor,
+        }
+
+    const filledReviews = realReviews
+      .filter((r) => r.text.trim().length > 0)
+      .map((r) => ({
+        author: r.author.trim() || 'Cliente Verificado',
+        stars: Number(r.stars) || 5,
+        text: r.text.trim(),
+      }))
+    const fiveStarFilled = filledReviews.filter((r) => r.stars >= 5)
+    const exportedTestimonials = includeRealReviews
+      ? fiveStarFilled.length > 0
+        ? fiveStarFilled
+        : filledReviews
+      : []
+
     // 2. Montar objeto site.config.json conforme o contrato oficial
     const configPayload = {
       business: {
@@ -421,43 +748,41 @@ function ExportConfigModalInner({
           'Olá! Vi o site institucional do escritório e gostaria de agendar uma avaliação sobre o meu caso.',
         address_display: lead.address || lead.neighborhood || 'Uberlândia - MG',
         oab_number: oabNumber.trim() || 'OAB/MG Sob Consulta',
-        office_hours: 'Segunda a Sexta, das 09h às 18h',
+        opening_hours: lead.opening_hours || 'Segunda a Sexta, das 09h às 18h',
+        office_hours: lead.opening_hours || 'Segunda a Sexta, das 09h às 18h',
       },
       pricing: {
         base_ticket: baseTicket,
         custom_ticket: baseTicket + 150,
       },
-      theme: {
-        preset: themePreset,
-        mode: selectedTheme.mode,
-        backgroundColor: selectedTheme.backgroundColor,
-        surfaceColor: selectedTheme.surfaceColor,
-        primaryText: selectedTheme.primaryText,
-        bodyText: selectedTheme.bodyText,
-        accentColor: customAccentHex.trim() || selectedTheme.accentColor,
-        borderColor: selectedTheme.borderColor,
-      },
+      theme: resolvedTheme,
       visuals: {
         theme_preset: themePreset,
-        theme_mode: selectedTheme.mode,
-        primary_color: selectedTheme.primaryText,
-        accent_color: customAccentHex.trim() || selectedTheme.accentColor,
-        background_color: selectedTheme.backgroundColor,
-        surface_color: selectedTheme.surfaceColor,
-        border_color: selectedTheme.borderColor,
-        custom_accent_hex: customAccentHex.trim() || null,
+        theme_mode: resolvedTheme.mode,
+        primary_color: resolvedTheme.primaryText,
+        accent_color: resolvedTheme.accentColor,
+        background_color: resolvedTheme.backgroundColor,
+        surface_color: resolvedTheme.surfaceColor,
+        border_color: resolvedTheme.borderColor,
+        custom_accent_hex: isCustomTheme ? resolvedTheme.accentColor : (customAccentHex.trim() || null),
+        use_photo: useProfilePhoto,
         use_profile_photo: useProfilePhoto,
-        profile_photo_url: useProfilePhoto ? profilePhotoUrl.trim() : './assets/doutor.svg',
+        photo_url: useProfilePhoto ? (profilePhotoUrl.trim() || './assets/foto-advogado.jpg') : './assets/foto-advogado.jpg',
+        profile_photo_url: useProfilePhoto ? (profilePhotoUrl.trim() || './assets/foto-advogado.jpg') : './assets/foto-advogado.jpg',
+        office_image: './assets/escritorio-fachada.jpg',
+        logo_url: './assets/logo-escritorio.png',
         monogram_initials: (monogramInitials.trim() || 'ADV').toUpperCase(),
       },
       metrics: {
         rating: lead.rating > 0 ? lead.rating.toFixed(1) : '4.9',
         reviews_count: lead.reviews_count > 0 ? lead.reviews_count : 48,
-        years_experience: '+10',
-        cases_count: '+500',
+        years_experience: experienceYears.trim() || '+12',
+        cases_count: casesHandled.trim() || '+650',
+        experience_years: experienceYears.trim() || '+12 anos',
+        cases_handled: casesHandled.trim() || '+650 casos conduzidos',
       },
       services: finalServices,
-      testimonials: [],
+      testimonials: exportedTestimonials,
       faq: [
         {
           question: 'Como funciona o primeiro contato e a avaliação do caso?',
@@ -752,7 +1077,7 @@ function ExportConfigModalInner({
               <Palette className="h-3.5 w-3.5 text-amber-500" />
             </div>
 
-            <div className="mt-2 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="mt-2 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
               {THEME_OPTIONS.map((theme) => {
                 const isSelected = themePreset === theme.id
                 return (
@@ -818,21 +1143,174 @@ function ExportConfigModalInner({
                   </button>
                 )
               })}
+
+              {/* Opção 6: Paleta Customizada Sob Medida */}
+              <button
+                type="button"
+                onClick={() => setThemePreset('custom')}
+                className={`flex flex-col justify-between rounded-xl border p-3 text-left transition ${
+                  themePreset === 'custom'
+                    ? 'border-amber-500 bg-amber-500/15 shadow-sm ring-1 ring-amber-500/50'
+                    : 'border-stone-800 bg-stone-950 hover:border-stone-700'
+                }`}
+              >
+                <div className="w-full">
+                  <div className="flex items-center justify-between gap-1">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="shrink-0">🎨</span>
+                      <span className="font-serif text-xs font-bold text-stone-100 truncate">
+                        Personalizada
+                      </span>
+                    </div>
+                    <span className="shrink-0 rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider border border-amber-500/30 bg-amber-500/10 text-amber-400">
+                      {isDarkHexColor(customPalette.backgroundColor) ? 'Dark' : 'Light'}
+                    </span>
+                  </div>
+
+                  <div className="mt-2 flex items-center gap-1.5">
+                    <span
+                      title={`Fundo: ${customPalette.backgroundColor}`}
+                      className="h-3.5 w-3.5 rounded-full border border-stone-700 shadow-sm"
+                      style={{ backgroundColor: customPalette.backgroundColor }}
+                    />
+                    <span
+                      title={`Cards: ${customPalette.surfaceColor}`}
+                      className="h-3.5 w-3.5 rounded-full border border-stone-700 shadow-sm"
+                      style={{ backgroundColor: customPalette.surfaceColor }}
+                    />
+                    <span
+                      title={`Títulos: ${customPalette.primaryText}`}
+                      className="h-3.5 w-3.5 rounded-full border border-stone-700 shadow-sm"
+                      style={{ backgroundColor: customPalette.primaryText }}
+                    />
+                    <span
+                      title={`Acento: ${customPalette.accentColor}`}
+                      className="h-3.5 w-3.5 rounded-full border border-stone-700 shadow-sm"
+                      style={{ backgroundColor: customPalette.accentColor }}
+                    />
+                    <span
+                      title={`Borda: ${customPalette.borderColor}`}
+                      className="h-3.5 w-3.5 rounded-full border border-stone-700 shadow-sm"
+                      style={{ backgroundColor: customPalette.borderColor }}
+                    />
+                  </div>
+
+                  <p className="mt-1.5 text-[10px] font-medium text-amber-400">
+                    Preset: custom • Sob Medida
+                  </p>
+                  <p className="mt-0.5 text-[10px] text-stone-400 leading-tight">
+                    Cores exclusivas definidas no construtor
+                  </p>
+                </div>
+              </button>
             </div>
 
-            {/* Campo Opcional de Acento Customizado HEX */}
-            <div className="mt-2.5 flex items-center gap-2">
-              <span className="text-[11px] text-stone-400">
-                Acento Personalizado (opcional HEX para bater com logo/Instagram):
-              </span>
-              <input
-                type="text"
-                value={customAccentHex}
-                onChange={(e) => setCustomAccentHex(e.target.value)}
-                placeholder="#c5a059"
-                className="w-28 rounded-lg border border-stone-700 bg-stone-950 px-2 py-1 font-mono text-xs text-stone-100 placeholder-stone-600 outline-none focus:border-amber-600"
-              />
-            </div>
+            {/* Construtor Dinâmico de Paleta Customizada */}
+            {themePreset === 'custom' && (
+              <div className="mt-3.5 space-y-3 rounded-xl border border-amber-500/40 bg-stone-950/80 p-4">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 text-xs font-bold uppercase text-amber-400">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    🎨 Construtor de Paleta Personalizada (Tokens de Cores)
+                  </span>
+                  <span className="text-[10px] text-stone-400">
+                    Modo detectado:{' '}
+                    <strong className="text-stone-200">
+                      {isDarkHexColor(customPalette.backgroundColor)
+                        ? 'Escuro (Dark)'
+                        : 'Claro (Light)'}
+                    </strong>
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {[
+                    {
+                      label: 'Cor de Fundo (Background)',
+                      field: 'backgroundColor' as const,
+                      desc: 'Fundo principal da página',
+                    },
+                    {
+                      label: 'Superfícies / Cards',
+                      field: 'surfaceColor' as const,
+                      desc: 'Fundo dos cards e gaveta',
+                    },
+                    {
+                      label: 'Títulos Principais',
+                      field: 'primaryText' as const,
+                      desc: 'Cor de títulos e tipografia serif',
+                    },
+                    {
+                      label: 'Texto Secundário / Corpo',
+                      field: 'bodyText' as const,
+                      desc: 'Cor de parágrafos e legendas',
+                    },
+                    {
+                      label: 'Cor de Acento / Botões',
+                      field: 'accentColor' as const,
+                      desc: 'Botões principais e destaques',
+                    },
+                    {
+                      label: 'Bordas e Linhas',
+                      field: 'borderColor' as const,
+                      desc: 'Bordas sutis de separação',
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.field}
+                      className="rounded-lg border border-stone-800 bg-stone-900/70 p-2.5"
+                    >
+                      <label className="block text-[11px] font-semibold text-stone-300">
+                        {item.label}
+                      </label>
+                      <span className="block text-[10px] text-stone-500 mb-1.5">
+                        {item.desc}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={
+                            /^#[0-9A-Fa-f]{6}$/.test(customPalette[item.field])
+                              ? customPalette[item.field]
+                              : '#c5a059'
+                          }
+                          onChange={(e) =>
+                            handleUpdateCustomColor(item.field, e.target.value)
+                          }
+                          className="h-7 w-8 shrink-0 cursor-pointer rounded border border-stone-700 bg-transparent p-0"
+                        />
+                        <input
+                          type="text"
+                          value={customPalette[item.field]}
+                          maxLength={7}
+                          onChange={(e) =>
+                            handleUpdateCustomColor(item.field, e.target.value)
+                          }
+                          placeholder="#000000"
+                          className="w-24 rounded-lg border border-stone-700 bg-stone-950 px-2 py-1 font-mono text-xs text-stone-200 outline-none focus:border-amber-600"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Campo Opcional de Acento Customizado HEX (visível apenas para presets fixos) */}
+            {themePreset !== 'custom' && (
+              <div className="mt-2.5 flex items-center gap-2">
+                <span className="text-[11px] text-stone-400">
+                  Acento Personalizado (opcional HEX para bater com logo/Instagram):
+                </span>
+                <input
+                  type="text"
+                  value={customAccentHex}
+                  onChange={(e) => setCustomAccentHex(e.target.value)}
+                  placeholder="#c5a059"
+                  className="w-28 rounded-lg border border-stone-700 bg-stone-950 px-2 py-1 font-mono text-xs text-stone-100 placeholder-stone-600 outline-none focus:border-amber-600"
+                />
+              </div>
+            )}
           </div>
 
           {/* 3. Tratamento Visual: Foto vs. Monograma Heráldico */}
@@ -921,7 +1399,7 @@ function ExportConfigModalInner({
                     type="text"
                     value={profilePhotoUrl}
                     onChange={(e) => setProfilePhotoUrl(e.target.value)}
-                    placeholder="./assets/profile.jpg ou https://..."
+                    placeholder="./assets/foto-advogado.jpg ou https://..."
                     className="flex-1 rounded-lg border border-stone-700 bg-stone-900 px-2.5 py-1 text-xs text-stone-100 outline-none focus:border-amber-600"
                   />
                 </div>
@@ -929,41 +1407,136 @@ function ExportConfigModalInner({
             </div>
           </div>
 
-          {/* 4. Prova Social Ética & Google Maps (Compliance OAB / Provimento 205/2021) */}
+          {/* 4. Métricas de Autoridade Jurídica (Exibidas na Barra do Hero) */}
           <div className="rounded-xl border border-stone-800 bg-stone-900/60 p-4">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 font-bold uppercase tracking-wider text-stone-300">
-                <Shield className="h-4 w-4 text-emerald-400" />
-                4. Prova Social & Reputação Verificada (Compliance OAB)
-              </span>
-              <span className="rounded-full border border-emerald-600/30 bg-emerald-600/10 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-400">
-                Provimento 205/2021
-              </span>
-            </div>
-
-            <div className="mt-3 rounded-lg border border-stone-800 bg-stone-950/80 p-3.5 space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-amber-400 font-serif text-sm font-bold">
-                  <span>★ {lead.rating > 0 ? lead.rating.toFixed(1) : '4.9'}</span>
-                  <span className="text-stone-400 font-sans text-xs">
-                    ({lead.reviews_count > 0 ? lead.reviews_count : 48} avaliações públicas)
-                  </span>
-                </div>
-                <span className="text-[11px] font-medium text-emerald-400">
-                  Banner Oficial Ativo
-                </span>
+            <span className="block font-bold uppercase tracking-wider text-stone-300">
+              4. Métricas de Autoridade Jurídica (Exibidas na Barra do Hero)
+            </span>
+            <p className="mt-1 text-[11px] text-stone-400">
+              Configure os indicadores de autoridade exibidos na barra de métricas abaixo do hero.
+            </p>
+            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold text-stone-300">
+                  Tempo de Atuação / Experiência:
+                </label>
+                <input
+                  type="text"
+                  value={experienceYears}
+                  onChange={(e) => setExperienceYears(e.target.value)}
+                  placeholder="+12 anos"
+                  className="w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-1.5 font-mono text-xs text-stone-100 outline-none focus:border-amber-600"
+                />
               </div>
-              <p className="text-[11px] text-stone-400 leading-relaxed">
-                <strong className="text-stone-200">Tolerância zero a depoimentos inventados:</strong> O site vitrine exibe exclusivamente o banner consolidado de reputação do Google Maps com nota, total de avaliações e link direto para a ficha oficial do escritório. Nenhuma citação textual fictícia é injetada.
-              </p>
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold text-stone-300">
+                  Casos / Clientes Atendidos:
+                </label>
+                <input
+                  type="text"
+                  value={casesHandled}
+                  onChange={(e) => setCasesHandled(e.target.value)}
+                  placeholder="+650 casos conduzidos"
+                  className="w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-1.5 font-mono text-xs text-stone-100 outline-none focus:border-amber-600"
+                />
+              </div>
             </div>
           </div>
 
-          {/* 5. Ticket Volátil e Proposta Comercial */}
+          {/* 5. Prova Social Ética & Google Maps (Compliance OAB / Provimento 205/2021) */}
+          <div className="rounded-xl border border-stone-800 bg-stone-900/60 p-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-2 font-bold uppercase tracking-wider text-stone-300">
+                  <Shield className="h-4 w-4 text-emerald-400" />
+                  5. Prova Social &amp; Avaliações do Google Maps
+                </span>
+                {lead.extracted_reviews && lead.extracted_reviews.length > 0 && (
+                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
+                    {lead.extracted_reviews.length} avaliações reais importadas do Maps
+                  </span>
+                )}
+              </div>
+
+              <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-stone-700 bg-stone-950 px-3 py-1 text-[11px] font-semibold text-stone-200 hover:border-amber-500/60">
+                <input
+                  type="checkbox"
+                  checked={includeRealReviews}
+                  onChange={(e) => setIncludeRealReviews(e.target.checked)}
+                  className="rounded border-stone-700 bg-stone-900 text-amber-600 focus:ring-amber-500"
+                />
+                <span>Incluir avaliações reais em texto (Carrossel Infinito)</span>
+              </label>
+            </div>
+
+            {!includeRealReviews ? (
+              <div className="rounded-lg border border-stone-800 bg-stone-950/80 p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-amber-400 font-serif text-sm font-bold">
+                    <span>★ {lead.rating > 0 ? lead.rating.toFixed(1) : '4.9'}</span>
+                    <span className="text-stone-400 font-sans text-xs">
+                      ({lead.reviews_count > 0 ? lead.reviews_count : 48} avaliações públicas)
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-medium text-emerald-400">
+                    Banner Oficial Maps Ativo (Provimento 205/2021)
+                  </span>
+                </div>
+                <p className="text-[11px] text-stone-400 leading-relaxed">
+                  <strong className="text-stone-200">Tolerância zero a depoimentos inventados:</strong> Exporta <code>testimonials: []</code> exibindo o banner consolidado de reputação do Google Maps com nota, total de avaliações e link direto para a ficha oficial do escritório.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3 rounded-lg border border-amber-600/30 bg-stone-950/90 p-3.5">
+                <p className="text-[11px] text-amber-300">
+                  {lead.extracted_reviews && lead.extracted_reviews.length > 0
+                    ? 'Avaliações reais extraídas da ficha do Google Maps (exibidas em carrossel contínuo de linha única):'
+                    : 'Cole abaixo avaliações autênticas extraídas literalmente da ficha do Google Maps deste escritório:'}
+                </p>
+                {realReviews.map((rev, idx) => (
+                  <div
+                    key={idx}
+                    className="grid grid-cols-1 gap-2 rounded-lg border border-stone-800 bg-stone-900/70 p-2.5 sm:grid-cols-12"
+                  >
+                    <div className="sm:col-span-4 space-y-1">
+                      <input
+                        type="text"
+                        value={rev.author}
+                        onChange={(e) => handleUpdateReview(idx, 'author', e.target.value)}
+                        placeholder={`Nome do Cliente ${idx + 1}`}
+                        className="w-full rounded border border-stone-700 bg-stone-950 px-2.5 py-1 text-xs text-stone-100 outline-none focus:border-amber-500"
+                      />
+                      <select
+                        value={rev.stars}
+                        onChange={(e) =>
+                          handleUpdateReview(idx, 'stars', Number(e.target.value))
+                        }
+                        className="w-full rounded border border-stone-700 bg-stone-950 px-2 py-1 text-[11px] text-amber-400 outline-none"
+                      >
+                        <option value={5}>★★★★★ (5 estrelas)</option>
+                        <option value={4}>★★★★☆ (4 estrelas)</option>
+                      </select>
+                    </div>
+                    <div className="sm:col-span-8">
+                      <textarea
+                        rows={2}
+                        value={rev.text}
+                        onChange={(e) => handleUpdateReview(idx, 'text', e.target.value)}
+                        placeholder="Cole o texto autêntico da avaliação no Google Maps..."
+                        className="w-full rounded border border-stone-700 bg-stone-950 p-2 text-xs text-stone-100 outline-none focus:border-amber-500"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 6. Ticket Volátil e Proposta Comercial */}
           <div className="rounded-xl border border-stone-800 bg-stone-900/60 p-4">
             <div className="mb-2 flex items-center justify-between">
               <label className="font-bold uppercase tracking-wider text-stone-300">
-                5. Ticket Base da Proposta para este Lead
+                6. Ticket Base da Proposta para este Lead
               </label>
               <span className="font-mono text-xs font-bold text-emerald-400">
                 R$ {baseTicket} (Customizado: R$ {baseTicket + 150})
@@ -998,9 +1571,9 @@ function ExportConfigModalInner({
             </div>
           </div>
 
-          {/* 6. OAB e Dados Complementares */}
+          {/* 7. OAB e Dados Complementares */}
           <div className="flex items-center gap-3">
-            <label className="text-stone-400">Número de Inscrição na OAB:</label>
+            <label className="text-stone-400">7. Inscrição na OAB:</label>
             <input
               type="text"
               value={oabNumber}
@@ -1012,14 +1585,25 @@ function ExportConfigModalInner({
         </div>
 
         {/* Rodapé Fixo */}
-        <div className="flex items-center justify-between border-t border-stone-800 p-5">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-xl border border-stone-700 px-4 py-2.5 text-xs font-semibold text-stone-300 hover:bg-stone-800"
-          >
-            Cancelar
-          </button>
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-stone-800 p-5">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-xl border border-stone-700 px-4 py-2.5 text-xs font-semibold text-stone-300 hover:bg-stone-800"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              onClick={handleResetDefaults}
+              title="Limpar rascunho deste lead e restaurar configuração original"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2.5 text-xs font-semibold text-stone-400 transition hover:border-amber-600/50 hover:text-amber-400"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Restaurar Padrões
+            </button>
+          </div>
 
           <button
             type="button"

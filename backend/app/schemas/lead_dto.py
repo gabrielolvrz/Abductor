@@ -11,6 +11,7 @@ PipelineStatus = Literal[
 ]
 WebsiteStatus = Literal["ATIVO", "IMPROVISADO", "QUEBRADO", "SEM_SITE"]
 UpsellFocus = Literal["NONE", "GMB", "ADS", "COMBO"]
+ScriptType = Literal["PITCH", "OBJECTION"]
 NoteTag = Literal["IDEIA", "BUG", "LEMBRETE"]
 
 
@@ -39,9 +40,12 @@ class LeadResponse(BaseModel):
     rating: float = 0.0
     reviews_count: int = 0
     is_claimed: bool = False
+    opening_hours: str | None = None
+    extracted_reviews: list[dict[str, Any]] = Field(default_factory=list)
     score: int = 0
     score_breakdown: dict[str, Any] = Field(default_factory=dict)
     pipeline_status: str = "NOVO"
+    deal_value: int = 350
     notes: str | None = None
     created_manually: bool = False
     is_manually_edited: bool = False
@@ -63,6 +67,8 @@ class LeadUpdateRequest(BaseModel):
     website_status: WebsiteStatus | None = None
     rating: float | None = Field(default=None, ge=0.0, le=5.0)
     reviews_count: int | None = Field(default=None, ge=0)
+    pipeline_status: PipelineStatus | None = None
+    deal_value: int | None = Field(default=None, ge=0)
     notes: str | None = None
 
 
@@ -70,6 +76,7 @@ class LeadPipelineUpdateRequest(BaseModel):
     """Payload de alteração de status comercial no funil (PATCH /api/leads/{id}/pipeline)."""
 
     pipeline_status: PipelineStatus
+    deal_value: int | None = Field(default=None, ge=0)
 
 
 class LeadCreateManualRequest(BaseModel):
@@ -88,42 +95,49 @@ class LeadCreateManualRequest(BaseModel):
     rating: float = Field(default=0.0, ge=0.0, le=5.0)
     reviews_count: int = Field(default=0, ge=0)
     is_claimed: bool = False
+    deal_value: int = Field(default=350, ge=0)
     notes: str | None = None
     search_id: uuid.UUID | None = None
 
 
 class PitchScriptResponse(BaseModel):
-    """DTO de template de script de abordagem comercial."""
+    """DTO de template de script de abordagem comercial ou quebra de objeção."""
 
     model_config = ConfigDict(from_attributes=True)
 
     id: uuid.UUID
     category: str
-    website_condition: str
+    script_type: str = "PITCH"
+    website_condition: str = "GERAL"
     title: str
+    situation: str | None = None
     message_template: str
-    upsell_focus: str
+    upsell_focus: str = "NONE"
     created_at: datetime
 
 
 class PitchScriptCreateRequest(BaseModel):
-    """Payload para criação de um novo template de script."""
+    """Payload para criação de um novo template de script ou objeção."""
 
     category: str = Field(..., min_length=1, max_length=100)
-    website_condition: Literal["SEM_SITE", "IMPROVISADO", "QUEBRADO", "GERAL"]
+    script_type: ScriptType = "PITCH"
+    website_condition: Literal["SEM_SITE", "IMPROVISADO", "QUEBRADO", "GERAL"] = "GERAL"
     title: str = Field(..., min_length=1, max_length=150)
+    situation: str | None = None
     message_template: str = Field(..., min_length=1)
     upsell_focus: UpsellFocus = "NONE"
 
 
 class PitchScriptUpdateRequest(BaseModel):
-    """Payload para edição de um template de script existente."""
+    """Payload para edição de um template de script ou objeção existente."""
 
     category: str | None = None
+    script_type: ScriptType | None = None
     website_condition: (
         Literal["SEM_SITE", "IMPROVISADO", "QUEBRADO", "GERAL"] | None
     ) = None
     title: str | None = None
+    situation: str | None = None
     message_template: str | None = None
     upsell_focus: UpsellFocus | None = None
 
@@ -166,6 +180,7 @@ class NicheCreateRequest(BaseModel):
     """Payload para cadastro de novo nicho."""
 
     name: str = Field(..., min_length=2, max_length=100)
+    slug: str | None = Field(default=None, max_length=100)
 
 
 class SystemNoteResponse(BaseModel):

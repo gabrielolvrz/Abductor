@@ -1,0 +1,2341 @@
+<!doctype html>
+<html lang="pt-BR" class="scroll-smooth overflow-x-hidden" data-mode="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="page-title">Villa Pet Center | Cuidado, Amor e Bem-Estar Animal</title>
+    <meta
+      name="description"
+      id="page-description"
+      content="Banho e tosa com toalhas 100% esterilizadas, cuidado veterinário, farmácia pet e atendimento acolhedor."
+    />
+
+    <!-- Google Fonts: Outfit (Arredondada, Afetuosa & Expressiva) + Plus Jakarta Sans (Leitura Fluida) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ['"Outfit"', 'system-ui', '-apple-system', 'sans-serif'],
+              sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+
+    <!-- Design System Caloroso, Reativo e Mobile-First da Vertical Pet Shop & Veterinária -->
+    <style>
+      :root {
+        --bg-primary: #f8fafc;
+        --bg-surface: #ffffff;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --color-accent: #0d9488;
+        --color-highlight: #f59e0b;
+        --border-color: #e2e8f0;
+        --color-on-accent: #ffffff;
+        --shadow-card: rgba(15, 23, 42, 0.06);
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      html,
+      body {
+        overflow-x: hidden;
+        max-width: 100vw;
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-secondary);
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .font-display {
+        font-family: 'Outfit', system-ui, sans-serif;
+      }
+
+      /* Textura orgânica acolhedora */
+      .bg-paw-dots {
+        background-image: radial-gradient(
+          color-mix(in srgb, var(--color-accent) 11%, transparent) 1.25px,
+          transparent 1.25px
+        );
+        background-size: 26px 26px;
+      }
+
+      details summary::-webkit-details-marker {
+        display: none;
+      }
+
+      /* Altura mínima acessível de 48px para toque no mobile */
+      .touch-target {
+        min-height: 48px;
+      }
+
+      section[id] {
+        scroll-margin-top: 84px;
+      }
+
+      /* Classes Semânticas Conectadas aos Tokens :root */
+      .theme-bg {
+        background-color: var(--bg-primary);
+      }
+      .theme-surface {
+        background-color: var(--bg-surface);
+        border-color: var(--border-color);
+      }
+      .theme-heading {
+        color: var(--text-primary);
+      }
+      .theme-body {
+        color: var(--text-secondary);
+      }
+      .theme-border {
+        border-color: var(--border-color);
+      }
+      .theme-accent-bg {
+        background-color: var(--color-accent);
+        color: var(--color-on-accent);
+      }
+      .theme-accent-text {
+        color: var(--color-accent);
+      }
+      .theme-accent-soft {
+        background-color: color-mix(in srgb, var(--color-accent) 12%, transparent);
+        color: var(--color-accent);
+        border-color: color-mix(in srgb, var(--color-accent) 26%, transparent);
+      }
+      .theme-highlight-soft {
+        background-color: color-mix(in srgb, var(--color-highlight) 16%, transparent);
+        color: color-mix(in srgb, var(--color-highlight) 85%, var(--text-primary));
+        border-color: color-mix(in srgb, var(--color-highlight) 36%, transparent);
+      }
+      .theme-highlight-text {
+        color: var(--color-highlight);
+      }
+
+      /* Sublinhado animado da esquerda para a direita nos links do Header Desktop */
+      .nav-link-underline {
+        position: relative;
+        padding-bottom: 4px;
+      }
+      .nav-link-underline::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2.5px;
+        border-radius: 9999px;
+        background-color: var(--color-accent);
+        transform: scaleX(0);
+        transform-origin: left center;
+        transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .nav-link-underline:hover::after,
+      .nav-link-underline:focus-visible::after {
+        transform: scaleX(1);
+      }
+
+      /* Scroll Reveal com Efeito Névoa Suave (Opacidade, Translação e Desfoque) */
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        filter: blur(4px);
+        transition:
+          opacity 750ms cubic-bezier(0.16, 1, 0.3, 1),
+          transform 750ms cubic-bezier(0.16, 1, 0.3, 1),
+          filter 750ms cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+        will-change: opacity, transform, filter;
+      }
+      .reveal.revealed {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+
+      /* Micro-interações de Botões (hover:-translate-y-1 hover:shadow-lg) */
+      .btn-interactive {
+        transition:
+          transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+          box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1),
+          background-color 200ms ease,
+          border-color 200ms ease,
+          filter 200ms ease;
+      }
+      .btn-interactive:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 30px -8px color-mix(in srgb, var(--color-accent) 42%, rgba(15, 23, 42, 0.18));
+        filter: brightness(1.04);
+      }
+      .btn-interactive:active {
+        transform: translateY(0) scale(0.99);
+      }
+
+      /* Micro-interações de Cards */
+      .card-interactive {
+        background-color: var(--bg-surface);
+        border-color: var(--border-color);
+        box-shadow: 0 10px 30px -8px var(--shadow-card);
+        transition:
+          transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+          box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1),
+          border-color 260ms ease;
+      }
+      .card-interactive:hover,
+      .card-interactive.is-active-card {
+        transform: translateY(-4px) scale(1.01);
+        border-color: color-mix(in srgb, var(--color-accent) 60%, var(--border-color));
+        box-shadow:
+          0 20px 38px -12px color-mix(in srgb, var(--color-accent) 22%, var(--shadow-card)),
+          0 0 0 1.5px color-mix(in srgb, var(--color-accent) 30%, transparent);
+      }
+
+      /* Expansão de Detalhes dos Pilares */
+      .pillar-details-drawer {
+        display: grid;
+        grid-template-rows: 0fr;
+        opacity: 0;
+        transition:
+          grid-template-rows 340ms cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 280ms ease,
+          margin-top 280ms ease;
+      }
+      .pillar-details-drawer.is-expanded {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        margin-top: 1rem;
+      }
+      .pillar-details-inner {
+        overflow: hidden;
+      }
+
+      /* Carrossel Infinito em Linha Única (Marquee / Ticker Horizontal) */
+      @keyframes marquee-scroll {
+        0% {
+          transform: translate3d(0, 0, 0);
+        }
+        100% {
+          transform: translate3d(-50%, 0, 0);
+        }
+      }
+
+      .marquee-viewport {
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+        mask-image: linear-gradient(
+          to right,
+          transparent 0%,
+          black 4%,
+          black 96%,
+          transparent 100%
+        );
+        -webkit-mask-image: linear-gradient(
+          to right,
+          transparent 0%,
+          black 4%,
+          black 96%,
+          transparent 100%
+        );
+      }
+
+      .marquee-track {
+        display: flex;
+        flex-wrap: nowrap;
+        width: max-content;
+        gap: 1.25rem;
+        animation: marquee-scroll 38s linear infinite;
+        will-change: transform;
+      }
+
+      .marquee-viewport:hover .marquee-track,
+      .marquee-track:hover,
+      .marquee-viewport:focus-within .marquee-track,
+      .marquee-viewport:active .marquee-track,
+      .marquee-viewport.is-paused .marquee-track {
+        animation-play-state: paused !important;
+      }
+
+      /* Pulso Suave a cada 3s para o Botão Flutuante de WhatsApp */
+      @keyframes whatsapp-float-pulse {
+        0%,
+        70%,
+        100% {
+          transform: scale(1);
+          box-shadow: 0 12px 28px -4px rgba(16, 185, 129, 0.48);
+        }
+        85% {
+          transform: scale(1.045);
+          box-shadow: 0 16px 36px -2px rgba(16, 185, 129, 0.68);
+        }
+      }
+
+      .whatsapp-floating-btn {
+        animation: whatsapp-float-pulse 3s ease-in-out infinite;
+      }
+      .whatsapp-floating-btn:hover {
+        animation-play-state: paused;
+        transform: translateY(-4px) scale(1.03);
+      }
+
+      /* Menu Hambúrguer Animado (3 Barras -> X) */
+      .hamburger-line {
+        display: block;
+        width: 20px;
+        height: 2.25px;
+        border-radius: 9999px;
+        background-color: var(--text-primary);
+        transition:
+          transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 200ms ease;
+      }
+      #mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(1) {
+        transform: translateY(6.25px) rotate(45deg);
+      }
+      #mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(2) {
+        opacity: 0;
+      }
+      #mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(3) {
+        transform: translateY(-6.25px) rotate(-45deg);
+      }
+
+      /* Cabeçalho Fixo com Vidro Fosco Calibrado por Tema */
+      header {
+        background-color: color-mix(in srgb, var(--bg-surface) 88%, transparent);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom-color: rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
+      }
+      html[data-mode='dark'] header {
+        background-color: color-mix(in srgb, var(--bg-surface) 86%, transparent);
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+      }
+
+      /* Slide-Over Drawer Mobile (Fixa na tela em qualquer posição de scroll) */
+      #mobile-menu-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 280ms ease;
+      }
+      #mobile-menu-backdrop.is-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #mobile-menu-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100dvh;
+        z-index: 70;
+        transform: translateX(100%);
+        transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      #mobile-menu-drawer.is-open {
+        transform: translateX(0);
+      }
+
+      /* Acordeão Suave do FAQ */
+      .faq-content {
+        display: grid;
+        grid-template-rows: 0fr;
+        opacity: 0;
+        transition:
+          grid-template-rows 300ms cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 240ms ease;
+      }
+      details.faq-item.is-open .faq-content {
+        grid-template-rows: 1fr;
+        opacity: 1;
+      }
+      .faq-content-inner {
+        overflow: hidden;
+      }
+      .faq-chevron {
+        transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      details.faq-item.is-open .faq-chevron {
+        transform: rotate(180deg);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .reveal {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+        }
+        .whatsapp-floating-btn {
+          animation: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
+    <!-- =================================================================== -->
+    <!-- 1. HEADER MOBILE-FIRST COM MENU HAMBÚRGUER ANIMADO E GAVETA         -->
+    <!-- =================================================================== -->
+    <header
+      class="fixed top-0 left-0 w-full z-50 border-b backdrop-blur-md shadow-sm transition-colors duration-300"
+    >
+      <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:h-20 sm:px-6 lg:px-8">
+        <!-- Identidade: Ícone de Pata + Nome Fantasia Limpo/Truncado no Mobile -->
+        <a
+          href="#"
+          class="group flex min-w-0 items-center gap-2.5 focus:outline-none"
+          aria-label="Início"
+        >
+          <div
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border shadow-sm transition-transform duration-300 group-hover:scale-105 sm:h-11 sm:w-11"
+            style="
+              background-color: color-mix(in srgb, var(--color-accent) 14%, var(--bg-surface));
+              border-color: color-mix(in srgb, var(--color-accent) 32%, var(--border-color));
+            "
+          >
+            <!-- Ícone Ilustrado de Pata -->
+            <svg
+              class="h-5 w-5 theme-accent-text"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <circle cx="7.5" cy="7.5" r="2.2" />
+              <circle cx="12" cy="5.8" r="2.2" />
+              <circle cx="16.5" cy="7.5" r="2.2" />
+              <circle cx="19.2" cy="11.5" r="1.9" />
+              <path
+                d="M12 10.5c-3.1 0-5.8 2.2-6.4 5.1-.4 1.9 1.1 3.6 3 3.6 1.2 0 2.2-.5 3.4-.5s2.2.5 3.4.5c1.9 0 3.4-1.7 3-3.6-.6-2.9-3.3-5.1-6.4-5.1z"
+              />
+            </svg>
+          </div>
+
+          <div class="min-w-0">
+            <span
+              id="header-business-name"
+              class="block max-w-[175px] truncate font-display text-base font-extrabold tracking-tight theme-heading sm:max-w-[260px] sm:text-lg md:max-w-none"
+            >
+              Villa Pet Center
+            </span>
+            <span
+              id="header-city-badge"
+              class="hidden text-xs font-medium theme-body md:block"
+            >
+              Estética Animal &amp; Bem-Estar • Uberlândia - MG
+            </span>
+          </div>
+        </a>
+
+        <!-- Navegação Desktop com Sublinhado Animado (Esquerda -> Direita) -->
+        <nav aria-label="Navegação Principal" class="hidden items-center gap-7 md:flex">
+          <a
+            href="#servicos"
+            class="nav-link-underline text-sm font-semibold theme-heading transition-colors"
+          >
+            Especialidades
+          </a>
+          <a
+            href="#sobre"
+            class="nav-link-underline text-sm font-semibold theme-heading transition-colors"
+          >
+            Por Que Nós
+          </a>
+          <a
+            href="#depoimentos"
+            class="nav-link-underline text-sm font-semibold theme-heading transition-colors"
+          >
+            Avaliações
+          </a>
+          <a
+            href="#faq"
+            class="nav-link-underline text-sm font-semibold theme-heading transition-colors"
+          >
+            Dúvidas
+          </a>
+          <a
+            href="#localizacao"
+            class="nav-link-underline text-sm font-semibold theme-heading transition-colors"
+          >
+            Horários &amp; Mapa
+          </a>
+        </nav>
+
+        <!-- Ações à Direita: Botão WhatsApp + Menu Hambúrguer no Mobile -->
+        <div class="flex shrink-0 items-center gap-2">
+          <a
+            id="header-cta"
+            href="https://wa.me/5534998765432"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-interactive inline-flex min-h-[42px] items-center gap-2 rounded-full px-3.5 py-2 text-xs font-bold shadow-sm sm:min-h-[46px] sm:px-5 sm:py-2.5 sm:text-sm theme-accent-bg"
+          >
+            <svg class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"
+              />
+            </svg>
+            <span class="hidden sm:inline">Agendar pelo WhatsApp</span>
+            <span class="sm:hidden">WhatsApp</span>
+          </a>
+
+          <!-- Botão Menu Hambúrguer (Exclusivo Mobile - 48px touch target) -->
+          <button
+            id="mobile-menu-toggle"
+            type="button"
+            aria-label="Abrir menu de navegação"
+            aria-expanded="false"
+            aria-controls="mobile-menu-drawer"
+            class="flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-2xl border transition md:hidden theme-surface"
+          >
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Gaveta Lateral Mobile (Slide-Over Sheet com Backdrop-Blur) -->
+    <div
+      id="mobile-menu-backdrop"
+      class="fixed inset-0 z-[60] bg-slate-950/60 backdrop-blur-sm md:hidden"
+      aria-hidden="true"
+    ></div>
+
+    <aside
+      id="mobile-menu-drawer"
+      aria-label="Menu Mobile"
+      class="fixed right-0 top-0 bottom-0 z-[70] flex h-dvh max-h-dvh w-[88vw] max-w-sm flex-col justify-between overflow-y-auto border-l p-5 shadow-2xl md:hidden theme-surface"
+    >
+      <div class="space-y-5">
+        <div class="flex items-center justify-between border-b pb-4 theme-border">
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span class="text-xl" aria-hidden="true">🐾</span>
+            <span
+              id="drawer-business-name"
+              class="truncate font-display text-base font-extrabold theme-heading"
+            >
+              Villa Pet Center
+            </span>
+          </div>
+          <button
+            id="mobile-menu-close"
+            type="button"
+            aria-label="Fechar menu"
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border theme-surface theme-heading"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Links de Navegação Mobile (Altura Mínima 48px) -->
+        <nav class="flex flex-col space-y-2" aria-label="Links do Menu Mobile">
+          <a
+            href="#servicos"
+            data-drawer-link
+            class="touch-target flex items-center gap-3 rounded-2xl border px-4 py-3 font-display text-sm font-bold transition theme-surface theme-heading"
+          >
+            <span>✨</span>
+            <span>Especialidades &amp; Serviços</span>
+          </a>
+          <a
+            href="#sobre"
+            data-drawer-link
+            class="touch-target flex items-center gap-3 rounded-2xl border px-4 py-3 font-display text-sm font-bold transition theme-surface theme-heading"
+          >
+            <span>🛡️</span>
+            <span>Garantias &amp; Tranquilidade</span>
+          </a>
+          <a
+            href="#depoimentos"
+            data-drawer-link
+            class="touch-target flex items-center gap-3 rounded-2xl border px-4 py-3 font-display text-sm font-bold transition theme-surface theme-heading"
+          >
+            <span>⭐</span>
+            <span>Avaliações de Tutores</span>
+          </a>
+          <a
+            href="#faq"
+            data-drawer-link
+            class="touch-target flex items-center gap-3 rounded-2xl border px-4 py-3 font-display text-sm font-bold transition theme-surface theme-heading"
+          >
+            <span>💬</span>
+            <span>Perguntas Frequentes</span>
+          </a>
+          <a
+            href="#localizacao"
+            data-drawer-link
+            class="touch-target flex items-center gap-3 rounded-2xl border px-4 py-3 font-display text-sm font-bold transition theme-surface theme-heading"
+          >
+            <span>📍</span>
+            <span>Horários &amp; Como Chegar</span>
+          </a>
+        </nav>
+
+        <!-- Resumo de Horários Empilhados e Endereço na Gaveta -->
+        <div class="space-y-3 rounded-3xl border p-4 text-xs theme-bg theme-border">
+          <div>
+            <p class="font-bold uppercase tracking-wider theme-accent-text">
+              🕒 Horário de Atendimento
+            </p>
+            <div id="drawer-opening-hours" class="mt-2 space-y-1.5 font-medium theme-heading">
+              <!-- Preenchido com linhas empilhadas pelo JS -->
+            </div>
+          </div>
+          <div class="border-t pt-2.5 theme-border">
+            <p class="font-bold uppercase tracking-wider theme-accent-text">
+              📍 Endereço Físico
+            </p>
+            <p id="drawer-address" class="mt-1 leading-relaxed theme-body">
+              Av. Rondon Pacheco, 1850 - Saraiva, Uberlândia - MG
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botão Largo de WhatsApp no Rodapé da Gaveta -->
+      <div class="pt-4">
+        <a
+          id="drawer-cta"
+          href="https://wa.me/5534998765432"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-interactive touch-target flex w-full items-center justify-center gap-2.5 rounded-2xl px-5 py-3.5 text-sm font-extrabold shadow-lg theme-accent-bg"
+        >
+          <span>Agendar no WhatsApp</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="pt-16 sm:pt-20">
+      <!-- =================================================================== -->
+      <!-- 2. HERO SECTION AMIGÁVEL, CALOROSA E ACOLHEDORA                     -->
+      <!-- =================================================================== -->
+      <section class="relative overflow-hidden py-10 sm:py-16 lg:py-20 bg-paw-dots">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
+            <!-- Coluna de Texto (7 colunas) -->
+            <div class="space-y-6 lg:col-span-7 reveal">
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  id="hero-location-pill"
+                  class="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider theme-accent-soft"
+                >
+                  <span>🐾</span>
+                  <span id="hero-city-state">Cuidado Pet em Uberlândia • MG</span>
+                </span>
+
+                <span
+                  id="hero-taxi-pill"
+                  class="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold theme-highlight-soft"
+                >
+                  <span>🚐</span>
+                  <span>Táxi Dog Climatizado</span>
+                </span>
+              </div>
+
+              <h1
+                id="hero-tagline"
+                class="font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-[3.25rem] lg:leading-[1.12] theme-heading"
+              >
+                Amor, higiene rigorosa e cuidado completo para o seu melhor amigo.
+              </h1>
+
+              <p
+                id="hero-subheadline"
+                class="max-w-2xl text-base leading-relaxed sm:text-lg theme-body"
+              >
+                Em <strong id="hero-business-name" class="theme-heading">Villa Pet Center</strong>,
+                cada atendimento acontece em ambiente tranquilo, climatizado e 100% livre de
+                estresse para o seu pet.
+              </p>
+
+              <!-- 2 CTAs Contextuais (Altura mínima 48px no mobile) -->
+              <div class="flex flex-col gap-3.5 pt-1 sm:flex-row sm:items-center">
+                <a
+                  id="hero-primary-cta"
+                  href="https://wa.me/5534998765432"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-interactive touch-target inline-flex items-center justify-center gap-3 rounded-2xl px-7 py-4 text-base font-extrabold shadow-lg theme-accent-bg"
+                >
+                  <svg class="h-5 w-5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771z"
+                    />
+                  </svg>
+                  <span id="hero-primary-cta-label">Agendar Atendimento</span>
+                </a>
+
+                <a
+                  id="hero-secondary-cta"
+                  href="#servicos"
+                  class="btn-interactive touch-target inline-flex items-center justify-center gap-2 rounded-2xl border px-6 py-4 text-sm font-bold theme-surface theme-heading"
+                >
+                  <span>Ver Especialidades</span>
+                  <span aria-hidden="true">↓</span>
+                </a>
+              </div>
+
+              <!-- Métricas Rápidas de Confiança -->
+              <div class="grid grid-cols-3 gap-3 pt-2 sm:gap-4">
+                <div class="card-interactive rounded-3xl border p-3.5 sm:p-4">
+                  <div class="flex items-center gap-1 font-display text-xl font-extrabold sm:text-2xl theme-heading">
+                    <span id="metric-rating">4.9</span>
+                    <span class="text-amber-400">★</span>
+                  </div>
+                  <p class="mt-0.5 text-[11px] font-medium sm:text-xs theme-body">
+                    Nota no Google Maps
+                  </p>
+                </div>
+
+                <div class="card-interactive rounded-3xl border p-3.5 sm:p-4">
+                  <div
+                    id="metric-reviews-count"
+                    class="font-display text-xl font-extrabold sm:text-2xl theme-heading"
+                  >
+                    +64
+                  </div>
+                  <p class="mt-0.5 text-[11px] font-medium sm:text-xs theme-body">
+                    Tutores Satisfeitos
+                  </p>
+                </div>
+
+                <div class="card-interactive rounded-3xl border p-3.5 sm:p-4">
+                  <div
+                    id="metric-pets-cared"
+                    class="font-display text-xl font-extrabold sm:text-2xl theme-accent-text"
+                  >
+                    100%
+                  </div>
+                  <p class="mt-0.5 text-[11px] font-medium sm:text-xs theme-body">
+                    Manejo Humanizado
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Coluna Visual do Pet com Cantos Generosos (rounded-3xl) e Zoom Lento no Hover -->
+            <div class="lg:col-span-5 reveal">
+              <div
+                class="group relative mx-auto max-w-md overflow-hidden rounded-3xl border p-3 shadow-2xl transition duration-500 theme-surface"
+              >
+                <div
+                  class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-teal-500/10 via-amber-400/5 to-emerald-500/10"
+                >
+                  <img
+                    id="hero-pet-image"
+                    src="./assets/hero-principal.jpg"
+                    alt="Cuidado carinhoso com cães e gatos"
+                    onerror="this.onerror=null; this.src='./assets/hero-pet.svg';"
+                    class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                </div>
+
+                <!-- Selo Flutuante de Segurança e Carinho -->
+                <div class="mt-3 flex items-center justify-between gap-3 rounded-2xl border px-4 py-3 theme-bg theme-border">
+                  <div class="flex items-center gap-3">
+                    <span
+                      id="hero-badge-icon"
+                      class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-lg theme-accent-soft"
+                    >
+                      🐾
+                    </span>
+                    <div>
+                      <p
+                        id="hero-badge-title"
+                        class="font-display text-xs font-extrabold theme-heading sm:text-sm"
+                      >
+                        Protocolo Rigoroso de Higiene &amp; Carinho
+                      </p>
+                      <p id="hero-badge-subtitle" class="text-[11px] theme-body">
+                        Ambiente monitorado, seguro e livre de estresse
+                      </p>
+                    </div>
+                  </div>
+                  <span
+                    id="hero-monogram-initials"
+                    class="hidden rounded-xl border px-2.5 py-1 font-display text-xs font-extrabold sm:inline-block theme-accent-soft"
+                  >
+                    VP
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 3. BARRA DINÂMICA DAS 4 GARANTIAS ("POR QUE SEU PET SE SENTE EM CASA") -->
+      <!-- =================================================================== -->
+      <section id="sobre" class="py-12 sm:py-16">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 items-center gap-6 lg:grid-cols-12 reveal">
+            <div class="lg:col-span-7">
+              <span
+                class="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 text-xs font-bold uppercase tracking-wider theme-accent-soft"
+              >
+                <span>🛡️</span>
+                <span>Protocolo de Tranquilidade para Tutores</span>
+              </span>
+              <h2 class="mt-3 font-display text-2xl font-extrabold tracking-tight sm:text-4xl theme-heading">
+                Por que seu pet se sente em casa aqui?
+              </h2>
+              <p id="sobre-subtitle" class="mt-2 max-w-xl text-sm leading-relaxed sm:text-base theme-body">
+                Eliminamos os principais receios de quem deixa um filho de quatro patas sob nossos
+                cuidados, com transparência total e manejo afetuoso.
+              </p>
+            </div>
+
+            <!-- Card de Imagem Padronizada da Estrutura / Equipe (about_image) -->
+            <div class="lg:col-span-5">
+              <div class="group relative overflow-hidden rounded-3xl border p-2.5 shadow-lg theme-surface">
+                <div class="relative aspect-[16/9] overflow-hidden rounded-2xl bg-gradient-to-br from-teal-500/10 via-amber-400/5 to-emerald-500/10">
+                  <img
+                    id="about-environment-image"
+                    src="./assets/ambiente-equipe.jpg"
+                    alt="Ambiente e equipe dedicada ao cuidado pet"
+                    onerror="this.onerror=null; this.src='./assets/hero-pet.svg';"
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sempre exatamente 4 cards dinâmicos coerentes com os pilares ativos -->
+          <div
+            id="trust-badges-grid"
+            class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            <!-- Preenchido dinamicamente pelo JS com os 4 selos orgânicos -->
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 4. BENTO GRID DOS PILARES COM IMAGENS PADRONIZADAS (1..4 ATIVOS)    -->
+      <!-- =================================================================== -->
+      <section id="servicos" class="py-12 sm:py-16">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end reveal">
+            <div>
+              <span
+                class="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 text-xs font-bold uppercase tracking-wider theme-highlight-soft"
+              >
+                <span>✨</span>
+                <span>Nossas Especialidades</span>
+              </span>
+              <h2
+                id="servicos-heading"
+                class="mt-3 font-display text-2xl font-extrabold tracking-tight sm:text-4xl theme-heading"
+              >
+                Tudo para o bem-estar, higiene e alegria do seu pet
+              </h2>
+            </div>
+            <p class="max-w-md text-xs sm:text-sm theme-body">
+              Toque em qualquer card para expandir nosso protocolo de atendimento ou chame direto
+              no WhatsApp da especialidade desejada.
+            </p>
+          </div>
+
+          <!-- Container Bento Grid Dinâmico (adapta para 1, 2, 3 ou 4 pilares ativos) -->
+          <div id="pillars-dynamic-container" class="mt-8">
+            <!-- Renderizado dinamicamente via site.config.json -->
+          </div>
+
+          <!-- Banner Condicional de Táxi Dog Climatizado (Oculto quando has_taxi_dog: false) -->
+          <div
+            id="taxi-dog-banner"
+            class="mt-8 rounded-3xl border p-6 sm:p-8 shadow-lg reveal card-interactive"
+          >
+            <div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+              <div class="flex items-start gap-4">
+                <div
+                  class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-2xl shadow-sm theme-highlight-soft"
+                >
+                  🚗
+                </div>
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span
+                      class="inline-block rounded-full border px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider theme-highlight-soft"
+                    >
+                      Leva &amp; Traz Seguro
+                    </span>
+                    <span
+                      id="taxi-dog-price-badge"
+                      class="hidden rounded-full border px-3 py-0.5 text-[11px] font-extrabold theme-accent-soft"
+                    ></span>
+                  </div>
+                  <h3 class="mt-1.5 font-display text-xl font-extrabold theme-heading sm:text-2xl">
+                    Táxi Dog Climatizado com Caixas Individuais
+                  </h3>
+                  <p class="mt-1 max-w-2xl text-sm leading-relaxed theme-body">
+                    Rotina corrida? Buscamos e entregamos seu pet em domicílio com veículo
+                    climatizado, caixas higienizadas a cada viagem e comunicação em tempo real pelo
+                    WhatsApp.
+                  </p>
+                </div>
+              </div>
+
+              <a
+                id="taxi-dog-cta"
+                href="https://wa.me/5534998765432"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-interactive touch-target inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-sm font-extrabold shadow-md md:w-auto theme-accent-bg"
+              >
+                <span>Solicitar Táxi Dog</span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 5. CARROSSEL INFINITO EM LINHA ÚNICA DE AVALIAÇÕES 5 ESTRELAS       -->
+      <!-- =================================================================== -->
+      <section id="depoimentos" class="py-12 sm:py-16 overflow-hidden">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="mx-auto max-w-2xl text-center reveal">
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 text-xs font-bold uppercase tracking-wider theme-accent-soft"
+            >
+              <span>⭐</span>
+              <span>Carinho Reconhecido pelos Tutores</span>
+            </span>
+            <h2 class="mt-3 font-display text-2xl font-extrabold tracking-tight sm:text-3xl theme-heading">
+              O que dizem sobre o nosso cuidado no Google Maps
+            </h2>
+            <p class="mt-1.5 text-xs sm:text-sm theme-body">
+              Avaliações reais 5 estrelas • Passe o mouse ou toque para pausar a leitura
+            </p>
+          </div>
+
+          <!-- Carrossel Contínuo em Linha Única Horizontal (Ticker / Marquee) -->
+          <div id="testimonials-marquee-wrapper" class="marquee-viewport mt-8 hidden py-2">
+            <div id="testimonials-grid" class="marquee-track">
+              <!-- Preenchido dinamicamente pelo JS em linha única contínua -->
+            </div>
+          </div>
+
+          <!-- Fallback: Banner Consolidado 5 Estrelas do Google Maps quando testimonials === [] -->
+          <div
+            id="testimonials-fallback-banner"
+            class="mt-8 rounded-3xl border p-6 sm:p-8 shadow-lg card-interactive reveal"
+          >
+            <div class="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
+              <div class="space-y-2">
+                <div class="inline-flex items-center gap-1.5 text-amber-400 text-lg font-bold">
+                  <span>★★★★★</span>
+                  <span
+                    id="fallback-rating-value"
+                    class="ml-1 font-display text-xl font-extrabold theme-heading"
+                  >
+                    4.9 / 5.0
+                  </span>
+                </div>
+                <h3 class="font-display text-xl font-extrabold theme-heading sm:text-2xl">
+                  Reputação Pública Verificada no Google Maps
+                </h3>
+                <p class="max-w-xl text-sm leading-relaxed theme-body">
+                  Mais de <strong id="fallback-reviews-count" class="theme-heading">64</strong>
+                  avaliações reais de tutores da região que confiam o cuidado dos seus pets à nossa
+                  equipe.
+                </p>
+              </div>
+
+              <a
+                id="fallback-maps-link"
+                href="#localizacao"
+                class="btn-interactive touch-target inline-flex shrink-0 items-center gap-2 rounded-2xl border px-6 py-3.5 text-sm font-extrabold theme-surface theme-heading"
+              >
+                <span>Ver Ficha e Localização</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 6. DÚVIDAS FREQUENTES 100% ORGÂNICAS E CONTEXTUAIS (FAQ)            -->
+      <!-- =================================================================== -->
+      <section id="faq" class="py-12 sm:py-16">
+        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div class="text-center reveal">
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 text-xs font-bold uppercase tracking-wider theme-accent-soft"
+            >
+              <span>💬</span>
+              <span>Tire suas Dúvidas</span>
+            </span>
+            <h2 class="mt-3 font-display text-2xl font-extrabold tracking-tight sm:text-3xl theme-heading">
+              Perguntas Frequentes
+            </h2>
+          </div>
+
+          <div id="faq-container" class="mt-8 space-y-3.5"></div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 7. LOCALIZAÇÃO, HORÁRIOS EMPILHADOS & MAPA SOB DEMANDA (FACADE)     -->
+      <!-- =================================================================== -->
+      <section id="localizacao" class="py-12 sm:py-16">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            <!-- Bloco de Horários Empilhados Sem Cortes e Endereço -->
+            <div class="flex flex-col justify-between rounded-3xl border p-6 sm:p-8 lg:col-span-5 card-interactive reveal">
+              <div class="space-y-5">
+                <div>
+                  <span
+                    class="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 text-xs font-bold uppercase tracking-wider theme-accent-soft"
+                  >
+                    <span>📍</span>
+                    <span>Visite Nossa Unidade</span>
+                  </span>
+                </div>
+
+                <h2
+                  id="location-business-name"
+                  class="font-display text-2xl font-extrabold theme-heading"
+                >
+                  Villa Pet Center
+                </h2>
+
+                <div class="space-y-4 text-sm">
+                  <!-- Endereço -->
+                  <div class="flex items-start gap-3 rounded-2xl border p-3.5 theme-bg theme-border">
+                    <span class="text-lg shrink-0" aria-hidden="true">🗺️</span>
+                    <div class="min-w-0 flex-1">
+                      <p class="text-xs font-bold uppercase tracking-wider theme-accent-text">
+                        Endereço
+                      </p>
+                      <p id="location-address" class="mt-0.5 font-medium leading-relaxed theme-heading">
+                        Av. Rondon Pacheco, 1850 - Saraiva, Uberlândia - MG
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Horários de Funcionamento Empilhados em Linhas Separadas -->
+                  <div class="rounded-2xl border p-4 theme-bg theme-border space-y-2.5">
+                    <p class="text-xs font-bold uppercase tracking-wider theme-accent-text">
+                      Horário de Atendimento
+                    </p>
+
+                    <div id="location-hours" class="space-y-2 pt-1">
+                      <!-- Linhas empilhadas renderizadas via JS: Segunda a Sexta e Sábado -->
+                    </div>
+                  </div>
+
+                  <!-- Telefone / WhatsApp -->
+                  <div class="flex items-start gap-3 rounded-2xl border p-3.5 theme-bg theme-border">
+                    <span class="text-lg shrink-0" aria-hidden="true">📞</span>
+                    <div>
+                      <p class="text-xs font-bold uppercase tracking-wider theme-accent-text">
+                        Telefone / WhatsApp Direto
+                      </p>
+                      <p id="location-phone" class="mt-0.5 font-bold theme-heading">
+                        (34) 99876-5432
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6 flex flex-col gap-2.5 sm:flex-row">
+                <a
+                  id="location-route-btn"
+                  href="https://www.google.com/maps/search/?api=1&query=Uberlandia"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-interactive touch-target flex-1 inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-xs font-extrabold shadow-md theme-accent-bg"
+                >
+                  <span>Abrir Rota no Google Maps</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Facade de Mapa Sob Demanda (Zero peso inicial) -->
+            <div class="lg:col-span-7 reveal">
+              <div
+                id="map-facade"
+                class="relative flex min-h-[340px] h-full flex-col items-center justify-center overflow-hidden rounded-3xl border p-6 text-center card-interactive"
+              >
+                <div class="mx-auto max-w-md space-y-4">
+                  <div
+                    class="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl text-3xl shadow-sm theme-accent-soft"
+                  >
+                    🗺️
+                  </div>
+                  <h3 class="font-display text-xl font-extrabold theme-heading">
+                    Mapa Interativo da Região
+                  </h3>
+                  <p id="map-facade-address" class="text-xs leading-relaxed theme-body">
+                    Para economizar seus dados móveis e garantir carregamento instantâneo, o mapa
+                    só é ativado quando você solicitar.
+                  </p>
+                  <div class="flex flex-wrap items-center justify-center gap-3 pt-1">
+                    <button
+                      id="load-map-btn"
+                      type="button"
+                      class="btn-interactive touch-target inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-xs font-extrabold shadow-md theme-accent-bg"
+                    >
+                      <span>Carregar Mapa Aqui</span>
+                    </button>
+                    <a
+                      id="facade-direct-maps-link"
+                      href="https://www.google.com/maps"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="btn-interactive touch-target inline-flex items-center gap-1.5 rounded-2xl border px-4 py-3 text-xs font-bold theme-surface theme-heading"
+                    >
+                      <span>Abrir App do Maps</span>
+                      <span aria-hidden="true">↗</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- =================================================================== -->
+    <!-- RODAPÉ COM COMPLIANCE CONDICIONAL (CFMV APENAS SE CLÍNICA ATIVA)    -->
+    <!-- =================================================================== -->
+    <footer class="border-t py-10 text-xs theme-surface theme-border">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-6">
+        <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+          <div>
+            <p
+              id="footer-business-name"
+              class="font-display text-base font-extrabold theme-heading"
+            >
+              Villa Pet Center
+            </p>
+            <p id="footer-address" class="mt-0.5 theme-body">
+              Av. Rondon Pacheco, 1850 - Saraiva, Uberlândia - MG
+            </p>
+          </div>
+
+          <div
+            id="footer-crmv-badge"
+            class="rounded-2xl border px-3.5 py-2 font-medium theme-accent-soft"
+          >
+            Responsável Técnico(a) Médico(a) Veterinário(a) — CRMV/MG Sob Consulta
+          </div>
+        </div>
+
+        <div class="flex flex-col justify-between gap-3 border-t pt-5 sm:flex-row theme-border theme-body">
+          <p id="footer-legal-text">
+            © <span id="footer-year">2026</span> • Atendimento ético em conformidade com a Lei
+            Geral de Proteção de Dados (Lei nº 13.709/2018).
+          </p>
+          <a
+            id="footer-privacy-link"
+            href="./privacidade.html"
+            class="font-bold underline hover:opacity-80 theme-heading"
+          >
+            Política de Privacidade e LGPD
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- =================================================================== -->
+    <!-- 8. BOTÃO FLUTUANTE DE WHATSAPP OFICIAL COM SOMBRA DIFUSA & PULSO    -->
+    <!-- =================================================================== -->
+    <a
+      id="floating-whatsapp"
+      href="https://wa.me/5534998765432"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Falar agora pelo WhatsApp"
+      class="whatsapp-floating-btn touch-target fixed bottom-5 right-5 z-40 flex items-center gap-2.5 rounded-full bg-emerald-600 px-4 py-3.5 text-white transition hover:bg-emerald-500 sm:px-5"
+    >
+      <!-- Halo Pulsante Sutil -->
+      <span
+        class="pointer-events-none absolute -inset-1 rounded-full bg-emerald-400/25 animate-ping"
+        style="animation-duration: 2.8s"
+        aria-hidden="true"
+      ></span>
+
+      <span class="relative flex h-3 w-3 shrink-0">
+        <span
+          class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-200 opacity-75"
+        ></span>
+        <span class="relative inline-flex h-3 w-3 rounded-full bg-white"></span>
+      </span>
+      <svg class="relative h-5 w-5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"
+        />
+      </svg>
+      <span class="relative font-display text-xs font-extrabold tracking-wide sm:text-sm">
+        Agendar Agora
+      </span>
+    </a>
+
+    <!-- =================================================================== -->
+    <!-- ENGINE JS INLINE: SINCRONIZAÇÃO EM CASCATA, GARANTIAS, MARQUEE, ETC -->
+    <!-- =================================================================== -->
+    <script>
+      ;(function () {
+        const PRESET_THEMES = {
+          'teal-honey': {
+            mode: 'light',
+            backgroundColor: '#f8fafc',
+            surfaceColor: '#ffffff',
+            primaryColor: '#1e293b',
+            bodyText: '#475569',
+            accentColor: '#0d9488',
+            highlightColor: '#f59e0b',
+            borderColor: '#e2e8f0',
+          },
+          'sage-earth': {
+            mode: 'light',
+            backgroundColor: '#f9f7f2',
+            surfaceColor: '#ffffff',
+            primaryColor: '#264653',
+            bodyText: '#475569',
+            accentColor: '#6096ba',
+            highlightColor: '#e76f51',
+            borderColor: '#e5e0d8',
+          },
+          'lavender-mint': {
+            mode: 'light',
+            backgroundColor: '#fafaf9',
+            surfaceColor: '#ffffff',
+            primaryColor: '#2e294e',
+            bodyText: '#52525b',
+            accentColor: '#8b5cf6',
+            highlightColor: '#10b981',
+            borderColor: '#f3e8ff',
+          },
+          'navy-sunshine': {
+            mode: 'light',
+            backgroundColor: '#f1f5f9',
+            surfaceColor: '#ffffff',
+            primaryColor: '#1e3a8a',
+            bodyText: '#334155',
+            accentColor: '#3b82f6',
+            highlightColor: '#f59e0b',
+            borderColor: '#cbd5e1',
+          },
+          'boutique-dark': {
+            mode: 'dark',
+            backgroundColor: '#121214',
+            surfaceColor: '#1c1c21',
+            primaryColor: '#f4f4f5',
+            bodyText: '#a1a1aa',
+            accentColor: '#d97706',
+            highlightColor: '#fbbf24',
+            borderColor: '#27272a',
+          },
+        }
+
+        // Pool Interno de Garantias por Categoria (Regra Dinâmica das 4 Garantias)
+        const GUARANTEES_POOL = {
+          taxi_dog: [
+            {
+              category: 'taxi_dog',
+              icon: '🚗',
+              title: 'Táxi Dog Climatizado com Caixas Individuais',
+              description:
+                'Busca e entrega com segurança, caixas higienizadas a cada viagem e ar-condicionado.',
+            },
+          ],
+          grooming: [
+            {
+              category: 'grooming',
+              icon: '🧼',
+              title: 'Toalhas 100% Esterilizadas e Lacradas',
+              description:
+                'Higienizadas em alta temperatura e embaladas individualmente para cada pet.',
+            },
+            {
+              category: 'grooming',
+              icon: '🌡️',
+              title: 'Água Quentinha & Produtos Hipoalergênicos',
+              description:
+                'Temperatura controlada e dermocosméticos suaves que protegem a pele e os olhos.',
+            },
+            {
+              category: 'grooming',
+              icon: '✂️',
+              title: 'Manejo Gentil & Secagem Silenciosa',
+              description:
+                'Equipe paciente que respeita o tempo do pet, sem contenção forçada ou estresse.',
+            },
+            {
+              category: 'grooming',
+              icon: '✨',
+              title: 'Assepsia Rigorosa de Instrumentais',
+              description:
+                'Lâminas, tesouras, pentes e banheiras desinfetados a cada atendimento individual.',
+            },
+          ],
+          veterinary: [
+            {
+              category: 'veterinary',
+              icon: '🩺',
+              title: 'Atendimento Clínico Sem Estresse',
+              description:
+                'Consultórios acolhedores com manejo humanizado e equipamentos modernos.',
+            },
+            {
+              category: 'veterinary',
+              icon: '❄️',
+              title: 'Vacinas Importadas sob Controle Térmico',
+              description:
+                'Imunobiológicos éticos armazenados em câmara refrigerada com monitoramento contínuo.',
+            },
+            {
+              category: 'veterinary',
+              icon: '🔬',
+              title: 'Diagnósticos e Check-up Preventivo',
+              description:
+                'Exames laboratoriais rápidos e protocolos individualizados para cada fase da vida.',
+            },
+            {
+              category: 'veterinary',
+              icon: '❤️‍🩹',
+              title: 'Orientação Veterinária Transparente',
+              description:
+                'Acompanhamento próximo do tutor em cada etapa da consulta ou prevenção.',
+            },
+          ],
+          petshop: [
+            {
+              category: 'petshop',
+              icon: '🛡️',
+              title: 'Produtos Originais com Procedência',
+              description:
+                'Rações Super Premium e medicamentos adquiridos diretamente dos distribuidores oficiais.',
+            },
+            {
+              category: 'petshop',
+              icon: '📦',
+              title: 'Validade e Lotes Rigorosamente Controlados',
+              description:
+                'Armazenamento climatizado que preserva a nutrição das rações e a eficácia farmacêutica.',
+            },
+            {
+              category: 'petshop',
+              icon: '⚡',
+              title: 'Delivery Rápido pelo WhatsApp',
+              description:
+                'Reposição ágil de rações, antipulgas, areias e petiscos entregue direto na sua porta.',
+            },
+            {
+              category: 'petshop',
+              icon: '🥩',
+              title: 'Curadoria Nutricional Especializada',
+              description:
+                'Linha completa de nutrição coadjuvante, natural e específica para cada porte e idade.',
+            },
+          ],
+          hotel: [
+            {
+              category: 'hotel',
+              icon: '🏡',
+              title: 'Espaço Livre 100% Sem Gaiolas ou Baias',
+              description:
+                'Ambiente amplo, seguro e acolhedor para socialização positiva e descanso confortável.',
+            },
+            {
+              category: 'hotel',
+              icon: '📹',
+              title: 'Monitoramento Contínuo & Vídeos Diários',
+              description:
+                'Supervisão presencial constante e atualizações no WhatsApp para você acompanhar tudo.',
+            },
+            {
+              category: 'hotel',
+              icon: '🎾',
+              title: 'Rotina de Enriquecimento Ambiental',
+              description:
+                'Atividades recreativas separadas por porte e energia para gastar energia com saúde.',
+            },
+            {
+              category: 'hotel',
+              icon: '🧼',
+              title: 'Higienização e Controle Sanitário Estrito',
+              description:
+                'Conferência rigorosa de controle de ectoparasitas e higiene para proteger a matilha.',
+            },
+          ],
+        }
+
+        // Pool Interno de FAQ por Categoria (100% Orgânico e Contextual)
+        const FAQ_POOL = {
+          grooming: [
+            {
+              category: 'grooming',
+              question: 'Preciso agendar horário para o Banho & Tosa ou posso levar direto?',
+              answer:
+                'Recomendamos agendar previamente pelo nosso WhatsApp. Assim garantimos atendimento pontual e reduzimos o tempo de espera, proporcionando uma experiência muito mais tranquila e sem estresse para o seu pet.',
+            },
+            {
+              category: 'grooming',
+              question: 'Quais cuidados de higiene são tomados para evitar alergias ou contaminações?',
+              answer:
+                'Utilizamos exclusivamente toalhas esterilizadas em embalagens individuais lacradas, produtos hipoalergênicos aprovados e desinfecção completa de mesas, banheiras e instrumentais entre cada atendimento.',
+            },
+          ],
+          taxi_dog: [
+            {
+              category: 'taxi_dog',
+              question: 'Como funciona o serviço de Táxi Dog (Leva e Traz)?',
+              answer:
+                'Nosso transporte busca e entrega o seu pet com total segurança em caixas de transporte individuais, higienizadas a cada viagem e em veículo climatizado. Basta solicitar o Táxi Dog no momento do agendamento pelo WhatsApp.',
+            },
+          ],
+          veterinary: [
+            {
+              category: 'veterinary',
+              question: 'A clínica aplica vacinas importadas? Preciso levar a carteirinha?',
+              answer:
+                'Sim! Trabalhamos com vacinas importadas armazenadas sob rigoroso controle de temperatura. Sempre traga a carteirinha de vacinação anterior para que o Médico Veterinário avalie o protocolo ideal.',
+            },
+            {
+              category: 'veterinary',
+              question: 'Como funcionam as consultas veterinárias e exames preventivos?',
+              answer:
+                'Realizamos consultas com hora marcada para evitar espera na recepção, priorizando um manejo calmo e humanizado tanto para cães quanto para gatos.',
+            },
+          ],
+          petshop: [
+            {
+              category: 'petshop',
+              question: 'Vocês fazem entrega de rações, antipulgas e medicamentos em domicílio?',
+              answer:
+                'Sim! Basta enviar uma mensagem no nosso WhatsApp informando a marca da ração, antipulgas ou item desejado. Conferimos o estoque na hora e enviamos com rapidez para o seu endereço.',
+            },
+            {
+              category: 'petshop',
+              question: 'As rações e produtos possuem garantia de procedência e validade longa?',
+              answer:
+                'Trabalhamos exclusivamente com distribuidores oficiais das marcas Super Premium e linhas especiais, com controle rigoroso de lote, integridade da embalagem e validade.',
+            },
+          ],
+          hotel: [
+            {
+              category: 'hotel',
+              question: 'Como funciona a adaptação no Hotelzinho e Creche (Daycare)?',
+              answer:
+                'Os pets ficam em espaço amplo, 100% livre de gaiolas, separados por porte e perfil de energia. Enviamos fotos e vídeos diários pelo WhatsApp para você acompanhar toda a rotina de brincadeiras e descanso.',
+            },
+            {
+              category: 'hotel',
+              question: 'Quais são os requisitos para hospedar meu pet ou matriculá-lo na creche?',
+              answer:
+                'Para segurança de todos os hóspedes, exigimos que o pet esteja com o controle de pulgas e carrapatos em dia e passe por uma breve avaliação de sociabilidade.',
+            },
+          ],
+          general: [
+            {
+              category: 'general',
+              question: 'Quais são as formas de pagamento aceitas?',
+              answer:
+                'Aceitamos PIX, cartões de débito, cartões de crédito e dinheiro, além de pacotes mensais personalizados pelo nosso WhatsApp.',
+            },
+          ],
+        }
+
+        function buildWhatsAppUrl(number, message) {
+          const clean = String(number || '5534998765432').replace(/\D/g, '')
+          const text = encodeURIComponent(
+            message || 'Olá! Gostaria de agendar um atendimento para o meu pet.',
+          )
+          return `https://wa.me/${clean}?text=${text}`
+        }
+
+        function applyThemeTokens(config) {
+          const root = document.documentElement
+          const themeNode = config.theme || {}
+          const visualsNode = config.visuals || {}
+          const presetKey = themeNode.preset || visualsNode.theme_preset || 'teal-honey'
+          const basePreset = PRESET_THEMES[presetKey] || PRESET_THEMES['teal-honey']
+
+          const bg = themeNode.backgroundColor || basePreset.backgroundColor
+          const surface = themeNode.surfaceColor || basePreset.surfaceColor
+          const primary = themeNode.primaryColor || basePreset.primaryColor
+          const body = themeNode.bodyText || basePreset.bodyText
+          const accent = themeNode.accentColor || basePreset.accentColor
+          const highlight = themeNode.highlightColor || basePreset.highlightColor
+          const border = themeNode.borderColor || basePreset.borderColor
+          const mode = themeNode.mode || basePreset.mode || 'light'
+
+          root.dataset.mode = mode
+          root.style.setProperty('--bg-primary', bg)
+          root.style.setProperty('--bg-surface', surface)
+          root.style.setProperty('--text-primary', primary)
+          root.style.setProperty('--text-secondary', body)
+          root.style.setProperty('--color-accent', accent)
+          root.style.setProperty('--color-highlight', highlight)
+          root.style.setProperty('--border-color', border)
+        }
+
+        // Resolve estado estrito e em cascata de todos os serviços ativos
+        function resolveActiveFeatures(config) {
+          const b = config.business || {}
+          const pillars = Array.isArray(config.pillars) ? config.pillars : []
+
+          const findPillar = (id) => pillars.find((p) => p && p.id === id)
+          const isPillarEnabled = (id, explicitFlagRoot, explicitFlagBiz) => {
+            if (explicitFlagRoot === false || explicitFlagBiz === false) return false
+            const p = findPillar(id)
+            if (p) return p.enabled !== false
+            if (explicitFlagRoot === true || explicitFlagBiz === true) return true
+            return false
+          }
+
+          const hasTaxiDog = !(
+            config.has_taxi_dog === false ||
+            b.has_taxi_dog === false ||
+            b.taxi_dog_enabled === false
+          )
+
+          const hasGrooming = isPillarEnabled('grooming', config.has_grooming, b.has_grooming)
+          const hasVet = isPillarEnabled('veterinary', config.has_vet, b.has_vet)
+          const hasShop = isPillarEnabled('petshop', config.has_shop, b.has_shop)
+          const hasHotel = isPillarEnabled('hotel', config.has_hotel, b.has_hotel)
+
+          const activePillarIds = []
+          if (hasGrooming) activePillarIds.push('grooming')
+          if (hasVet) activePillarIds.push('veterinary')
+          if (hasShop) activePillarIds.push('petshop')
+          if (hasHotel) activePillarIds.push('hotel')
+
+          // Fallback de segurança caso todos tenham sido desativados manualmente
+          if (activePillarIds.length === 0) {
+            activePillarIds.push('grooming')
+          }
+
+          return {
+            hasTaxiDog,
+            hasGrooming: activePillarIds.includes('grooming'),
+            hasVet: activePillarIds.includes('veterinary'),
+            hasShop: activePillarIds.includes('petshop'),
+            hasHotel: activePillarIds.includes('hotel'),
+            activePillarIds,
+          }
+        }
+
+        // Regra Dinâmica das 4 Garantias: Sempre exatamente 4 cards coerentes com os pilares ativos
+        function buildDynamicTrustBadges(features) {
+          const activeIds = features.activePillarIds
+          const result = []
+
+          if (features.hasTaxiDog) {
+            // 1 slot obrigatório do Táxi Dog + 3 slots distribuídos nos pilares ativos
+            result.push(GUARANTEES_POOL.taxi_dog[0])
+            if (activeIds.length === 1) {
+              const p1 = GUARANTEES_POOL[activeIds[0]] || GUARANTEES_POOL.grooming
+              result.push(p1[0], p1[1], p1[2])
+            } else if (activeIds.length === 2) {
+              const p1 = GUARANTEES_POOL[activeIds[0]] || GUARANTEES_POOL.grooming
+              const p2 = GUARANTEES_POOL[activeIds[1]] || GUARANTEES_POOL.petshop
+              result.push(p1[0], p1[1], p2[0])
+            } else {
+              // 3 ou 4 pilares ativos: 1 de cada um dos 3 primeiros pilares ativos
+              activeIds.slice(0, 3).forEach((id) => {
+                const pool = GUARANTEES_POOL[id]
+                if (pool && pool[0]) result.push(pool[0])
+              })
+            }
+          } else {
+            // Sem Táxi Dog: os 4 slots vêm integralmente dos pilares ativos
+            if (activeIds.length === 1) {
+              const p1 = GUARANTEES_POOL[activeIds[0]] || GUARANTEES_POOL.grooming
+              result.push(p1[0], p1[1], p1[2], p1[3])
+            } else if (activeIds.length === 2) {
+              const p1 = GUARANTEES_POOL[activeIds[0]] || GUARANTEES_POOL.grooming
+              const p2 = GUARANTEES_POOL[activeIds[1]] || GUARANTEES_POOL.petshop
+              result.push(p1[0], p1[1], p2[0], p2[1])
+            } else if (activeIds.length === 3) {
+              const p1 = GUARANTEES_POOL[activeIds[0]] || GUARANTEES_POOL.grooming
+              const p2 = GUARANTEES_POOL[activeIds[1]] || GUARANTEES_POOL.petshop
+              const p3 = GUARANTEES_POOL[activeIds[2]] || GUARANTEES_POOL.hotel
+              result.push(p1[0], p1[1], p2[0], p3[0])
+            } else {
+              activeIds.slice(0, 4).forEach((id) => {
+                const pool = GUARANTEES_POOL[id]
+                if (pool && pool[0]) result.push(pool[0])
+              })
+            }
+          }
+
+          return result.slice(0, 4)
+        }
+
+        function renderTrustBadges(features) {
+          const grid = document.getElementById('trust-badges-grid')
+          if (!grid) return
+          const badges = buildDynamicTrustBadges(features)
+
+          grid.innerHTML = badges
+            .map(
+              (b, idx) => `
+              <article
+                class="card-interactive rounded-3xl border p-5 flex flex-col justify-between reveal"
+                style="--reveal-delay: ${idx * 120}ms"
+              >
+                <div>
+                  <div class="flex h-12 w-12 items-center justify-center rounded-2xl text-2xl theme-accent-soft">
+                    ${b.icon}
+                  </div>
+                  <h3 class="mt-4 font-display text-base font-extrabold theme-heading">
+                    ${b.title}
+                  </h3>
+                  <p class="mt-1.5 text-xs leading-relaxed theme-body">
+                    ${b.description}
+                  </p>
+                </div>
+              </article>
+            `,
+            )
+            .join('')
+        }
+
+        function resolvePillarImage(pillarId, pillarObj, config) {
+          const v = config.visuals || {}
+          if (pillarObj && pillarObj.image) return pillarObj.image
+          const mapByKey = {
+            grooming:
+              config.service_grooming_image ||
+              v.service_grooming_image ||
+              './assets/especialidade-banho-tosa.jpg',
+            veterinary:
+              config.service_clinic_image ||
+              v.service_clinic_image ||
+              './assets/especialidade-clinica-vet.jpg',
+            petshop:
+              config.service_shop_image ||
+              v.service_shop_image ||
+              './assets/especialidade-pet-farmacia.jpg',
+            hotel:
+              config.service_hotel_image ||
+              v.service_hotel_image ||
+              './assets/especialidade-hotel-daycare.jpg',
+          }
+          return mapByKey[pillarId] || './assets/especialidade-banho-tosa.jpg'
+        }
+
+        function renderBentoPillars(config, features, waNumber) {
+          const container = document.getElementById('pillars-dynamic-container')
+          if (!container) return
+
+          const rawPillars = Array.isArray(config.pillars) ? config.pillars : []
+          const activePillars = features.activePillarIds
+            .map((id) => rawPillars.find((p) => p && p.id === id))
+            .filter(Boolean)
+
+          const count = activePillars.length
+          if (count === 0) return
+
+          const iconMap = {
+            grooming: '🛁',
+            veterinary: '🩺',
+            petshop: '🛍️',
+            hotel: '🏨',
+          }
+
+          let gridClass = 'grid grid-cols-1 gap-6 md:grid-cols-2'
+          if (count === 1) gridClass = 'grid grid-cols-1 gap-6 max-w-3xl mx-auto'
+          else if (count === 2) gridClass = 'grid grid-cols-1 gap-6 md:grid-cols-2'
+          else if (count === 3) gridClass = 'grid grid-cols-1 gap-6 lg:grid-cols-3'
+
+          container.className = `mt-8 ${gridClass}`
+          const pricing = config.pricing || {}
+
+          container.innerHTML = activePillars
+            .map((pillar, idx) => {
+              const icon = pillar.icon || iconMap[pillar.id] || '🐾'
+              const imgSrc = resolvePillarImage(pillar.id, pillar, config)
+              const waHref = buildWhatsAppUrl(waNumber, pillar.whatsapp_message)
+              const items = Array.isArray(pillar.items) ? pillar.items : []
+              const highlights =
+                pillar.details && Array.isArray(pillar.details.highlights)
+                  ? pillar.details.highlights
+                  : []
+              const drawerId = `pillar-drawer-${idx}`
+              const groomingPriceVal =
+                pillar.id === 'grooming'
+                  ? String(pillar.price_badge || pricing.grooming_starting_at || '').trim()
+                  : ''
+              const plansPriceVal =
+                pillar.id === 'grooming'
+                  ? String(pillar.plans_badge || pricing.plans_starting_at || '').trim()
+                  : ''
+
+              return `
+                <article
+                  class="group card-interactive overflow-hidden rounded-3xl border flex flex-col justify-between cursor-pointer reveal"
+                  style="--reveal-delay: ${idx * 120}ms"
+                  data-pillar-card="${drawerId}"
+                >
+                  <div>
+                    <!-- Topo com Imagem Padronizada (rounded-t-2xl, aspect-video, zoom no hover + fallback gracioso) -->
+                    <div class="relative aspect-video w-full overflow-hidden rounded-t-2xl bg-gradient-to-br from-teal-500/10 via-amber-400/5 to-emerald-500/10">
+                      <img
+                        src="${imgSrc}"
+                        alt="${pillar.title || 'Especialidade'}"
+                        loading="lazy"
+                        onerror="this.onerror=null; this.src='./assets/hero-pet.svg';"
+                        class="relative z-10 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                      />
+                      <div class="absolute inset-x-0 bottom-0 z-20 flex items-center justify-between gap-2 bg-gradient-to-t from-slate-950/70 via-slate-950/30 to-transparent p-4">
+                        <span class="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-slate-950/65 px-3 py-1 text-xs font-bold text-white backdrop-blur-md">
+                          <span>${icon}</span>
+                          <span>${pillar.badge || 'Especialidade'}</span>
+                        </span>
+                        <button
+                          type="button"
+                          data-pillar-toggle="${drawerId}"
+                          class="rounded-full border border-white/25 bg-white/90 px-3 py-1 text-[11px] font-extrabold text-slate-900 shadow-sm backdrop-blur-md"
+                        >
+                          Detalhes +
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Conteúdo do Card -->
+                    <div class="p-6 sm:p-7 pb-0">
+                      <h3 class="font-display text-xl font-extrabold sm:text-2xl theme-heading">
+                        ${pillar.title || ''}
+                      </h3>
+                      <p class="mt-1.5 text-xs sm:text-sm leading-relaxed theme-body">
+                        ${pillar.description || pillar.subtitle || ''}
+                      </p>
+
+                      ${
+                        groomingPriceVal || plansPriceVal
+                          ? `<div class="mt-3.5 flex flex-wrap items-center gap-2">
+                              ${
+                                groomingPriceVal
+                                  ? `<span class="inline-flex items-center gap-1.5 rounded-xl border px-3 py-1 text-xs font-extrabold theme-accent-soft">
+                                      <span>🏷️</span>
+                                      <span>Banho &amp; Tosa: ${groomingPriceVal}</span>
+                                    </span>`
+                                  : ''
+                              }
+                              ${
+                                plansPriceVal
+                                  ? `<span class="inline-flex items-center gap-1.5 rounded-xl border px-3 py-1 text-xs font-extrabold theme-highlight-soft">
+                                      <span>📅</span>
+                                      <span>${plansPriceVal}</span>
+                                    </span>`
+                                  : ''
+                              }
+                            </div>`
+                          : ''
+                      }
+
+                      <ul class="mt-4 space-y-2 text-xs sm:text-sm">
+                        ${items
+                          .map(
+                            (item) => `
+                          <li class="flex items-start gap-2">
+                            <span class="mt-0.5 font-bold theme-accent-text">✓</span>
+                            <span class="theme-heading font-medium">${item}</span>
+                          </li>
+                        `,
+                          )
+                          .join('')}
+                      </ul>
+
+                      <!-- Gaveta Expansível de Protocolo -->
+                      <div id="${drawerId}" class="pillar-details-drawer">
+                        <div class="pillar-details-inner rounded-2xl border p-4 theme-bg theme-border">
+                          <p class="font-display text-xs font-extrabold uppercase tracking-wider theme-accent-text">
+                            ${(pillar.details && pillar.details.protocol_title) || 'Protocolo de Cuidado'}
+                          </p>
+                          <p class="mt-1 text-xs leading-relaxed theme-body">
+                            ${(pillar.details && pillar.details.protocol_text) || ''}
+                          </p>
+                          ${
+                            highlights.length > 0
+                              ? `<div class="mt-2.5 flex flex-wrap gap-1.5">
+                                  ${highlights
+                                    .map(
+                                      (h) =>
+                                        `<span class="rounded-full border px-2.5 py-0.5 text-[10px] font-bold theme-surface theme-heading">${h}</span>`,
+                                    )
+                                    .join('')}
+                                </div>`
+                              : ''
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="p-6 sm:p-7 pt-5 mt-5 border-t theme-border">
+                    <a
+                      href="${waHref}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onclick="event.stopPropagation()"
+                      class="btn-interactive touch-target flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-xs sm:text-sm font-extrabold shadow-md theme-accent-bg"
+                    >
+                      <span>${pillar.cta_label || 'Agendar pelo WhatsApp'}</span>
+                      <span aria-hidden="true">→</span>
+                    </a>
+                  </div>
+                </article>
+              `
+            })
+            .join('')
+
+          // Interação de expansão dos cards de pilares
+          container.querySelectorAll('[data-pillar-card]').forEach((card) => {
+            const drawerId = card.getAttribute('data-pillar-card')
+            const drawer = document.getElementById(drawerId)
+            const btn = card.querySelector(`[data-pillar-toggle="${drawerId}"]`)
+            if (!drawer) return
+
+            card.addEventListener('click', () => {
+              const expanded = drawer.classList.toggle('is-expanded')
+              card.classList.toggle('is-active-card', expanded)
+              if (btn) btn.textContent = expanded ? 'Ocultar −' : 'Detalhes +'
+            })
+          })
+        }
+
+        // Carrossel Infinito em Linha Única Horizontal (Prioriza 5 Estrelas)
+        function renderTestimonials(testimonials, metrics) {
+          const marqueeWrapper = document.getElementById('testimonials-marquee-wrapper')
+          const track = document.getElementById('testimonials-grid')
+          const fallback = document.getElementById('testimonials-fallback-banner')
+          if (!marqueeWrapper || !track || !fallback) return
+
+          const valid = (Array.isArray(testimonials) ? testimonials : []).filter(
+            (t) => t && String(t.text || '').trim().length > 0,
+          )
+
+          if (valid.length === 0) {
+            marqueeWrapper.classList.add('hidden')
+            fallback.classList.remove('hidden')
+            const rEl = document.getElementById('fallback-rating-value')
+            const cEl = document.getElementById('fallback-reviews-count')
+            if (rEl && metrics && metrics.rating) rEl.textContent = `${metrics.rating} / 5.0`
+            if (cEl && metrics && metrics.reviews_count)
+              cEl.textContent = String(metrics.reviews_count)
+            return
+          }
+
+          // Prioriza estritamente avaliações 5 estrelas quando disponíveis
+          const fiveStarOnly = valid.filter((t) => (Number(t.stars) || 5) >= 5)
+          const prioritized = fiveStarOnly.length > 0 ? fiveStarOnly : valid
+
+          fallback.classList.add('hidden')
+          marqueeWrapper.classList.remove('hidden')
+
+          // Garante número mínimo de cards na pista antes de duplicar para loop contínuo sem buracos
+          let baseCards = prioritized.slice(0, 6)
+          while (baseCards.length < 4) {
+            baseCards = baseCards.concat(prioritized)
+          }
+          baseCards = baseCards.slice(0, Math.max(4, prioritized.length))
+
+          const buildCardHtml = (rev, isClone) => {
+            const starsCount = Math.max(1, Math.min(5, Number(rev.stars) || 5))
+            const starsStr = '★'.repeat(starsCount)
+            return `
+              <article
+                ${isClone ? 'aria-hidden="true"' : ''}
+                class="card-interactive flex w-[300px] sm:w-[350px] shrink-0 flex-col justify-between rounded-3xl border p-6"
+              >
+                <div>
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="text-base tracking-widest text-amber-400">${starsStr}</span>
+                    <span class="rounded-full border px-2.5 py-0.5 text-[10px] font-bold theme-accent-soft">
+                      5.0 ★ Google Maps
+                    </span>
+                  </div>
+                  <p class="mt-3 text-xs sm:text-sm leading-relaxed theme-heading">
+                    “${rev.text}”
+                  </p>
+                </div>
+                <div class="mt-4 flex items-center gap-2.5 border-t pt-3 theme-border">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-extrabold theme-accent-soft">
+                    ${String(rev.author || 'T').charAt(0).toUpperCase()}
+                  </span>
+                  <div class="min-w-0">
+                    <p class="truncate font-display text-xs font-extrabold theme-heading">
+                      ${rev.author || 'Tutor(a) Verificado(a)'}
+                    </p>
+                    <p class="text-[10px] theme-body">Avaliação Verificada • Google Maps</p>
+                  </div>
+                </div>
+              </article>
+            `
+          }
+
+          // Duplica os cards na track única para que translate3d(-50%, 0, 0) faça loop infinito sem saltos
+          const originalHtml = baseCards.map((r) => buildCardHtml(r, false)).join('')
+          const cloneHtml = baseCards.map((r) => buildCardHtml(r, true)).join('')
+          track.innerHTML = originalHtml + cloneHtml
+
+          // Pausa suave no touch mobile ao segurar com o dedo
+          marqueeWrapper.addEventListener(
+            'touchstart',
+            () => marqueeWrapper.classList.add('is-paused'),
+            { passive: true },
+          )
+          marqueeWrapper.addEventListener(
+            'touchend',
+            () => marqueeWrapper.classList.remove('is-paused'),
+            { passive: true },
+          )
+        }
+
+        // Classificador semântico de perguntas do FAQ para eliminar perguntas fantasma
+        function inferFaqCategory(item) {
+          if (item && item.category) return item.category
+          const text = `${(item && item.question) || ''} ${(item && item.answer) || ''}`.toLowerCase()
+          if (/t[aá]xi\s*dog|leva\s*e\s*traz|transporte|busca/.test(text)) return 'taxi_dog'
+          if (/vacina|cl[ií]nica|veterin[aá]ri|consulta|exame|carteirinha|crmv/.test(text))
+            return 'veterinary'
+          if (/hotel|creche|daycare|hospedagem|baia|gaiola/.test(text)) return 'hotel'
+          if (/ra[cç][aã]o|ra[cç][oõ]es|farm[aá]cia|medicamento|antipulga|delivery|entrega/.test(text))
+            return 'petshop'
+          if (/banho|tosa|toalha|alergia|shampoo|hipoalerg|pelagem/.test(text)) return 'grooming'
+          return 'general'
+        }
+
+        function isCategoryActive(category, features) {
+          if (category === 'taxi_dog') return features.hasTaxiDog
+          if (category === 'veterinary') return features.hasVet
+          if (category === 'grooming') return features.hasGrooming
+          if (category === 'petshop') return features.hasShop
+          if (category === 'hotel') return features.hasHotel
+          return true
+        }
+
+        function renderFaq(configFaq, features) {
+          const container = document.getElementById('faq-container')
+          if (!container) return
+
+          // 1. Filtra perguntas vindas do JSON mantendo APENAS as de serviços ativos
+          const incoming = Array.isArray(configFaq) ? configFaq : []
+          const filtered = incoming.filter((item) => {
+            if (!item || !item.question) return false
+            const cat = inferFaqCategory(item)
+            return isCategoryActive(cat, features)
+          })
+
+          // 2. Completa com perguntas orgânicas dos pilares ativos para sempre ter 4 perguntas contextuais
+          const seenQuestions = new Set(filtered.map((i) => String(i.question).trim().toLowerCase()))
+          const candidatePools = []
+          features.activePillarIds.forEach((id) => {
+            if (FAQ_POOL[id]) candidatePools.push(...FAQ_POOL[id])
+          })
+          if (features.hasTaxiDog) candidatePools.push(...FAQ_POOL.taxi_dog)
+          candidatePools.push(...FAQ_POOL.general)
+
+          for (const candidate of candidatePools) {
+            if (filtered.length >= 4) break
+            const key = candidate.question.trim().toLowerCase()
+            if (!seenQuestions.has(key)) {
+              seenQuestions.add(key)
+              filtered.push(candidate)
+            }
+          }
+
+          container.innerHTML = filtered
+            .map(
+              (item) => `
+              <details class="faq-item card-interactive rounded-3xl border p-5">
+                <summary class="flex cursor-pointer items-center justify-between gap-4 font-display text-sm font-extrabold sm:text-base theme-heading">
+                  <span>${item.question || ''}</span>
+                  <span class="faq-chevron flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-xs theme-accent-soft">
+                    ▼
+                  </span>
+                </summary>
+                <div class="faq-content">
+                  <div class="faq-content-inner pt-3 text-xs sm:text-sm leading-relaxed theme-body">
+                    ${item.answer || ''}
+                  </div>
+                </div>
+              </details>
+            `,
+            )
+            .join('')
+
+          container.querySelectorAll('details.faq-item').forEach((detailsEl) => {
+            detailsEl.addEventListener('toggle', () => {
+              detailsEl.classList.toggle('is-open', detailsEl.open)
+            })
+          })
+        }
+
+        // Formata e empilha estritamente duas linhas: Segunda a Sexta e Sábado (sem domingos/feriados)
+        function parseOpeningHoursRows(hoursRaw) {
+          const raw = String(
+            hoursRaw || 'Segunda a Sexta: 08:00 às 18:00 • Sábado: 08:00 às 13:00',
+          ).trim()
+
+          // Filtra completamente quaisquer menções a domingos, feriados ou plantões
+          const segments = raw
+            .split(/\s*(?:•|\||;|\n)\s*/)
+            .map((s) => s.trim())
+            .filter((s) => s.length > 0 && !/domingo|feriado|plant[aã]o/i.test(s))
+
+          let weekdayVal = '08:00 às 18:00'
+          let saturdayVal = '08:00 às 13:00'
+
+          segments.forEach((seg) => {
+            const clean = seg.replace(/\bdas\s+/i, ': ').replace(/\s*[–—-]\s*/g, ' às ')
+            const parts = clean.split(/:\s+/)
+            if (/s[aá]b/i.test(parts[0])) {
+              if (parts[1]) saturdayVal = parts.slice(1).join(': ').trim()
+              else saturdayVal = clean.replace(/s[aá]b(?:ado)?/i, '').trim()
+            } else if (/seg|sex|segunda|semana|seg\s*a\s*sex/i.test(parts[0])) {
+              if (parts[1]) weekdayVal = parts.slice(1).join(': ').trim()
+              else weekdayVal = clean.replace(/segunda(?:\s+a\s+sexta)?|seg\s*a\s*sex/i, '').trim()
+            } else if (parts.length >= 2) {
+              weekdayVal = parts.slice(1).join(': ').trim()
+            }
+          })
+
+          return [
+            {
+              icon: '🕒',
+              label: 'Segunda a Sexta',
+              value: weekdayVal,
+            },
+            {
+              icon: '🕒',
+              label: 'Sábado',
+              value: saturdayVal,
+            },
+          ]
+        }
+
+        function renderOpeningHours(hoursRaw) {
+          const rows = parseOpeningHoursRows(hoursRaw)
+
+          const locationContainer = document.getElementById('location-hours')
+          if (locationContainer) {
+            locationContainer.innerHTML = rows
+              .map(
+                (r) => `
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 rounded-xl border px-3.5 py-2.5 theme-surface theme-border">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm shrink-0" aria-hidden="true">${r.icon}</span>
+                    <span class="font-display text-xs sm:text-sm font-extrabold theme-heading">
+                      ${r.label}:
+                    </span>
+                  </div>
+                  <span class="pl-6 sm:pl-0 font-mono text-xs font-bold theme-accent-text">
+                    ${r.value}
+                  </span>
+                </div>
+              `,
+              )
+              .join('')
+          }
+
+          const drawerContainer = document.getElementById('drawer-opening-hours')
+          if (drawerContainer) {
+            drawerContainer.innerHTML = rows
+              .map(
+                (r) => `
+                <div class="flex flex-col rounded-xl border px-3 py-2 theme-surface theme-border">
+                  <span class="font-display text-[11px] font-extrabold theme-heading">
+                    ${r.icon} ${r.label}:
+                  </span>
+                  <span class="mt-0.5 pl-5 font-mono text-[11px] font-semibold theme-accent-text">
+                    ${r.value}
+                  </span>
+                </div>
+              `,
+              )
+              .join('')
+          }
+        }
+
+        function setupMobileDrawer() {
+          const toggleBtn = document.getElementById('mobile-menu-toggle')
+          const closeBtn = document.getElementById('mobile-menu-close')
+          const backdrop = document.getElementById('mobile-menu-backdrop')
+          const drawer = document.getElementById('mobile-menu-drawer')
+          if (!toggleBtn || !drawer || !backdrop) return
+
+          function setOpen(open) {
+            toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false')
+            drawer.classList.toggle('is-open', open)
+            backdrop.classList.toggle('is-open', open)
+            document.body.style.overflow = open ? 'hidden' : ''
+          }
+
+          toggleBtn.addEventListener('click', () => {
+            const isOpen = toggleBtn.getAttribute('aria-expanded') === 'true'
+            setOpen(!isOpen)
+          })
+
+          if (closeBtn) {
+            closeBtn.addEventListener('click', () => setOpen(false))
+          }
+          backdrop.addEventListener('click', () => setOpen(false))
+
+          drawer.querySelectorAll('[data-drawer-link]').forEach((link) => {
+            link.addEventListener('click', () => setOpen(false))
+          })
+
+          window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') setOpen(false)
+          })
+        }
+
+        function setupMapFacade(address, businessName) {
+          const loadBtn = document.getElementById('load-map-btn')
+          const facade = document.getElementById('map-facade')
+          const query = encodeURIComponent(`${businessName || ''} ${address || ''}`.trim())
+          const mapsSearchUrl = `https://www.google.com/maps/search/?api=1&query=${query}`
+
+          const routeBtn = document.getElementById('location-route-btn')
+          const directLink = document.getElementById('facade-direct-maps-link')
+          const fallbackLink = document.getElementById('fallback-maps-link')
+          if (routeBtn) routeBtn.setAttribute('href', mapsSearchUrl)
+          if (directLink) directLink.setAttribute('href', mapsSearchUrl)
+          if (fallbackLink) fallbackLink.setAttribute('href', mapsSearchUrl)
+
+          if (!loadBtn || !facade) return
+          loadBtn.addEventListener('click', () => {
+            facade.innerHTML = `
+              <iframe
+                title="Mapa de localização"
+                class="h-[340px] w-full rounded-2xl border-0"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps?q=${query}&output=embed"
+                allowfullscreen
+              ></iframe>
+            `
+          })
+        }
+
+        function setupScrollReveal() {
+          const elements = document.querySelectorAll('.reveal:not(.revealed)')
+          if (!('IntersectionObserver' in window)) {
+            elements.forEach((el) => el.classList.add('revealed'))
+            return
+          }
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('revealed')
+                  observer.unobserve(entry.target)
+                }
+              })
+            },
+            { threshold: 0.08 },
+          )
+          elements.forEach((el) => observer.observe(el))
+        }
+
+        async function initSite() {
+          setupMobileDrawer()
+          setupScrollReveal()
+
+          try {
+            const res = await fetch('./site.config.json', { cache: 'no-store' })
+            if (!res.ok) throw new Error('Falha ao carregar site.config.json')
+            const config = await res.json()
+
+            applyThemeTokens(config)
+
+            const features = resolveActiveFeatures(config)
+            const b = config.business || {}
+            const m = config.metrics || {}
+            const v = config.visuals || {}
+
+            // Se has_vet === false, remove menções a "Clínica Veterinária" do nome exibido caso venha no default
+            const rawName = b.name || 'Villa Pet Center'
+            const name = !features.hasVet
+              ? rawName.replace(/\s*[&e]?\s*Cl[ií]nica\s+Veterin[aá]ria/gi, '').trim() || rawName
+              : rawName
+
+            const city = b.city || 'Uberlândia'
+            const state = b.state || 'MG'
+            const hours =
+              b.opening_hours ||
+              b.office_hours ||
+              'Segunda a Sexta: 08:00 às 18:00 • Sábado: 08:00 às 13:00'
+            const address = b.address_display || `${city} - ${state}`
+            const waNumber = b.whatsapp_number || '5534998765432'
+            const defaultWaUrl = buildWhatsAppUrl(waNumber, b.whatsapp_default_message)
+
+            // Título e subtítulos adaptados estritamente aos serviços ativos (zero menção fantasma)
+            const nicheSubtitle = features.hasVet
+              ? `Estética Animal & Saúde Veterinária • ${city} - ${state}`
+              : `Estética Animal & Bem-Estar Pet • ${city} - ${state}`
+
+            document.title = `${name} | ${
+              features.hasVet ? 'Pet Shop, Banho & Tosa e Veterinária' : 'Pet Shop & Estética Animal'
+            } em ${city}`
+
+            const setText = (id, val) => {
+              const el = document.getElementById(id)
+              if (el && val) el.textContent = val
+            }
+
+            setText('header-business-name', name)
+            setText('drawer-business-name', name)
+            setText('hero-business-name', name)
+            setText('location-business-name', name)
+            setText('footer-business-name', name)
+            setText('header-city-badge', nicheSubtitle)
+            setText('hero-city-state', `Atendimento em ${city} • ${state}`)
+
+            // Sanitiza tagline caso has_vet seja false e a tagline padrão mencione Veterinária
+            const rawTagline =
+              b.tagline || 'Amor, higiene rigorosa e cuidado completo para o seu melhor amigo.'
+            const cleanTagline = !features.hasVet
+              ? rawTagline.replace(/e\s+Sa[uú]de\s+Veterin[aá]ria\s+Integrada/gi, 'e Bem-Estar Completo')
+              : rawTagline
+            setText('hero-tagline', cleanTagline)
+
+            // Subheadline Hero e Sobre sem termos clínicos quando has_vet === false
+            const heroSub = document.getElementById('hero-subheadline')
+            if (heroSub) {
+              const servicesList = []
+              if (features.hasGrooming) servicesList.push('banho e tosa com toalhas 100% esterilizadas')
+              if (features.hasVet) servicesList.push('consultas e vacinas importadas')
+              if (features.hasShop) servicesList.push('nutrição Super Premium')
+              if (features.hasHotel) servicesList.push('daycare sem gaiolas')
+              const joined =
+                servicesList.length > 0 ? servicesList.join(', ') : 'atendimento especializado'
+              heroSub.innerHTML = `Em <strong class="theme-heading">${name}</strong>, oferecemos ${joined} em ambiente tranquilo, seguro e livre de estresse.`
+            }
+
+            setText('drawer-address', address)
+            setText('location-address', address)
+            setText('footer-address', address)
+            setText('location-phone', b.phone_display || waNumber)
+            setText('hero-monogram-initials', v.monogram_initials || 'PET')
+            setText('metric-rating', m.rating || '4.9')
+            setText('metric-reviews-count', `+${m.reviews_count || 64}`)
+
+            // Imagens padronizadas (hero_image e about_image)
+            const heroImgSrc =
+              config.hero_image || v.hero_image || v.hero_image_url || './assets/hero-principal.jpg'
+            const heroImg = document.getElementById('hero-pet-image')
+            if (heroImg && heroImgSrc) heroImg.setAttribute('src', heroImgSrc)
+
+            const aboutImgSrc =
+              config.about_image || v.about_image || './assets/ambiente-equipe.jpg'
+            const aboutImg = document.getElementById('about-environment-image')
+            if (aboutImg && aboutImgSrc) aboutImg.setAttribute('src', aboutImgSrc)
+
+            // Links principais de WhatsApp
+            ;['header-cta', 'drawer-cta', 'hero-primary-cta', 'floating-whatsapp'].forEach(
+              (id) => {
+                const el = document.getElementById(id)
+                if (el) el.setAttribute('href', defaultWaUrl)
+              },
+            )
+
+            // Cascata 1: Táxi Dog condicional (Hero Pill + Banner + Garantias + FAQ + Preço Opcional)
+            const taxiBanner = document.getElementById('taxi-dog-banner')
+            const taxiPill = document.getElementById('hero-taxi-pill')
+            const taxiCta = document.getElementById('taxi-dog-cta')
+            const taxiPriceBadge = document.getElementById('taxi-dog-price-badge')
+            const pricing = config.pricing || {}
+            const taxiDogFee = String(pricing.taxi_dog_fee || b.taxi_dog_price || '').trim()
+
+            if (!features.hasTaxiDog) {
+              if (taxiBanner) taxiBanner.classList.add('hidden')
+              if (taxiPill) taxiPill.classList.add('hidden')
+              if (taxiPriceBadge) taxiPriceBadge.classList.add('hidden')
+            } else {
+              if (taxiBanner) taxiBanner.classList.remove('hidden')
+              if (taxiPill) taxiPill.classList.remove('hidden')
+              if (taxiPriceBadge) {
+                if (taxiDogFee.length > 0) {
+                  taxiPriceBadge.textContent = `🏷️ ${taxiDogFee}`
+                  taxiPriceBadge.classList.remove('hidden')
+                } else {
+                  taxiPriceBadge.classList.add('hidden')
+                }
+              }
+              if (taxiCta) {
+                taxiCta.setAttribute(
+                  'href',
+                  buildWhatsAppUrl(waNumber, b.taxi_dog_message || b.whatsapp_default_message),
+                )
+              }
+            }
+
+            // Cascata 2: Compliance CFMV e menções médicas no rodapé (Oculto quando has_vet === false)
+            const crmvBadge = document.getElementById('footer-crmv-badge')
+            const legalText = document.getElementById('footer-legal-text')
+            const yearStr = new Date().getFullYear()
+            if (crmvBadge) {
+              if (features.hasVet && b.crmv_number && String(b.crmv_number).trim().length > 0) {
+                crmvBadge.textContent = b.crmv_number
+                crmvBadge.classList.remove('hidden')
+              } else {
+                crmvBadge.classList.add('hidden')
+              }
+            }
+            if (legalText) {
+              legalText.innerHTML = features.hasVet
+                ? `© <span id="footer-year">${yearStr}</span> • Atendimento ético em conformidade com as normas do CFMV e Lei Geral de Proteção de Dados (Lei nº 13.709/2018).`
+                : `© <span id="footer-year">${yearStr}</span> • Atendimento dedicado ao bem-estar animal em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).`
+            }
+
+            // Renderizadores Dinâmicos e Sincronizados
+            renderOpeningHours(hours)
+            renderTrustBadges(features)
+            renderBentoPillars(config, features, waNumber)
+            renderTestimonials(config.testimonials, m)
+            renderFaq(config.faq, features)
+            setupMapFacade(address, name)
+
+            // Registra todos os cards (estáticos e dinâmicos) no Scroll Reveal com Stagger Delay
+            setupScrollReveal()
+          } catch (err) {
+            console.error(err)
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', initSite)
+      })()
+    </script>
+  </body>
+</html>

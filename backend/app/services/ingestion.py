@@ -30,13 +30,15 @@ UPSERT_LEAD_SQL = text(
         place_id, name, category, address, neighborhood, city,
         phone_raw, phone_sanitized, phone_type, whatsapp_url,
         google_maps_url, website_url, website_status, website_http_code,
-        rating, reviews_count, is_claimed, score, score_breakdown,
+        rating, reviews_count, is_claimed, opening_hours, extracted_reviews,
+        score, score_breakdown,
         pipeline_status, notes, last_checked_at
     ) VALUES (
         :place_id, :name, :category, :address, :neighborhood, :city,
         :phone_raw, :phone_sanitized, :phone_type, :whatsapp_url,
         :google_maps_url, :website_url, :website_status, :website_http_code,
-        :rating, :reviews_count, :is_claimed, :score, CAST(:score_breakdown AS jsonb),
+        :rating, :reviews_count, :is_claimed, :opening_hours, CAST(:extracted_reviews AS jsonb),
+        :score, CAST(:score_breakdown AS jsonb),
         'NOVO', NULL, NOW()
     )
     ON CONFLICT (place_id) DO UPDATE SET
@@ -45,6 +47,11 @@ UPSERT_LEAD_SQL = text(
         website_url = CASE WHEN leads.is_manually_edited THEN leads.website_url ELSE EXCLUDED.website_url END,
         google_maps_url = COALESCE(NULLIF(leads.google_maps_url, ''), EXCLUDED.google_maps_url),
         is_claimed = leads.is_claimed OR EXCLUDED.is_claimed,
+        opening_hours = COALESCE(NULLIF(EXCLUDED.opening_hours, ''), leads.opening_hours),
+        extracted_reviews = CASE
+            WHEN jsonb_array_length(EXCLUDED.extracted_reviews) > 0 THEN EXCLUDED.extracted_reviews
+            ELSE leads.extracted_reviews
+        END,
         phone_raw = COALESCE(NULLIF(leads.phone_raw, ''), EXCLUDED.phone_raw),
         phone_sanitized = COALESCE(NULLIF(leads.phone_sanitized, ''), EXCLUDED.phone_sanitized),
         phone_type = CASE
@@ -116,6 +123,151 @@ def _parse_claimed(owner_field: str | None) -> bool:
     return bool(cleaned and cleaned.lower() not in ("false", "0", "none", "null", "{}"))
 
 
+def format_open_hours(raw_open_hours: str | None) -> str | None:
+    """Converte a coluna open_hours (JSON do gosom ou string) em texto comercial legível."""
+    if not raw_open_hours:
+        return None
+    cleaned = str(raw_open_hours).strip()
+    if not cleaned or cleaned in ("{}", "null", "None", "[]"):
+        return None
+
+    if not cleaned.startswith("{"):
+        return cleaned
+
+    try:
+        parsed = json.loads(cleaned)
+        if not isinstance(parsed, dict) or not parsed:
+            return None
+    except (ValueError, TypeError):
+        return cleaned
+
+    norm_map: dict[str, str] = {}
+    for k, v in parsed.items():
+        key_lower = str(k).strip().lower()
+        if isinstance(v, list):
+            intervals = [str(item).strip() for item in v if str(item).strip()]
+            val_str = " e ".join(intervals)
+        else:
+            val_str = str(v).strip()
+        if val_str:
+            norm_map[key_lower] = val_str
+
+    if not norm_map:
+        return None
+
+    def _get_day(keys: tuple[str, ...]) -> str:
+        for k in keys:
+            if k in norm_map:
+                return norm_map[k]
+        return ""
+
+    mon = _get_day(("segunda-feira", "segunda", "monday"))
+    tue = _get_day(("terça-feira", "terca-feira", "terça", "terca", "tuesday"))
+    wed = _get_day(("quarta-feira", "quarta", "wednesday"))
+    thu = _get_day(("quinta-feira", "quinta", "thursday"))
+    fri = _get_day(("sexta-feira", "sexta", "friday"))
+    sat = _get_day(("sábado", "sabado", "saturday"))
+    sun = _get_day(("domingo", "sunday"))
+
+    weekdays = [d for d in (mon, tue, wed, thu, fri) if d]
+    parts: list[str] = []
+
+    if len(weekdays) == 5 and len(set(weekdays)) == 1 and weekdays[0].lower() != "fechado":
+        parts.append(f"Segunda a Sexta das {weekdays[0]}")
+    else:
+        day_labels = [
+            ("Seg", mon),
+            ("Ter", tue),
+            ("Qua", wed),
+            ("Qui", thu),
+            ("Sex", fri),
+        ]
+        active_days = [
+            f"{lbl}: {val}"
+            for lbl, val in day_labels
+            if val and val.lower() != "fechado"
+        ]
+        if active_days:
+            parts.append(" • ".join(active_days))
+
+    if sat and sat.lower() != "fechado":
+        parts.append(f"Sábados das {sat}")
+    if sun and sun.lower() != "fechado":
+        parts.append(f"Domingos das {sun}")
+
+    if not parts:
+        return None
+
+    return " • ".join(parts)
+
+
+def extract_user_reviews(
+    raw_user_reviews: str | None, max_reviews: int = 5
+) -> list[dict[str, Any]]:
+    """Processa a coluna user_reviews do CSV do gosom e extrai até 5 avaliações reais com texto e autor."""
+    if not raw_user_reviews:
+        return []
+    cleaned = str(raw_user_reviews).strip()
+    if not cleaned or cleaned in ("[]", "null", "None", "{}"):
+        return []
+
+    try:
+        parsed = json.loads(cleaned)
+        if not isinstance(parsed, list):
+            return []
+    except (ValueError, TypeError):
+        return []
+
+    extracted: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+
+    for item in parsed:
+        if not isinstance(item, dict):
+            continue
+        author = str(
+            item.get("Name") or item.get("author") or item.get("name") or ""
+        ).strip()
+        text_val = str(
+            item.get("Description")
+            or item.get("text_original")
+            or item.get("text")
+            or ""
+        ).strip()
+
+        if not author or not text_val:
+            continue
+
+        raw_rating = (
+            item.get("Rating")
+            or item.get("rating_float")
+            or item.get("stars")
+            or 5
+        )
+        try:
+            stars = max(1, min(5, round(float(raw_rating))))
+        except (ValueError, TypeError):
+            stars = 5
+
+        dedup_key = (author.lower(), text_val.lower())
+        if dedup_key in seen:
+            continue
+        seen.add(dedup_key)
+
+        extracted.append(
+            {
+                "author": author,
+                "text": text_val,
+                "stars": stars,
+            }
+        )
+
+    five_star = [r for r in extracted if r["stars"] >= 5]
+    if five_star:
+        return five_star[:max_reviews]
+    extracted.sort(key=lambda r: int(r["stars"]), reverse=True)
+    return extracted[:max_reviews]
+
+
 def parse_and_filter_csv_rows(
     csv_rows: list[dict[str, str]],
     search_category: str,
@@ -153,10 +305,12 @@ def parse_and_filter_csv_rows(
         phone_raw = (row.get("phone") or "").strip() or None
         sanitized = sanitize_phone(phone_raw)
 
-        # 4. Extração de métricas públicas
+        # 4. Extração de métricas públicas, horários (open_hours) e reviews reais (user_reviews)
         reviews_count = _parse_int(row.get("review_count"))
         rating = _parse_rating(row.get("review_rating"))
         is_claimed = _parse_claimed(row.get("owner"))
+        opening_hours = format_open_hours(row.get("open_hours"))
+        extracted_reviews = extract_user_reviews(row.get("user_reviews"), max_reviews=5)
 
         lead_dict: dict[str, Any] = {
             "place_id": place_id,
@@ -174,6 +328,8 @@ def parse_and_filter_csv_rows(
             "rating": rating,
             "reviews_count": reviews_count,
             "is_claimed": is_claimed,
+            "opening_hours": opening_hours,
+            "extracted_reviews": extracted_reviews,
         }
         parsed_leads.append(lead_dict)
 
@@ -257,6 +413,8 @@ async def ingest_csv_rows_for_search(
             "rating": Decimal(str(lead["rating"])),
             "reviews_count": lead["reviews_count"],
             "is_claimed": lead["is_claimed"],
+            "opening_hours": lead.get("opening_hours"),
+            "extracted_reviews": json.dumps(lead.get("extracted_reviews") or []),
             "score": lead["score"],
             "score_breakdown": json.dumps(lead["score_breakdown"]),
         }

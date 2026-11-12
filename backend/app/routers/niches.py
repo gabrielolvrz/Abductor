@@ -47,9 +47,10 @@ async def create_niche(
     payload: NicheCreateRequest,
     db: DbSession,
 ) -> NicheResponse:
-    """Cadastra um novo nicho (gerando slug automático e evitando duplicatas)."""
+    """Cadastra um novo nicho (gerando slug automático ou customizado e evitando duplicatas)."""
     clean_name = " ".join(payload.name.strip().split())
-    slug = _slugify(clean_name)
+    raw_slug = payload.slug.strip() if payload.slug and payload.slug.strip() else clean_name
+    slug = _slugify(raw_slug)
 
     if not clean_name:
         raise HTTPException(
