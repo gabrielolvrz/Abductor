@@ -6,7 +6,9 @@ export default {
   ],
   safelist: [
     "border-emerald-600",
+    "border-emerald-500/40",
     "border-amber-600",
+    "border-amber-500/40",
     "border-stone-800",
     "border-rose-700/60",
   ],
@@ -15,12 +17,15 @@ export default {
       colors: {
         cockpit: {
           bg: "#0c0a09",
-          panel: "#1c1917",
+          panel: "#141210",
+          surface: "#1c1917",
+          raised: "#262320",
           border: "#292524",
         },
       },
       fontFamily: {
-        serif: ['"Instrument Serif"', '"Playfair Display"', 'Georgia', ' Cambria', 'serif'],
+        sans: ['"Inter"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        serif: ['"Instrument Serif"', '"Playfair Display"', 'Georgia', 'Cambria', 'serif'],
         mono: ['"JetBrains Mono"', '"Fira Code"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
     },

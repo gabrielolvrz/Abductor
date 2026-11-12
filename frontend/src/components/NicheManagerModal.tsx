@@ -3,6 +3,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   Layers,
+  Lock,
   Plus,
   Sparkles,
   Trash2,
@@ -127,15 +128,14 @@ export function NicheManagerModal({
       onClick={handleCloseModal}
     >
       <div
-        className="w-full max-w-xl rounded-2xl border border-stone-800 bg-[#1c1917] p-6 shadow-2xl"
+        className="tactical-panel w-full max-w-xl p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4 border-b border-stone-800 pb-4">
+        <div className="flex items-start justify-between gap-4 border-b border-white/[0.07] pb-4">
           <div>
             <div className="flex items-center gap-2">
-              <Layers className="h-5 w-5 text-amber-500" />
-              <h2 className="font-serif text-xl font-bold text-stone-100">
+              <Layers className="h-4 w-4 text-amber-400" />
+              <h2 className="font-sans text-lg font-semibold tracking-tight text-stone-100">
                 Gerenciador de Nichos & Verticais
               </h2>
             </div>
@@ -147,31 +147,30 @@ export function NicheManagerModal({
           <button
             type="button"
             onClick={handleCloseModal}
-            className="rounded-lg border border-stone-800 bg-stone-950 p-1.5 text-stone-400 transition hover:border-stone-700 hover:text-stone-100"
+            className="btn-tactical-secondary p-1.5"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {feedback && (
-          <div className="mt-4 flex items-center gap-2 rounded-xl border border-emerald-600/40 bg-emerald-950/30 px-3.5 py-2.5 text-xs font-semibold text-emerald-300">
+          <div className="mt-4 flex items-center gap-2 rounded-lg border border-emerald-500/35 bg-emerald-950/25 px-3.5 py-2 text-xs font-medium text-emerald-300">
             <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
             <span>{feedback}</span>
           </div>
         )}
 
-        {/* Form de Adição de Novo Nicho */}
         <form
           onSubmit={(e) => void handleCreate(e)}
-          className="mt-4 rounded-xl border border-stone-800 bg-stone-950/80 p-4"
+          className="mt-4 rounded-xl border border-white/[0.07] bg-[#0c0a09]/80 p-4"
         >
-          <div className="mb-2.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-400">
+          <div className="mb-2.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-amber-400">
             <Sparkles className="h-3.5 w-3.5" />
-            Cadastrar Novo Nicho
+            <span>Cadastrar Novo Nicho</span>
           </div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-12">
             <div className="sm:col-span-5">
-              <label className="mb-1 block text-[11px] font-semibold text-stone-400">
+              <label className="mb-1 block text-[11px] font-medium text-stone-400">
                 Nome Amigável *
               </label>
               <input
@@ -180,12 +179,12 @@ export function NicheManagerModal({
                 placeholder="Ex: Odontologia"
                 value={nameInput}
                 onChange={(e) => handleNameChange(e.target.value)}
-                className="w-full rounded-xl border border-stone-700 bg-stone-900 px-3 py-2 text-xs text-stone-100 placeholder-stone-500 outline-none focus:border-amber-500"
+                className="input-tactical"
               />
             </div>
 
             <div className="sm:col-span-4">
-              <label className="mb-1 block text-[11px] font-semibold text-stone-400">
+              <label className="mb-1 block text-[11px] font-medium text-stone-400">
                 Slug Técnico
               </label>
               <input
@@ -193,7 +192,7 @@ export function NicheManagerModal({
                 placeholder="Ex: odonto"
                 value={slugInput}
                 onChange={(e) => handleSlugChange(e.target.value)}
-                className="w-full rounded-xl border border-stone-700 bg-stone-900 px-3 py-2 font-mono text-xs text-amber-300 placeholder-stone-500 outline-none focus:border-amber-500"
+                className="input-tactical font-mono text-amber-300"
               />
             </div>
 
@@ -201,22 +200,21 @@ export function NicheManagerModal({
               <button
                 type="submit"
                 disabled={isSubmitting || !nameInput.trim()}
-                className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-amber-600 px-3 py-2 text-xs font-bold text-stone-950 transition hover:bg-amber-500 disabled:opacity-50"
+                className="btn-tactical-primary w-full py-2"
               >
                 <Plus className="h-3.5 w-3.5" />
-                Adicionar
+                <span>Adicionar</span>
               </button>
             </div>
           </div>
         </form>
 
-        {/* Trava de Confirmação em 2 Etapas para Exclusão Segura */}
         {pendingDeleteNiche && (
-          <div className="mt-4 rounded-xl border border-rose-600/60 bg-rose-950/30 p-4">
+          <div className="mt-4 rounded-xl border border-rose-500/45 bg-rose-950/25 p-4">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-rose-400" />
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-400" />
               <div className="flex-1">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-rose-300">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-rose-300">
                   Confirmação de Exclusão Segura (Etapa 2/2)
                 </h3>
                 <p className="mt-1 text-xs leading-relaxed text-stone-200">
@@ -224,16 +222,18 @@ export function NicheManagerModal({
                   <strong className="text-amber-300">“{pendingDeleteNiche.name}”</strong> (
                   <code className="font-mono text-stone-300">{pendingDeleteNiche.slug}</code>)?
                 </p>
-                <p className="mt-1 text-[11px] text-stone-400">
-                  🔒 <strong>Proteção de Dados:</strong> Os leads, notas e históricos de buscas já
-                  coletados para esta categoria <strong>não serão perdidos</strong> — apenas o
-                  atalho deste nicho deixará de aparecer na lista rápida.
+                <p className="mt-1 flex items-center gap-1.5 text-[11px] text-stone-400">
+                  <Lock className="h-3 w-3 shrink-0 text-amber-400" />
+                  <span>
+                    <strong className="text-stone-300">Proteção de Dados:</strong> Os leads, notas e
+                    históricos já coletados não serão perdidos.
+                  </span>
                 </p>
                 <div className="mt-3 flex items-center justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setPendingDeleteNiche(null)}
-                    className="rounded-lg border border-stone-700 bg-stone-900 px-3 py-1.5 text-xs font-semibold text-stone-300 transition hover:bg-stone-800"
+                    className="btn-tactical-secondary py-1.5"
                   >
                     Cancelar
                   </button>
@@ -241,10 +241,10 @@ export function NicheManagerModal({
                     type="button"
                     disabled={isDeleting}
                     onClick={() => void handleConfirmDelete()}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-rose-500 disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-rose-500 disabled:opacity-50"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
-                    {isDeleting ? 'Excluindo...' : 'Confirmar Exclusão Definitiva'}
+                    <span>{isDeleting ? 'Excluindo...' : 'Confirmar Exclusão Definitiva'}</span>
                   </button>
                 </div>
               </div>
@@ -252,18 +252,17 @@ export function NicheManagerModal({
           </div>
         )}
 
-        {/* Lista de Nichos Cadastrados */}
         <div className="mt-4">
-          <div className="mb-2 flex items-center justify-between text-xs text-stone-400">
-            <span className="font-semibold uppercase tracking-wider">
+          <div className="mb-2 flex items-center justify-between text-[11px] text-stone-400">
+            <span className="font-medium uppercase tracking-wider">
               Nichos Homologados ({niches.length})
             </span>
             <span>Clique em Excluir para abrir a trava de segurança</span>
           </div>
 
-          <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
+          <div className="max-h-72 space-y-1.5 overflow-y-auto pr-1">
             {niches.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-stone-800 p-6 text-center text-xs text-stone-500">
+              <div className="rounded-xl border border-dashed border-white/[0.08] p-6 text-center text-xs text-stone-500">
                 Nenhum nicho cadastrado no banco. Adicione o primeiro acima.
               </div>
             ) : (
@@ -272,22 +271,22 @@ export function NicheManagerModal({
                 return (
                   <div
                     key={niche.id}
-                    className={`flex items-center justify-between rounded-xl border px-3.5 py-2.5 transition ${
+                    className={`flex items-center justify-between rounded-lg border px-3.5 py-2 transition ${
                       isBeingDeleted
-                        ? 'border-rose-600/60 bg-rose-950/20'
-                        : 'border-stone-800 bg-stone-950/90 hover:border-stone-700'
+                        ? 'border-rose-500/50 bg-rose-950/20'
+                        : 'border-white/[0.07] bg-[#0c0a09]/80 hover:border-white/[0.15]'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <span className="font-serif text-sm font-bold text-stone-100">
+                      <span className="font-sans text-xs font-semibold text-stone-100">
                         {niche.name}
                       </span>
-                      <span className="rounded-md border border-stone-800 bg-stone-900 px-2 py-0.5 font-mono text-[11px] text-amber-400">
+                      <span className="rounded border border-white/[0.08] bg-[#141210] px-2 py-0.5 font-mono text-[11px] text-amber-400">
                         {niche.slug}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       {onSelectNiche && (
                         <button
                           type="button"
@@ -295,7 +294,7 @@ export function NicheManagerModal({
                             onSelectNiche(niche.name)
                             onClose()
                           }}
-                          className="rounded-lg border border-stone-800 bg-stone-900 px-2.5 py-1 text-[11px] font-semibold text-stone-300 transition hover:border-amber-600/50 hover:text-amber-300"
+                          className="btn-tactical-secondary px-2.5 py-1 text-[11px]"
                         >
                           Selecionar
                         </button>
@@ -304,10 +303,10 @@ export function NicheManagerModal({
                         type="button"
                         onClick={() => setPendingDeleteNiche(niche)}
                         title={`Solicitar exclusão de ${niche.name}`}
-                        className="inline-flex items-center gap-1 rounded-lg border border-stone-800 bg-stone-900 px-2.5 py-1 text-[11px] font-semibold text-stone-400 transition hover:border-rose-600/60 hover:bg-rose-950/40 hover:text-rose-300"
+                        className="inline-flex items-center gap-1 rounded-lg border border-white/[0.08] bg-[#141210] px-2.5 py-1 text-[11px] font-medium text-stone-400 transition hover:border-rose-500/40 hover:bg-rose-950/35 hover:text-rose-300"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
-                        Excluir
+                        <Trash2 className="h-3 w-3" />
+                        <span>Excluir</span>
                       </button>
                     </div>
                   </div>

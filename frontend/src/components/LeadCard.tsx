@@ -35,32 +35,32 @@ const PIPELINE_OPTIONS: { value: PipelineStatus; label: string; badgeClass: stri
   {
     value: 'NOVO',
     label: 'NOVO',
-    badgeClass: 'border-stone-700 bg-stone-800 text-stone-200',
+    badgeClass: 'border-white/[0.1] bg-[#0c0a09] text-stone-200',
   },
   {
     value: 'CONTATADO',
     label: 'CONTATADO',
-    badgeClass: 'border-amber-600/50 bg-amber-600/15 text-amber-300',
+    badgeClass: 'border-amber-500/40 bg-amber-500/10 text-amber-300',
   },
   {
     value: 'RESPONDEU',
     label: 'RESPONDEU',
-    badgeClass: 'border-amber-500/60 bg-amber-500/20 text-amber-200',
+    badgeClass: 'border-amber-400/50 bg-amber-500/15 text-amber-200',
   },
   {
     value: 'NEGOCIANDO',
     label: 'NEGOCIANDO',
-    badgeClass: 'border-emerald-600/50 bg-emerald-600/15 text-emerald-300',
+    badgeClass: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300',
   },
   {
     value: 'FECHADO',
     label: 'FECHADO (PIX)',
-    badgeClass: 'border-emerald-500/70 bg-emerald-600/25 text-emerald-200',
+    badgeClass: 'border-emerald-500/60 bg-emerald-500/20 text-emerald-200',
   },
   {
     value: 'RECUSADO',
     label: 'RECUSADO (OPT-OUT)',
-    badgeClass: 'border-rose-700/60 bg-rose-950/40 text-rose-300',
+    badgeClass: 'border-rose-500/40 bg-rose-950/35 text-rose-300',
   },
 ]
 
@@ -75,40 +75,40 @@ export function LeadCard({
 
   const borderClass =
     lead.score >= 80
-      ? 'border-emerald-600/80 shadow-emerald-950/20'
+      ? 'border-emerald-500/35 hover:border-emerald-500/55'
       : lead.score >= 50
-        ? 'border-amber-600/80 shadow-amber-950/20'
-        : 'border-stone-800'
+        ? 'border-amber-500/30 hover:border-amber-500/50'
+        : 'border-white/[0.07] hover:border-white/[0.15]'
 
   const scoreBadgeClass =
     lead.score >= 80
-      ? 'bg-emerald-600 text-stone-950 border-emerald-500'
+      ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300'
       : lead.score >= 50
-        ? 'bg-amber-600 text-stone-950 border-amber-500'
-        : 'bg-stone-800 text-stone-300 border-stone-700'
+        ? 'border-amber-500/40 bg-amber-500/15 text-amber-300'
+        : 'border-white/[0.08] bg-[#0c0a09] text-stone-400'
 
   const getWebsiteBadge = () => {
     switch (lead.website_status) {
       case 'IMPROVISADO':
         return {
           label: 'Linktree / Improvisado',
-          className: 'border-amber-600/40 bg-amber-600/15 text-amber-300',
+          className: 'border-amber-500/35 bg-amber-500/10 text-amber-300',
         }
       case 'SEM_SITE':
         return {
           label: 'Sem Site',
-          className: 'border-amber-500/40 bg-amber-500/10 text-amber-200',
+          className: 'border-amber-400/30 bg-amber-500/10 text-amber-200',
         }
       case 'QUEBRADO':
         return {
           label: `Fora do Ar (${lead.website_http_code || 'DNS/Timeout'})`,
-          className: 'border-rose-700/50 bg-rose-950/40 text-rose-300',
+          className: 'border-rose-500/35 bg-rose-950/35 text-rose-300',
         }
       case 'ATIVO':
       default:
         return {
           label: 'Site Ativo (Hard Gate)',
-          className: 'border-stone-700 bg-stone-800/90 text-stone-400',
+          className: 'border-white/[0.08] bg-[#0c0a09] text-stone-400',
         }
     }
   }
@@ -118,17 +118,17 @@ export function LeadCard({
       case 'MOBILE':
         return {
           label: 'WhatsApp Celular',
-          className: 'border-emerald-600/40 bg-emerald-600/15 text-emerald-300',
+          className: 'border-emerald-500/35 bg-emerald-500/10 text-emerald-300',
         }
       case 'LANDLINE':
         return {
           label: 'Fixo',
-          className: 'border-stone-700 bg-stone-800 text-stone-300',
+          className: 'border-white/[0.08] bg-[#0c0a09] text-stone-300',
         }
       default:
         return {
           label: 'Sem Telefone (-30)',
-          className: 'border-rose-700/40 bg-rose-950/30 text-rose-300',
+          className: 'border-rose-500/35 bg-rose-950/30 text-rose-300',
         }
     }
   }
@@ -161,30 +161,29 @@ export function LeadCard({
 
   return (
     <article
-      className={`group relative flex flex-col justify-between rounded-2xl border bg-[#1c1917] p-5 shadow-lg transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-stone-700 ${borderClass} ${
-        isOptedOut ? 'opacity-60' : ''
+      className={`tactical-card group relative flex flex-col justify-between p-4 ${borderClass} ${
+        isOptedOut ? 'opacity-55' : ''
       }`}
     >
-      {/* Topo do Card */}
       <div>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="rounded bg-stone-800 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-stone-300">
+              <span className="rounded border border-white/[0.08] bg-[#0c0a09] px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-stone-300">
                 {lead.category ?? 'Estabelecimento'}
               </span>
               {lead.is_claimed && (
-                <span className="rounded border border-emerald-600/35 bg-emerald-600/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-400">
+                <span className="rounded border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-medium text-emerald-400">
                   Verificado
                 </span>
               )}
               {lead.is_manually_edited && (
                 <span
                   title="Diagnóstico ou contato ajustado manualmente (protegido contra re-scraping)"
-                  className="inline-flex items-center gap-1 rounded border border-amber-600/40 bg-amber-600/15 px-1.5 py-0.5 text-[10px] font-semibold text-amber-400"
+                  className="inline-flex items-center gap-1 rounded border border-amber-500/35 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-400"
                 >
                   <Lock className="h-2.5 w-2.5" />
-                  Override
+                  <span>Override</span>
                 </span>
               )}
             </div>
@@ -195,7 +194,7 @@ export function LeadCard({
               className="mt-1.5 text-left"
             >
               <h3
-                className="line-clamp-2 font-serif text-lg font-bold leading-snug tracking-tight text-stone-100 transition group-hover:text-amber-400"
+                className="line-clamp-2 font-sans text-[15px] font-semibold leading-snug tracking-tight text-stone-100 transition-colors group-hover:text-amber-400"
                 title={lead.name}
               >
                 {lead.name}
@@ -204,7 +203,7 @@ export function LeadCard({
 
             {lead.address && (
               <p className="mt-1 flex items-center gap-1 text-xs text-stone-400">
-                <MapPin className="h-3.5 w-3.5 shrink-0 text-stone-500" />
+                <MapPin className="h-3 w-3 shrink-0 text-stone-500" />
                 <span className="truncate" title={lead.address}>
                   {lead.address}
                 </span>
@@ -212,28 +211,27 @@ export function LeadCard({
             )}
           </div>
 
-          {/* Selo de Score Tabular + Tooltip */}
-          <div className="relative shrink-0 group/score">
+          <div className="group/score relative shrink-0">
             <div
-              className={`flex flex-col items-center justify-center rounded-xl border px-3 py-1.5 text-center shadow-sm cursor-help ${scoreBadgeClass}`}
+              className={`flex flex-col items-center justify-center rounded-lg border px-2.5 py-1 text-center cursor-help ${scoreBadgeClass}`}
             >
-              <span className="text-[10px] font-extrabold uppercase tracking-wider opacity-80">
+              <span className="font-mono text-[9px] font-semibold uppercase tracking-wider opacity-75">
                 Score
               </span>
-              <span className="font-mono text-xl font-black leading-none tabular-nums">
+              <span className="font-mono text-lg font-bold leading-none tabular-nums">
                 {lead.score}
               </span>
             </div>
 
-            <div className="pointer-events-none invisible absolute right-0 top-full z-40 mt-2 w-64 rounded-xl border border-stone-700 bg-stone-950 p-3.5 text-xs text-stone-200 opacity-0 shadow-2xl transition-all group-hover/score:visible group-hover/score:opacity-100">
-              <div className="mb-2 flex items-center justify-between border-b border-stone-800 pb-1.5 font-bold text-stone-100">
+            <div className="tactical-panel pointer-events-none invisible absolute right-0 top-full z-40 mt-2 w-64 p-3 text-xs text-stone-200 opacity-0 shadow-2xl transition-all group-hover/score:visible group-hover/score:opacity-100">
+              <div className="mb-2 flex items-center justify-between border-b border-white/[0.07] pb-1.5 font-semibold text-stone-100">
                 <span>Composição do Score</span>
                 <span className="font-mono tabular-nums text-emerald-400">
                   {lead.score} / 100
                 </span>
               </div>
               {bd.hard_gate_triggered ? (
-                <div className="rounded-lg border border-rose-700/40 bg-rose-950/30 p-2 text-[11px] text-rose-300">
+                <div className="rounded-lg border border-rose-500/35 bg-rose-950/30 p-2 text-[11px] text-rose-300">
                   <strong>Hard Gate (0 pts):</strong> Site próprio ativo. Clique em Override se
                   for falso positivo.
                 </div>
@@ -263,7 +261,7 @@ export function LeadCard({
                   </li>
                   <li className="flex justify-between">
                     <span className="font-sans text-stone-400">
-                      Nota ({lead.rating.toFixed(1)}★):
+                      Nota ({lead.rating.toFixed(1)}):
                     </span>
                     <span
                       className={
@@ -285,10 +283,9 @@ export function LeadCard({
           </div>
         </div>
 
-        {/* Badges de Prova Social e Diagnóstico */}
-        <div className="mt-3.5 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full border border-stone-800 bg-stone-950 px-2.5 py-1 font-mono text-xs font-semibold tabular-nums text-amber-400">
-            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+          <span className="inline-flex items-center gap-1 rounded-md border border-white/[0.08] bg-[#0c0a09] px-2 py-0.5 font-mono text-[11px] font-medium tabular-nums text-amber-400">
+            <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
             {lead.reviews_count > 0 ? (
               <>
                 {lead.rating.toFixed(1)}{' '}
@@ -300,34 +297,33 @@ export function LeadCard({
           </span>
 
           <span
-            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold ${websiteBadge.className}`}
+            className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-medium ${websiteBadge.className}`}
           >
             <Globe className="h-3 w-3" />
-            {websiteBadge.label}
+            <span>{websiteBadge.label}</span>
           </span>
 
           <span
-            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold ${phoneBadge.className}`}
+            className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-medium ${phoneBadge.className}`}
           >
             <Phone className="h-3 w-3" />
-            {phoneBadge.label}
+            <span>{phoneBadge.label}</span>
           </span>
 
           {lead.is_shared_phone && (
             <span
               title="Número compartilhado com outra ficha no Google Maps"
-              className="inline-flex items-center gap-1 rounded-full border border-amber-500/60 bg-amber-600/20 px-2.5 py-1 text-xs font-bold text-amber-300"
+              className="inline-flex items-center gap-1 rounded-md border border-amber-500/40 bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium text-amber-300"
             >
-              <AlertTriangle className="h-3.5 w-3.5 text-amber-400" />
-              Tel. compartilhado
+              <AlertTriangle className="h-3 w-3 text-amber-400" />
+              <span>Tel. compartilhado</span>
             </span>
           )}
         </div>
 
-        {/* Resumo de Contato e Notas */}
-        <div className="mt-3.5 space-y-1.5 rounded-xl border border-stone-800 bg-stone-950/70 p-3 text-xs">
+        <div className="mt-3 space-y-1.5 rounded-lg border border-white/[0.06] bg-[#0c0a09]/80 p-2.5 text-xs">
           <div className="flex items-center justify-between gap-2">
-            <span className="font-mono tabular-nums text-stone-200">
+            <span className="font-mono text-[11px] tabular-nums text-stone-200">
               {lead.phone_raw || 'Sem telefone na ficha'}
             </span>
             {lead.website_url && (
@@ -339,7 +335,7 @@ export function LeadCard({
                 }
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex max-w-[180px] items-center gap-1 truncate font-mono text-amber-400 hover:underline"
+                className="inline-flex max-w-[180px] items-center gap-1 truncate font-mono text-[11px] text-amber-400 hover:underline"
                 title={lead.website_url}
               >
                 <ExternalLink className="h-3 w-3 shrink-0" />
@@ -349,8 +345,8 @@ export function LeadCard({
           </div>
 
           {lead.instagram_url && (
-            <div className="flex items-center gap-1.5 text-amber-400">
-              <AtSign className="h-3.5 w-3.5 shrink-0" />
+            <div className="flex items-center gap-1.5 text-[11px] text-amber-400">
+              <AtSign className="h-3 w-3 shrink-0" />
               <a
                 href={lead.instagram_url}
                 target="_blank"
@@ -363,15 +359,14 @@ export function LeadCard({
           )}
 
           {lead.notes && (
-            <p className="mt-1 rounded-lg bg-stone-900 px-2.5 py-1.5 text-[11px] italic text-stone-300">
+            <p className="mt-1 rounded border border-white/[0.05] bg-[#141210] px-2 py-1 text-[11px] italic text-stone-300">
               “{lead.notes}”
             </p>
           )}
         </div>
       </div>
 
-      {/* Rodapé: Pipeline + Botão Override Drawer + Ações de 1 Clique */}
-      <div className="mt-4 space-y-3 border-t border-stone-800 pt-3.5">
+      <div className="mt-3.5 space-y-2.5 border-t border-white/[0.07] pt-3">
         <div className="flex items-center justify-between gap-2">
           <div className="flex flex-1 items-center gap-2">
             <label htmlFor={`pipeline-${lead.id}`} className="sr-only">
@@ -383,13 +378,13 @@ export function LeadCard({
               onChange={(e) =>
                 void onUpdatePipeline(lead.id, e.target.value as PipelineStatus)
               }
-              className={`w-full rounded-lg border px-2.5 py-1.5 text-xs font-bold outline-none transition ${currentPipelineMeta.badgeClass}`}
+              className={`w-full rounded-lg border px-2.5 py-1.5 font-mono text-[11px] font-semibold outline-none transition ${currentPipelineMeta.badgeClass}`}
             >
               {PIPELINE_OPTIONS.map((opt) => (
                 <option
                   key={opt.value}
                   value={opt.value}
-                  className="bg-stone-900 text-stone-100"
+                  className="bg-[#141210] text-stone-100"
                 >
                   {opt.label}
                 </option>
@@ -402,22 +397,22 @@ export function LeadCard({
               type="button"
               onClick={() => onOpenDrawer(lead)}
               title="Abrir Gaveta de Foco & Override Manual"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-1.5 text-xs font-semibold text-stone-300 transition hover:border-amber-600/60 hover:text-amber-400"
+              className="btn-tactical-secondary py-1.5"
             >
-              <Sliders className="h-3.5 w-3.5 text-amber-500" />
-              Override
+              <Sliders className="h-3.5 w-3.5 text-amber-400" />
+              <span>Override</span>
             </button>
           )}
         </div>
 
         {isOptedOut && (
-          <div className="flex items-center gap-1.5 rounded-lg border border-rose-700/40 bg-rose-950/30 px-2.5 py-1 text-[11px] font-medium text-rose-300">
+          <div className="flex items-center gap-1.5 rounded-lg border border-rose-500/35 bg-rose-950/30 px-2.5 py-1.5 text-[11px] font-medium text-rose-300">
             <ShieldAlert className="h-3.5 w-3.5 shrink-0" />
-            Opt-Out ativo (LGPD): Abordagem comercial bloqueada.
+            <span>Opt-Out ativo (LGPD): Abordagem comercial bloqueada.</span>
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-1.5">
           {whatsappDirectHref && !isOptedOut ? (
             <a
               href={whatsappDirectHref}
@@ -428,29 +423,29 @@ export function LeadCard({
                   void onUpdatePipeline(lead.id, 'CONTATADO')
                 }
               }}
-              className="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-3.5 py-2.5 text-xs font-bold text-stone-950 shadow-md transition hover:bg-emerald-500"
+              className="btn-tactical-emerald col-span-2 py-2"
             >
-              <MessageCircle className="h-4 w-4 fill-stone-950" />
-              Abordar no WhatsApp (1-Click)
+              <MessageCircle className="h-3.5 w-3.5 fill-stone-950" />
+              <span>Abordar no WhatsApp (1-Click)</span>
             </a>
           ) : (
             <button
               type="button"
               disabled
-              className="col-span-2 flex cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-stone-800 bg-stone-950 px-3.5 py-2.5 text-xs font-semibold text-stone-500"
+              className="col-span-2 flex cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-white/[0.06] bg-[#0c0a09] px-3.5 py-2 text-xs font-medium text-stone-500"
             >
-              <MessageCircle className="h-4 w-4" />
-              {isOptedOut ? 'Lead em Opt-Out (Recusado)' : 'Sem WhatsApp Válido'}
+              <MessageCircle className="h-3.5 w-3.5" />
+              <span>{isOptedOut ? 'Lead em Opt-Out (Recusado)' : 'Sem WhatsApp Válido'}</span>
             </button>
           )}
 
           <button
             type="button"
             onClick={() => onOpenPitchModal(lead)}
-            className="flex items-center justify-center gap-1.5 rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs font-semibold text-stone-200 transition hover:border-amber-600/50 hover:bg-stone-800 hover:text-stone-100"
+            className="btn-tactical-secondary py-1.5"
           >
-            <FileText className="h-3.5 w-3.5 text-emerald-500" />
-            Ver Script
+            <FileText className="h-3.5 w-3.5 text-emerald-400" />
+            <span>Ver Script</span>
           </button>
 
           <button
@@ -458,9 +453,9 @@ export function LeadCard({
             disabled={isExporting}
             onClick={() => void handleExportClick()}
             title="Baixar site.config.json pré-preenchido com nome limpo, WhatsApp 55+DDD e LGPD nativa"
-            className="flex items-center justify-center gap-1.5 rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs font-semibold text-stone-200 transition hover:border-amber-600/50 hover:bg-stone-800 hover:text-stone-100 disabled:opacity-50"
+            className="btn-tactical-secondary py-1.5"
           >
-            <Code2 className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+            <Code2 className="h-3.5 w-3.5 shrink-0 text-amber-400" />
             <span className="truncate">
               {isExporting ? 'Gerando...' : 'site.config.json'}
             </span>
@@ -471,15 +466,15 @@ export function LeadCard({
               href={lead.google_maps_url}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-center gap-1.5 rounded-xl border border-stone-800 bg-stone-950/80 px-2.5 py-1.5 text-[11px] font-medium text-stone-300 transition hover:border-stone-600 hover:text-stone-100"
+              className="btn-tactical-secondary py-1.5 text-[11px]"
             >
-              <MapPin className="h-3.5 w-3.5 text-amber-500" />
-              Ficha Maps
+              <MapPin className="h-3 w-3 text-amber-400" />
+              <span>Ficha Maps</span>
             </a>
           ) : (
-            <span className="flex items-center justify-center gap-1.5 rounded-xl border border-stone-800/50 bg-stone-950/40 px-2.5 py-1.5 text-[11px] text-stone-600">
-              <MapPin className="h-3.5 w-3.5" />
-              Sem Link Maps
+            <span className="flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.05] bg-[#0c0a09]/50 px-2.5 py-1.5 text-[11px] text-stone-600">
+              <MapPin className="h-3 w-3" />
+              <span>Sem Link Maps</span>
             </span>
           )}
 
@@ -488,10 +483,10 @@ export function LeadCard({
             target="_blank"
             rel="noreferrer"
             title={`Buscar no Google: ${dorkQuery}`}
-            className="flex items-center justify-center gap-1.5 rounded-xl border border-stone-800 bg-stone-950/80 px-2.5 py-1.5 text-[11px] font-medium text-stone-300 transition hover:border-amber-600/50 hover:text-amber-300"
+            className="btn-tactical-secondary py-1.5 text-[11px]"
           >
-            <Search className="h-3.5 w-3.5 text-amber-500" />
-            Dork Instagram
+            <Search className="h-3 w-3 text-amber-400" />
+            <span>Dork Instagram</span>
           </a>
         </div>
       </div>

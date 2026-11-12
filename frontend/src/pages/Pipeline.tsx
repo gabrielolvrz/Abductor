@@ -49,33 +49,33 @@ interface KanbanColumnConfig {
 const KANBAN_COLUMNS: KanbanColumnConfig[] = [
   {
     status: 'CONTATADO',
-    title: '1. Contatado',
+    title: 'Contatado',
     subtitle: '1º toque enviado no WhatsApp',
-    accentClass: 'border-amber-600/40 text-amber-400',
+    accentClass: 'border-amber-500/30 text-amber-400',
   },
   {
     status: 'RESPONDEU',
-    title: '2. Respondeu',
+    title: 'Respondeu',
     subtitle: 'Abriu conversa / pediu link',
-    accentClass: 'border-amber-500/50 text-amber-300',
+    accentClass: 'border-amber-400/35 text-amber-300',
   },
   {
     status: 'NEGOCIANDO',
-    title: '3. Negociando',
+    title: 'Negociando',
     subtitle: 'Avaliando prévia / proposta',
-    accentClass: 'border-emerald-600/40 text-emerald-400',
+    accentClass: 'border-emerald-500/30 text-emerald-400',
   },
   {
     status: 'FECHADO',
-    title: '4. Fechado (Pix)',
+    title: 'Fechado (Pix)',
     subtitle: 'Turnkey vendido / Pix confirmado',
-    accentClass: 'border-emerald-500/70 text-emerald-300',
+    accentClass: 'border-emerald-500/50 text-emerald-300',
   },
   {
     status: 'RECUSADO',
-    title: '5. Recusado',
+    title: 'Recusado',
     subtitle: 'Opt-Out LGPD / Sem interesse',
-    accentClass: 'border-rose-700/50 text-rose-400',
+    accentClass: 'border-rose-500/35 text-rose-400',
   },
 ]
 
@@ -98,35 +98,35 @@ function resolveDealValue(lead: Lead): number {
 function renderSlaBadge(days: number, status: PipelineStatus) {
   if (status === 'FECHADO' || status === 'RECUSADO') {
     return (
-      <span className="inline-flex items-center gap-1 rounded-md border border-stone-800 bg-stone-950 px-2 py-0.5 font-mono text-[10px] tabular-nums text-stone-400">
+      <span className="inline-flex items-center gap-1 rounded border border-white/[0.08] bg-[#0c0a09] px-1.5 py-0.5 font-mono text-[10px] tabular-nums text-stone-400">
         <Clock className="h-2.5 w-2.5" />
-        Finalizado ({days}d)
+        <span>Finalizado ({days}d)</span>
       </span>
     )
   }
 
   if (days >= 8) {
     return (
-      <span className="inline-flex items-center gap-1 rounded-md border border-rose-700/60 bg-rose-950/50 px-2 py-0.5 font-mono text-[10px] font-bold tabular-nums text-rose-300">
-        <AlertTriangle className="h-3 w-3 text-rose-500" />
-        Esfriando: fazer follow-up urgente ({days}d)
+      <span className="inline-flex items-center gap-1 rounded border border-rose-500/40 bg-rose-950/40 px-1.5 py-0.5 font-mono text-[10px] font-semibold tabular-nums text-rose-300">
+        <AlertTriangle className="h-3 w-3 text-rose-400" />
+        <span>Esfriando: follow-up ({days}d)</span>
       </span>
     )
   }
 
   if (days >= 4) {
     return (
-      <span className="inline-flex items-center gap-1 rounded-md border border-amber-600/50 bg-amber-600/15 px-2 py-0.5 font-mono text-[10px] font-bold tabular-nums text-amber-300">
-        <Clock className="h-3 w-3 text-amber-500" />
-        Atenção: {days} dias sem retorno
+      <span className="inline-flex items-center gap-1 rounded border border-amber-500/40 bg-amber-500/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold tabular-nums text-amber-300">
+        <Clock className="h-3 w-3 text-amber-400" />
+        <span>Atenção: {days}d</span>
       </span>
     )
   }
 
   return (
-    <span className="inline-flex items-center gap-1 rounded-md border border-emerald-600/35 bg-emerald-600/10 px-2 py-0.5 font-mono text-[10px] font-semibold tabular-nums text-emerald-400">
+    <span className="inline-flex items-center gap-1 rounded border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[10px] font-medium tabular-nums text-emerald-400">
       <Clock className="h-2.5 w-2.5" />
-      Em dia • {days === 0 ? 'hoje' : `${days}d`}
+      <span>Em dia • {days === 0 ? 'hoje' : `${days}d`}</span>
     </span>
   )
 }
@@ -364,20 +364,20 @@ export function Pipeline() {
   }, [groupedByColumn])
 
   return (
-    <main className="mx-auto max-w-[1920px] space-y-6 px-6 py-6">
+    <main className="mx-auto max-w-[1920px] space-y-5 px-6 py-5">
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-xl border border-amber-600/50 bg-stone-900 px-4 py-3 text-xs font-semibold text-amber-300 shadow-2xl">
+        <div className="tactical-panel fixed bottom-5 right-5 z-50 flex items-center gap-2 border-amber-500/40 px-4 py-3 text-xs font-semibold text-amber-300 shadow-2xl">
           <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-          {toastMessage}
+          <span>{toastMessage}</span>
         </div>
       )}
 
       {/* Cabeçalho do Kanban */}
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-stone-800 bg-[#1c1917] p-5">
+      <div className="tactical-panel flex flex-wrap items-center justify-between gap-4 p-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <Kanban className="h-5 w-5 text-amber-500" />
-            <h1 className="font-serif text-2xl font-bold tracking-tight text-stone-100">
+          <div className="flex items-center gap-2">
+            <Kanban className="h-4 w-4 text-amber-400" />
+            <h1 className="font-sans text-lg font-semibold tracking-tight text-stone-100">
               Kanban Comercial & Controle de SLA (/pipeline)
             </h1>
           </div>
@@ -387,49 +387,49 @@ export function Pipeline() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           {/* Resumo Financeiro Sincronizado */}
-          <div className="flex items-center gap-3 rounded-xl border border-emerald-600/35 bg-stone-950 px-3.5 py-2 text-xs">
+          <div className="flex items-center gap-3 rounded-lg border border-emerald-500/30 bg-[#0c0a09] px-3 py-1.5 text-xs">
             <div className="flex items-center gap-1.5">
               <DollarSign className="h-3.5 w-3.5 text-emerald-400" />
               <span className="text-stone-400">Fechado:</span>
-              <strong className="font-mono font-black tabular-nums text-emerald-400">
+              <strong className="font-mono font-bold tabular-nums text-emerald-400">
                 R$ {pipelineRevenueSummary.closedRevenue.toLocaleString('pt-BR')}
               </strong>
             </div>
             <span className="text-stone-700">|</span>
             <div className="flex items-center gap-1.5">
               <span className="text-stone-400">Em Negociação:</span>
-              <strong className="font-mono font-bold tabular-nums text-amber-400">
+              <strong className="font-mono font-semibold tabular-nums text-amber-400">
                 R$ {pipelineRevenueSummary.activeForecast.toLocaleString('pt-BR')}
               </strong>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl border border-stone-800 bg-stone-950 px-3.5 py-2 text-xs">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          <div className="flex items-center gap-2 rounded-lg border border-white/[0.07] bg-[#0c0a09] px-3 py-1.5 text-xs">
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
             <span className="text-stone-300">0–3d Em dia</span>
-            <span className="ml-2 h-2 w-2 rounded-full bg-amber-500" />
+            <span className="ml-2 h-2 w-2 rounded-full bg-amber-400" />
             <span className="text-stone-300">4–7d Atenção</span>
-            <span className="ml-2 h-2 w-2 rounded-full bg-rose-600" />
+            <span className="ml-2 h-2 w-2 rounded-full bg-rose-500" />
             <span className="text-stone-300">8+d Urgente</span>
           </div>
 
           <button
             type="button"
             onClick={() => void fetchPipeline()}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2 text-xs font-bold text-stone-200 transition hover:border-amber-600/60 hover:text-amber-400"
+            className="btn-tactical-secondary"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-            Atualizar Funil
+            <RefreshCw className={`h-3.5 w-3.5 text-amber-400 ${isLoading ? 'animate-spin' : ''}`} />
+            <span>Atualizar Funil</span>
           </button>
         </div>
       </div>
 
       {/* Colunas do Kanban */}
       {leads.length === 0 && !isLoading ? (
-        <div className="rounded-2xl border border-stone-800 bg-[#1c1917]/70 p-12 text-center">
-          <p className="font-serif text-lg font-bold text-stone-200">
+        <div className="tactical-panel p-12 text-center">
+          <p className="font-sans text-base font-semibold text-stone-200">
             Seu Kanban ainda está vazio.
           </p>
           <p className="mt-1 text-xs text-stone-400">
@@ -438,7 +438,7 @@ export function Pipeline() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-5">
           {KANBAN_COLUMNS.map((col) => {
             const colLeads = groupedByColumn[col.status] ?? []
             const colIdx = STATUS_SEQUENCE.indexOf(col.status)
@@ -456,28 +456,28 @@ export function Pipeline() {
                 onDragOver={(e) => handleColumnDragOver(e, col.status)}
                 onDragLeave={(e) => handleColumnDragLeave(e, col.status)}
                 onDrop={(e) => handleColumnDrop(e, col.status)}
-                className={`flex min-h-[560px] flex-col rounded-2xl border p-3.5 transition-all duration-150 ${
+                className={`flex min-h-[560px] flex-col rounded-xl border p-3 transition-all duration-150 ${
                   isDropTarget
-                    ? 'border-amber-500/70 bg-amber-950/15 shadow-lg shadow-amber-950/30 ring-1 ring-amber-500/40 -translate-y-0.5'
-                    : 'border-stone-800 bg-[#1c1917]/90'
+                    ? 'border-amber-500/60 bg-amber-950/15 ring-1 ring-amber-500/35'
+                    : 'border-white/[0.07] bg-[#141210]'
                 }`}
               >
                 {/* Topo da Coluna */}
                 <div
-                  className={`mb-3 flex items-center justify-between border-b pb-3 ${col.accentClass}`}
+                  className={`mb-3 flex items-center justify-between border-b pb-2.5 ${col.accentClass}`}
                 >
                   <div>
-                    <h2 className="font-serif text-base font-bold text-stone-100">
+                    <h2 className="font-sans text-sm font-semibold tracking-tight text-stone-100">
                       {col.title}
                     </h2>
                     <p className="text-[11px] text-stone-400">{col.subtitle}</p>
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    <span className="rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-0.5 font-mono text-xs font-black tabular-nums text-stone-200">
+                    <span className="rounded border border-white/[0.08] bg-[#0c0a09] px-2 py-0.5 font-mono text-xs font-bold tabular-nums text-stone-200">
                       {colLeads.length}
                     </span>
                     {colLeads.length > 0 && col.status !== 'RECUSADO' && (
-                      <span className="font-mono text-[10px] font-semibold tabular-nums text-stone-400">
+                      <span className="font-mono text-[10px] font-medium tabular-nums text-stone-400">
                         R$ {columnTotalBrl.toLocaleString('pt-BR')}
                       </span>
                     )}
@@ -485,13 +485,13 @@ export function Pipeline() {
                 </div>
 
                 {/* Cards da Coluna */}
-                <div className="flex-1 space-y-3">
+                <div className="flex-1 space-y-2.5">
                   {colLeads.length === 0 ? (
                     <div
-                      className={`flex h-36 items-center justify-center rounded-xl border border-dashed p-4 text-center text-xs transition ${
+                      className={`flex h-36 items-center justify-center rounded-lg border border-dashed p-4 text-center text-xs transition ${
                         isDropTarget
-                          ? 'border-amber-500/60 bg-amber-500/5 font-semibold text-amber-300'
-                          : 'border-stone-800/80 text-stone-500'
+                          ? 'border-amber-500/50 bg-amber-500/5 font-semibold text-amber-300'
+                          : 'border-white/[0.08] text-stone-500'
                       }`}
                     >
                       {isDropTarget
@@ -514,10 +514,10 @@ export function Pipeline() {
                           draggable={editingPriceLeadId !== lead.id}
                           onDragStart={(e) => handleDragStart(e, lead)}
                           onDragEnd={handleDragEnd}
-                          className={`group cursor-grab active:cursor-grabbing rounded-xl border p-3.5 shadow-md transition-all duration-200 ease-out ${
+                          className={`group cursor-grab rounded-lg border p-3 transition-all duration-150 active:cursor-grabbing ${
                             isDraggingThis
                               ? 'scale-[0.98] border-amber-500/60 bg-stone-900/60 opacity-50'
-                              : 'border-stone-800 bg-stone-950/90 hover:-translate-y-0.5 hover:border-stone-700'
+                              : 'border-white/[0.07] bg-[#0c0a09]/90 hover:border-white/[0.15]'
                           }`}
                         >
                           {/* SLA Badge + Score + Grip */}
@@ -526,7 +526,7 @@ export function Pipeline() {
                               <GripVertical className="h-3.5 w-3.5 shrink-0 text-stone-600 transition group-hover:text-stone-400" />
                               {renderSlaBadge(lead.days_in_status ?? 0, lead.pipeline_status)}
                             </div>
-                            <span className="rounded border border-stone-700 bg-stone-900 px-2 py-0.5 font-mono text-xs font-bold tabular-nums text-emerald-400">
+                            <span className="rounded border border-white/[0.08] bg-[#141210] px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums text-emerald-400">
                               {lead.score} pts
                             </span>
                           </div>
@@ -535,35 +535,37 @@ export function Pipeline() {
                           <button
                             type="button"
                             onClick={() => setDrawerLead(lead)}
-                            className="mt-2.5 flex items-center gap-1.5 text-left"
+                            className="mt-2 flex items-center gap-1.5 text-left"
                           >
-                            <h3 className="line-clamp-2 font-serif text-base font-bold leading-snug text-stone-100 group-hover:text-amber-400">
+                            <h3 className="line-clamp-2 font-sans text-sm font-semibold leading-snug text-stone-100 transition-colors group-hover:text-amber-400">
                               {lead.name}
                             </h3>
                             {lead.is_manually_edited && (
-                              <Lock className="h-3 w-3 shrink-0 text-amber-500" />
+                              <Lock className="h-3 w-3 shrink-0 text-amber-400" />
                             )}
                           </button>
 
-                          <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-stone-400">
+                          <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-stone-400">
                             <span>{lead.category ?? 'Geral'}</span>
                             <span>•</span>
                             <span>{lead.city}</span>
                             <span className="inline-flex items-center gap-0.5 font-mono tabular-nums text-amber-400">
                               <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                              {lead.rating.toFixed(1)} ({lead.reviews_count})
+                              <span>
+                                {lead.rating.toFixed(1)} ({lead.reviews_count})
+                              </span>
                             </span>
                           </div>
 
                           {/* Ticket Negociado (Edição Rápida Inline do deal_value) */}
-                          <div className="mt-2.5 flex items-center justify-between rounded-lg border border-stone-800/90 bg-stone-900/80 px-2.5 py-1.5">
-                            <span className="text-[11px] font-semibold text-stone-400">
+                          <div className="mt-2.5 flex items-center justify-between rounded-lg border border-white/[0.06] bg-[#141210] px-2.5 py-1.5">
+                            <span className="text-[11px] font-medium text-stone-400">
                               Ticket Negociado:
                             </span>
 
                             {isEditingPrice ? (
                               <div className="flex items-center gap-1">
-                                <span className="font-mono text-xs font-bold text-emerald-400">
+                                <span className="font-mono text-xs font-semibold text-emerald-400">
                                   R$
                                 </span>
                                 <input
@@ -575,7 +577,7 @@ export function Pipeline() {
                                   onChange={(e) => setEditingPriceValue(e.target.value)}
                                   onBlur={() => void handleCommitEditPrice(lead)}
                                   onKeyDown={(e) => handlePriceKeyDown(e, lead)}
-                                  className="w-20 rounded border border-amber-500 bg-stone-950 px-2 py-0.5 font-mono text-xs font-bold text-stone-100 outline-none"
+                                  className="w-20 rounded border border-amber-500 bg-[#0c0a09] px-2 py-0.5 font-mono text-xs font-semibold tabular-nums text-stone-100 outline-none"
                                 />
                                 <button
                                   type="button"
@@ -583,7 +585,7 @@ export function Pipeline() {
                                     e.preventDefault()
                                     void handleCommitEditPrice(lead)
                                   }}
-                                  className="rounded bg-emerald-600 p-1 text-stone-950 hover:bg-emerald-500"
+                                  className="rounded bg-emerald-500 p-1 text-stone-950 hover:bg-emerald-400"
                                   title="Salvar valor"
                                 >
                                   <Check className="h-3 w-3" />
@@ -594,7 +596,7 @@ export function Pipeline() {
                                 type="button"
                                 onClick={() => handleStartEditPrice(lead)}
                                 title="Clique para editar o valor negociado deste lead"
-                                className="inline-flex items-center gap-1.5 rounded-md border border-emerald-600/30 bg-emerald-600/10 px-2 py-0.5 font-mono text-xs font-black tabular-nums text-emerald-400 transition hover:border-amber-500/60 hover:bg-amber-500/15 hover:text-amber-300"
+                                className="inline-flex items-center gap-1.5 rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-xs font-bold tabular-nums text-emerald-400 transition hover:border-amber-500/50 hover:bg-amber-500/15 hover:text-amber-300"
                               >
                                 <span>R$ {dealValue.toLocaleString('pt-BR')}</span>
                                 <Pencil className="h-2.5 w-2.5 opacity-75" />
@@ -603,20 +605,20 @@ export function Pipeline() {
                           </div>
 
                           {lead.notes && (
-                            <p className="mt-2 line-clamp-2 rounded-lg border border-stone-800/80 bg-stone-900 px-2.5 py-1.5 text-[11px] italic text-stone-300">
+                            <p className="mt-2 line-clamp-2 rounded border border-white/[0.05] bg-[#141210] px-2 py-1 text-[11px] italic text-stone-300">
                               “{lead.notes}”
                             </p>
                           )}
 
                           {/* Ações Rápidas do Card no Kanban */}
-                          <div className="mt-3 flex items-center justify-between gap-1.5 border-t border-stone-800/80 pt-2.5">
+                          <div className="mt-2.5 flex items-center justify-between gap-1.5 border-t border-white/[0.06] pt-2">
                             <div className="flex items-center gap-1">
                               {prevStatus && (
                                 <button
                                   type="button"
                                   title={`Voltar para ${prevStatus}`}
                                   onClick={() => void handleMoveStatus(lead.id, prevStatus)}
-                                  className="rounded-lg border border-stone-800 bg-stone-900 p-1.5 text-stone-400 transition hover:border-stone-600 hover:text-stone-100"
+                                  className="btn-tactical-secondary p-1.5"
                                 >
                                   <ArrowLeft className="h-3.5 w-3.5" />
                                 </button>
@@ -626,7 +628,7 @@ export function Pipeline() {
                                   type="button"
                                   title={`Avançar para ${nextStatus}`}
                                   onClick={() => void handleMoveStatus(lead.id, nextStatus)}
-                                  className="inline-flex items-center gap-1 rounded-lg border border-amber-600/40 bg-amber-600/15 px-2 py-1 text-[11px] font-bold text-amber-300 transition hover:bg-amber-600 hover:text-stone-950"
+                                  className="inline-flex items-center gap-1 rounded-lg border border-amber-500/35 bg-amber-500/10 px-2 py-1 text-[11px] font-semibold text-amber-300 transition hover:bg-amber-500 hover:text-stone-950"
                                 >
                                   <span>Avançar</span>
                                   <ArrowRight className="h-3 w-3" />
@@ -641,7 +643,7 @@ export function Pipeline() {
                                   target="_blank"
                                   rel="noreferrer"
                                   title="Abrir conversa no WhatsApp"
-                                  className="rounded-lg bg-emerald-600 p-1.5 text-stone-950 transition hover:bg-emerald-500"
+                                  className="btn-tactical-emerald p-1.5"
                                 >
                                   <MessageCircle className="h-3.5 w-3.5 fill-stone-950" />
                                 </a>
@@ -650,9 +652,9 @@ export function Pipeline() {
                                 type="button"
                                 onClick={() => setDrawerLead(lead)}
                                 title="Abrir Gaveta de Foco & Override"
-                                className="rounded-lg border border-stone-800 bg-stone-900 p-1.5 text-stone-300 transition hover:border-amber-600/50 hover:text-amber-400"
+                                className="btn-tactical-secondary p-1.5"
                               >
-                                <Sliders className="h-3.5 w-3.5" />
+                                <Sliders className="h-3.5 w-3.5 text-amber-400" />
                               </button>
                             </div>
                           </div>

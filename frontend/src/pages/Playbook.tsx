@@ -10,11 +10,13 @@ import {
   Layers,
   MessageSquarePlus,
   MessageSquareText,
+  PawPrint,
   Pencil,
   Plus,
   RotateCcw,
   Rocket,
   Save,
+  Scale,
   ShieldAlert,
   ShieldCheck,
   Terminal,
@@ -54,7 +56,7 @@ interface PricingPlanItem {
 const DEFAULT_PRICING_PLANS: PricingPlanItem[] = [
   {
     id: 'plan-base',
-    title: '1. Base Turnkey Institucional',
+    title: 'Base Turnkey Institucional',
     priceLabel: 'R$ 350',
     deliverables:
       'Site Vitrine One-Page perene + Blindagem LGPD nativa inclusa + botão WhatsApp direto. Entrega em 15 minutos via site.config.json.',
@@ -62,7 +64,7 @@ const DEFAULT_PRICING_PLANS: PricingPlanItem[] = [
   },
   {
     id: 'plan-brand',
-    title: '2. Customização de Marca',
+    title: 'Customização de Marca',
     priceLabel: '+R$ 150 (R$ 500)',
     deliverables:
       'Ajuste fino de paleta de cores do escritório/clínica, tratamento de fotos autorais e copywriting sob medida das especialidades.',
@@ -70,7 +72,7 @@ const DEFAULT_PRICING_PLANS: PricingPlanItem[] = [
   },
   {
     id: 'plan-gmb',
-    title: '3. Upsell: Otimização GMB',
+    title: 'Upsell: Otimização GMB',
     priceLabel: '+R$ 150',
     deliverables:
       'Conexão da nova URL oficial na ficha do Google Maps, revisão de categorias e SEO local.',
@@ -78,7 +80,7 @@ const DEFAULT_PRICING_PLANS: PricingPlanItem[] = [
   },
   {
     id: 'plan-ads',
-    title: '4. Upsell: Setup Google Ads Local',
+    title: 'Upsell: Setup Google Ads Local',
     priceLabel: '+R$ 250',
     deliverables:
       'Configuração inicial de campanha de pesquisa local apontando para a nova One-Page.',
@@ -90,63 +92,63 @@ const OPERATIONAL_CHECKLISTS: ChecklistItem[] = [
   {
     id: 'wa-1',
     category: 'whatsapp',
-    step: '1. Conferir se a ficha não tem site próprio escondido',
+    step: 'Conferir se a ficha não tem site próprio escondido',
     detail:
       'Abra o link cadastrado ou rode o Dork do Instagram. Se for Linktree/Bio ou quebrado, o gancho está validado.',
   },
   {
     id: 'wa-2',
     category: 'whatsapp',
-    step: '2. Exportar site.config.json e subir prévia antes do 1º toque',
+    step: 'Exportar site.config.json e subir prévia antes do 1º toque',
     detail:
       'Nunca mande mensagem oferecendo "fazer um orçamento". Tenha o link da demonstração pronto para colar em 10 segundos.',
   },
   {
     id: 'wa-3',
     category: 'whatsapp',
-    step: '3. Primeiro toque sempre em texto enxuto (sem áudio frio)',
+    step: 'Primeiro toque sempre em texto enxuto (sem áudio frio)',
     detail:
       'Cite o número real de avaliações do Google Maps e pergunte se pode enviar a prévia mobile de 1 minuto.',
   },
   {
     id: 'meet-1',
     category: 'reuniao',
-    step: '1. Abrir a prévia pelo celular do próprio cliente',
+    step: 'Abrir a prévia pelo celular do próprio cliente',
     detail:
       'Peça para ele abrir o link no WhatsApp dele. A velocidade de carregamento instantânea vende sozinha.',
   },
   {
     id: 'meet-2',
     category: 'reuniao',
-    step: '2. Demonstrar o aviso LGPD e a página de Privacidade nativa',
+    step: 'Demonstrar o aviso LGPD e a página de Privacidade nativa',
     detail:
       'Mostre que a blindagem LGPD já faz parte da estrutura base de R$ 350 sem custo extra nem mensalidade.',
   },
   {
     id: 'meet-3',
     category: 'reuniao',
-    step: '3. Ancorar R$ 350 Base vs. R$ 500 com Customização de Marca',
+    step: 'Ancorar R$ 350 Base vs. R$ 500 com Customização de Marca',
     detail:
       'Ofereça o pacote Turnkey imediato por R$ 350 ou +R$ 150 para personalização fina de paleta, fotos e copy (Total R$ 500).',
   },
   {
     id: 'del-1',
     category: 'entrega',
-    step: '1. Baixar site.config.json no card ou gaveta do Lead (30s)',
+    step: 'Baixar site.config.json no card ou gaveta do Lead (30s)',
     detail:
       'O JSON já sai com nome limpo em Title Case (sem LTDA/ME), WhatsApp com prefixo 55 e aviso de privacidade LGPD nativo.',
   },
   {
     id: 'del-2',
     category: 'entrega',
-    step: '2. Duplicar templates/vercel-{nicho}/base para clientes/<nome>/',
+    step: 'Duplicar templates/vercel-{nicho}/base para clientes/<nome>/',
     detail:
       'Copie a pasta base/ para clientes/<nome_do_lead>, cole o site.config.json gerado e revise os dados do negócio.',
   },
   {
     id: 'del-3',
     category: 'entrega',
-    step: '3. Publicar via Vercel CLI e testar clique no CTA do WhatsApp',
+    step: 'Publicar via Vercel CLI e testar clique no CTA do WhatsApp',
     detail:
       'Rode `npx vercel --prod --yes` na pasta da instância e clique no botão flutuante para confirmar o redirecionamento wa.me/55.',
   },
@@ -541,18 +543,18 @@ export function Playbook() {
   return (
     <main className="mx-auto max-w-[1680px] space-y-6 px-6 py-6">
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-xl border border-emerald-600/50 bg-stone-900 px-4 py-3 text-xs font-semibold text-emerald-300 shadow-2xl">
+        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-[#141210] px-4 py-3 text-xs font-semibold text-emerald-300 shadow-2xl">
           <CheckCircle2 className="h-4 w-4 text-emerald-400" />
           {toastMessage}
         </div>
       )}
 
       {/* Cabeçalho Principal + Botões de Ação */}
-      <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-stone-800 bg-[#1c1917] p-5">
+      <section className="tactical-panel flex flex-wrap items-center justify-between gap-4 p-5">
         <div>
-          <div className="flex items-center gap-2.5">
-            <BookOpen className="h-5 w-5 text-amber-500" />
-            <h1 className="font-serif text-2xl font-bold tracking-tight text-stone-100">
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-amber-400" />
+            <h1 className="font-sans text-xl font-semibold tracking-tight text-stone-100">
               Central de Playbooks, Roteiros &amp; Contra-Ataque de Objeções
             </h1>
           </div>
@@ -562,37 +564,37 @@ export function Playbook() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setShowNicheModal(true)}
-            className="inline-flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2 text-xs font-bold text-stone-200 transition hover:border-amber-600/60 hover:text-amber-400"
+            className="btn-tactical-secondary px-3.5 py-2 text-xs"
           >
-            <Layers className="h-4 w-4 text-amber-500" />
+            <Layers className="h-3.5 w-3.5 text-amber-400" />
             Nichos ({niches.length || HOMOLOGATED_CATEGORIES.length})
           </button>
 
           <button
             type="button"
             onClick={() => openCreateModal('PITCH')}
-            className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-xs font-bold text-stone-950 transition hover:bg-amber-500"
+            className="btn-tactical-primary px-4 py-2 text-xs"
           >
-            <MessageSquarePlus className="h-4 w-4" />
+            <MessageSquarePlus className="h-3.5 w-3.5" />
             + Novo Roteiro / Objeção
           </button>
         </div>
       </section>
 
       {/* Barra de Filtro e Segmentação por Nicho no Topo */}
-      <section className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-stone-800 bg-[#1c1917]/90 px-4 py-3">
-        <div className="flex flex-wrap items-center gap-2">
+      <section className="tactical-panel flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-white/[0.07] bg-[#0c0a09] p-1">
           <button
             type="button"
             onClick={() => setSelectedFilter('TODOS')}
-            className={`inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-bold transition ${
+            className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition ${
               selectedFilter === 'TODOS'
-                ? 'border-amber-500 bg-amber-600 text-stone-950 shadow-sm'
-                : 'border-stone-800 bg-stone-950 text-stone-300 hover:border-stone-700 hover:text-stone-100'
+                ? 'bg-amber-500 text-stone-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]'
+                : 'text-stone-400 hover:bg-white/[0.04] hover:text-stone-100'
             }`}
           >
             Todos / Geral
@@ -601,26 +603,26 @@ export function Playbook() {
           <button
             type="button"
             onClick={() => setSelectedFilter('ADVOCACIA')}
-            className={`inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-bold transition ${
+            className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition ${
               selectedFilter === 'ADVOCACIA'
-                ? 'border-amber-500 bg-amber-600 text-stone-950 shadow-sm'
-                : 'border-stone-800 bg-stone-950 text-stone-300 hover:border-stone-700 hover:text-stone-100'
+                ? 'bg-amber-500 text-stone-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]'
+                : 'text-stone-400 hover:bg-white/[0.04] hover:text-stone-100'
             }`}
           >
-            <span>⚖️</span>
+            <Scale className="h-3.5 w-3.5" />
             <span>Advocacia</span>
           </button>
 
           <button
             type="button"
             onClick={() => setSelectedFilter('PETSHOP')}
-            className={`inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-bold transition ${
+            className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition ${
               selectedFilter === 'PETSHOP'
-                ? 'border-amber-500 bg-amber-600 text-stone-950 shadow-sm'
-                : 'border-stone-800 bg-stone-950 text-stone-300 hover:border-stone-700 hover:text-stone-100'
+                ? 'bg-amber-500 text-stone-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]'
+                : 'text-stone-400 hover:bg-white/[0.04] hover:text-stone-100'
             }`}
           >
-            <span>🐾</span>
+            <PawPrint className="h-3.5 w-3.5" />
             <span>Pet Shop &amp; Vet</span>
           </button>
 
@@ -631,10 +633,10 @@ export function Playbook() {
                 key={n.id}
                 type="button"
                 onClick={() => setSelectedFilter(n.name)}
-                className={`inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-bold transition ${
+                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition ${
                   isSelected
-                    ? 'border-amber-500 bg-amber-600 text-stone-950 shadow-sm'
-                    : 'border-stone-800 bg-stone-950 text-stone-300 hover:border-stone-700 hover:text-stone-100'
+                    ? 'bg-amber-500 text-stone-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]'
+                    : 'text-stone-400 hover:bg-white/[0.04] hover:text-stone-100'
                 }`}
               >
                 {n.name}
@@ -646,7 +648,7 @@ export function Playbook() {
         <button
           type="button"
           onClick={() => setShowNicheModal(true)}
-          className="inline-flex items-center gap-1.5 rounded-xl border border-dashed border-amber-600/50 bg-amber-600/10 px-3.5 py-2 text-xs font-bold text-amber-300 transition hover:bg-amber-600/20"
+          className="btn-tactical-secondary border-amber-500/35 bg-amber-500/10 px-3.5 py-2 text-xs text-amber-300 hover:bg-amber-500/20"
         >
           <Plus className="h-3.5 w-3.5" />
           Gerenciar Nichos
@@ -654,32 +656,32 @@ export function Playbook() {
       </section>
 
       {/* SEÇÃO 1: Abordagens Iniciais (Pitches) do Nicho Selecionado */}
-      <section className="rounded-2xl border border-stone-800 bg-[#1c1917] p-5">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-800 pb-3">
+      <section className="tactical-panel p-5">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.07] pb-3">
           <div className="flex items-center gap-2">
             <MessageSquareText className="h-4 w-4 text-emerald-400" />
-            <h2 className="font-serif text-lg font-bold text-stone-100">
+            <h2 className="font-sans text-base font-semibold tracking-tight text-stone-100">
               Abordagens Iniciais (Pitches de 1º Toque)
             </h2>
-            <span className="rounded-md border border-stone-700 bg-stone-950 px-2 py-0.5 font-mono text-[11px] text-amber-400">
+            <span className="rounded-md border border-white/[0.08] bg-[#0c0a09] px-2 py-0.5 font-mono text-[11px] text-amber-400">
               {selectedFilter === 'TODOS'
                 ? 'Todos os Nichos'
                 : selectedFilter === 'ADVOCACIA'
-                  ? '⚖️ Advocacia + Geral'
+                  ? 'Advocacia + Geral'
                   : selectedFilter === 'PETSHOP'
-                    ? '🐾 Pet Shop & Vet + Geral'
+                    ? 'Pet Shop & Vet + Geral'
                     : `${selectedFilter} + Geral`}
             </span>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs text-stone-400">
+            <span className="font-mono text-xs tabular-nums text-stone-400">
               {filteredPitches.length} roteiro(s)
             </span>
             <button
               type="button"
               onClick={() => openCreateModal('PITCH')}
-              className="inline-flex items-center gap-1 rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-1 text-xs font-semibold text-amber-300 transition hover:border-amber-500"
+              className="btn-tactical-secondary px-2.5 py-1 text-xs text-amber-300"
             >
               <Plus className="h-3.5 w-3.5" />
               Novo Pitch
@@ -694,19 +696,19 @@ export function Playbook() {
             return (
               <article
                 key={script.id}
-                className="flex flex-col justify-between rounded-xl border border-stone-800 bg-stone-950/90 p-4 transition hover:border-stone-700"
+                className="tactical-card flex flex-col justify-between p-4 hover:border-white/[0.14]"
               >
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="rounded bg-amber-600/15 px-2 py-0.5 text-[11px] font-bold text-amber-300">
+                    <div className="flex items-center gap-1.5">
+                      <span className="rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-300">
                         {script.category}
                       </span>
-                      <span className="rounded border border-stone-700 bg-stone-900 px-2 py-0.5 font-mono text-[11px] text-stone-300">
+                      <span className="rounded-md border border-white/[0.08] bg-[#0c0a09] px-2 py-0.5 font-mono text-[11px] text-stone-300">
                         {script.website_condition}
                       </span>
                       {script.upsell_focus && script.upsell_focus !== 'NONE' && (
-                        <span className="rounded border border-emerald-600/30 bg-emerald-600/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
+                        <span className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
                           Upsell: {script.upsell_focus}
                         </span>
                       )}
@@ -717,7 +719,7 @@ export function Playbook() {
                         type="button"
                         onClick={() => openEditModal(script)}
                         title="Editar roteiro"
-                        className="rounded-lg border border-stone-800 bg-stone-900 p-1.5 text-stone-400 transition hover:border-amber-600/50 hover:text-stone-100"
+                        className="btn-tactical-secondary p-1.5 text-stone-400"
                       >
                         <Edit3 className="h-3.5 w-3.5" />
                       </button>
@@ -725,7 +727,7 @@ export function Playbook() {
                         type="button"
                         onClick={() => void handleDeleteScriptItem(script)}
                         title="Excluir roteiro"
-                        className="rounded-lg border border-stone-800 bg-stone-900 p-1.5 text-stone-400 transition hover:border-rose-600/50 hover:text-rose-400"
+                        className="btn-tactical-secondary p-1.5 text-stone-400 hover:border-rose-500/40 hover:text-rose-400"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -738,7 +740,7 @@ export function Playbook() {
                             `Roteiro "${script.title}" copiado!`,
                           )
                         }
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-stone-700 bg-stone-900 px-3 py-1 text-xs font-bold text-stone-200 transition hover:border-emerald-600/60 hover:text-emerald-400"
+                        className="btn-tactical-secondary px-3 py-1 text-xs hover:border-emerald-500/40 hover:text-emerald-300"
                       >
                         {isCopied ? (
                           <>
@@ -755,10 +757,10 @@ export function Playbook() {
                     </div>
                   </div>
 
-                  <h3 className="mt-2.5 font-serif text-base font-bold text-stone-100">
+                  <h3 className="mt-2.5 font-sans text-sm font-semibold tracking-tight text-stone-100">
                     {script.title}
                   </h3>
-                  <pre className="mt-2 whitespace-pre-wrap rounded-lg border border-stone-800/80 bg-[#1c1917] p-3 font-sans text-xs leading-relaxed text-stone-200">
+                  <pre className="mt-2 whitespace-pre-wrap rounded-lg border border-white/[0.06] bg-[#0c0a09] p-3 font-sans text-xs leading-relaxed text-stone-200">
                     {formattedText}
                   </pre>
                 </div>
@@ -770,22 +772,22 @@ export function Playbook() {
 
       {/* SEÇÃO 2: Quebra de Objeções (Contra-Ataques) + Tabela Oficial de Preços Editável */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        <section className="rounded-2xl border border-stone-800 bg-[#1c1917] p-5 lg:col-span-8">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-800 pb-3">
+        <section className="tactical-panel p-5 lg:col-span-8">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.07] pb-3">
             <div className="flex items-center gap-2">
-              <ShieldAlert className="h-4 w-4 text-amber-500" />
-              <h2 className="font-serif text-lg font-bold text-stone-100">
+              <ShieldAlert className="h-4 w-4 text-amber-400" />
+              <h2 className="font-sans text-base font-semibold tracking-tight text-stone-100">
                 Quebra de Objeções (Contra-Ataques 1-Click)
               </h2>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-stone-400">
+              <span className="font-mono text-xs tabular-nums text-stone-400">
                 {filteredObjections.length} contra-ataque(s)
               </span>
               <button
                 type="button"
                 onClick={() => openCreateModal('OBJECTION')}
-                className="inline-flex items-center gap-1 rounded-lg border border-amber-600/40 bg-amber-600/15 px-2.5 py-1 text-xs font-bold text-amber-300 transition hover:bg-amber-600 hover:text-stone-950"
+                className="btn-tactical-secondary border-amber-500/35 bg-amber-500/10 px-2.5 py-1 text-xs text-amber-300 hover:bg-amber-500 hover:text-stone-950"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Nova Objeção
@@ -800,15 +802,15 @@ export function Playbook() {
               return (
                 <article
                   key={obj.id}
-                  className="flex flex-col justify-between rounded-xl border border-stone-800 bg-stone-950/90 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-stone-700"
+                  className="tactical-card flex flex-col justify-between p-4 hover:border-white/[0.14]"
                 >
                   <div>
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className="inline-block rounded bg-amber-600/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
+                        <span className="inline-block rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-300">
                           {obj.category}
                         </span>
-                        <h3 className="mt-1.5 font-serif text-base font-bold text-amber-400">
+                        <h3 className="mt-1.5 font-sans text-sm font-semibold tracking-tight text-amber-400">
                           {obj.title}
                         </h3>
                       </div>
@@ -818,7 +820,7 @@ export function Playbook() {
                           type="button"
                           onClick={() => openEditModal(obj)}
                           title="Editar contra-ataque"
-                          className="rounded-lg border border-stone-800 bg-stone-900 p-1.5 text-stone-400 transition hover:border-amber-600/50 hover:text-stone-100"
+                          className="btn-tactical-secondary p-1.5 text-stone-400"
                         >
                           <Edit3 className="h-3 w-3" />
                         </button>
@@ -827,7 +829,7 @@ export function Playbook() {
                             type="button"
                             onClick={() => void handleDeleteScriptItem(obj)}
                             title="Excluir contra-ataque"
-                            className="rounded-lg border border-stone-800 bg-stone-900 p-1.5 text-stone-400 transition hover:border-rose-600/50 hover:text-rose-400"
+                            className="btn-tactical-secondary p-1.5 text-stone-400 hover:border-rose-500/40 hover:text-rose-400"
                           >
                             <Trash2 className="h-3 w-3" />
                           </button>
@@ -841,7 +843,7 @@ export function Playbook() {
                               `Contra-ataque "${obj.title}" copiado!`,
                             )
                           }
-                          className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-stone-950 transition hover:bg-emerald-500"
+                          className="btn-tactical-emerald px-2.5 py-1 text-[11px]"
                         >
                           {isCopied ? (
                             <>
@@ -862,7 +864,7 @@ export function Playbook() {
                       <p className="mt-1.5 text-[11px] text-stone-400">{obj.situation}</p>
                     )}
 
-                    <p className="mt-3 whitespace-pre-wrap rounded-lg border border-stone-800/80 bg-[#1c1917] p-3 text-xs leading-relaxed text-stone-200">
+                    <p className="mt-3 whitespace-pre-wrap rounded-lg border border-white/[0.06] bg-[#0c0a09] p-3 text-xs leading-relaxed text-stone-200">
                       {formattedResponse}
                     </p>
                   </div>
@@ -873,11 +875,11 @@ export function Playbook() {
         </section>
 
         {/* Tabela Oficial de Preços Editável */}
-        <section className="space-y-4 rounded-2xl border border-stone-800 bg-[#1c1917] p-5 lg:col-span-4">
-          <div className="flex items-center justify-between gap-2 border-b border-stone-800 pb-3">
+        <section className="tactical-panel space-y-4 p-5 lg:col-span-4">
+          <div className="flex items-center justify-between gap-2 border-b border-white/[0.07] pb-3">
             <div className="flex items-center gap-2">
               <DollarSign className="h-4 w-4 text-emerald-400" />
-              <h2 className="font-serif text-lg font-bold text-stone-100">
+              <h2 className="font-sans text-base font-semibold tracking-tight text-stone-100">
                 Tabela Oficial de Preços
               </h2>
             </div>
@@ -886,7 +888,7 @@ export function Playbook() {
               <button
                 type="button"
                 onClick={handleStartEditPricing}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-1 text-xs font-bold text-amber-300 transition hover:border-amber-500 hover:text-amber-200"
+                className="btn-tactical-secondary px-2.5 py-1 text-xs text-amber-300"
               >
                 <Pencil className="h-3 w-3" />
                 Editar Valores
@@ -897,7 +899,7 @@ export function Playbook() {
                   type="button"
                   onClick={handleResetPricingPlans}
                   title="Restaurar tabela padrão"
-                  className="inline-flex items-center gap-1 rounded-lg border border-stone-700 bg-stone-950 px-2 py-1 text-[11px] font-semibold text-stone-400 hover:text-stone-200"
+                  className="btn-tactical-secondary px-2 py-1 text-[11px]"
                 >
                   <RotateCcw className="h-3 w-3" />
                   Padrão
@@ -905,7 +907,7 @@ export function Playbook() {
                 <button
                   type="button"
                   onClick={handleSavePricingPlans}
-                  className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-bold text-stone-950 hover:bg-emerald-500"
+                  className="btn-tactical-emerald px-2.5 py-1 text-xs"
                 >
                   <Save className="h-3 w-3" />
                   Salvar
@@ -914,14 +916,14 @@ export function Playbook() {
             )}
           </div>
 
-          <div className="space-y-3 text-xs">
+          <div className="space-y-2.5 text-xs">
             {(isEditingPricing ? draftPricingPlans : pricingPlans).map((plan, idx) => {
               const cardBorder =
                 plan.accent === 'emerald'
-                  ? 'border-emerald-600/40 bg-emerald-600/10'
+                  ? 'border-emerald-500/35 bg-emerald-500/10'
                   : plan.accent === 'amber'
-                    ? 'border-amber-600/40 bg-amber-600/10'
-                    : 'border-stone-800 bg-stone-950'
+                    ? 'border-amber-500/35 bg-amber-500/10'
+                    : 'border-white/[0.07] bg-[#0c0a09]'
               const priceColor =
                 plan.accent === 'emerald'
                   ? 'text-emerald-400'
@@ -943,7 +945,7 @@ export function Playbook() {
                               prev.map((p, i) => (i === idx ? { ...p, title: val } : p)),
                             )
                           }}
-                          className="col-span-7 rounded-lg border border-stone-700 bg-stone-900 px-2.5 py-1 text-xs font-bold text-stone-100 outline-none focus:border-amber-500"
+                          className="input-tactical col-span-7 px-2.5 py-1 text-xs font-semibold"
                         />
                         <input
                           type="text"
@@ -956,7 +958,7 @@ export function Playbook() {
                               ),
                             )
                           }}
-                          className="col-span-5 rounded-lg border border-stone-700 bg-stone-900 px-2.5 py-1 font-mono text-xs font-black text-emerald-400 outline-none focus:border-amber-500"
+                          className="input-tactical col-span-5 px-2.5 py-1 font-mono text-xs font-bold text-emerald-400"
                         />
                       </div>
                       <textarea
@@ -970,15 +972,15 @@ export function Playbook() {
                             ),
                           )
                         }}
-                        className="w-full rounded-lg border border-stone-700 bg-stone-900 p-2 text-[11px] leading-relaxed text-stone-200 outline-none focus:border-amber-500"
+                        className="input-tactical w-full p-2 text-[11px] leading-relaxed"
                       />
                     </div>
                   ) : (
                     <>
-                      <div className="flex items-center justify-between font-bold text-stone-100">
+                      <div className="flex items-center justify-between font-semibold text-stone-100">
                         <span>{plan.title}</span>
                         <span
-                          className={`font-mono text-sm font-black tabular-nums ${priceColor}`}
+                          className={`font-mono text-sm font-bold tabular-nums ${priceColor}`}
                         >
                           {plan.priceLabel}
                         </span>
@@ -993,8 +995,8 @@ export function Playbook() {
             })}
           </div>
 
-          <div className="rounded-xl border border-stone-800 bg-stone-950 p-3">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+          <div className="rounded-xl border border-white/[0.07] bg-[#0c0a09] p-3">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-400">
               <ShieldCheck className="h-4 w-4" />
               Regra de Ouro LGPD
             </div>
@@ -1007,16 +1009,16 @@ export function Playbook() {
       </div>
 
       {/* Checklists Operacionais Interativos + Deploy Instantâneo Dinâmico */}
-      <section className="rounded-2xl border border-stone-800 bg-[#1c1917] p-5">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-800 pb-4">
+      <section className="tactical-panel p-5">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.07] pb-4">
           <div className="flex items-center gap-2">
             <Rocket className="h-4 w-4 text-emerald-400" />
-            <h2 className="font-serif text-lg font-bold text-stone-100">
+            <h2 className="font-sans text-base font-semibold tracking-tight text-stone-100">
               Checklists Operacionais Persistentes
             </h2>
           </div>
 
-          <div className="flex items-center gap-1.5 rounded-xl border border-stone-800 bg-stone-950 p-1">
+          <div className="flex items-center gap-1 rounded-lg border border-white/[0.07] bg-[#0c0a09] p-1">
             {(
               [
                 { key: 'whatsapp', label: 'Checklist de WhatsApp' },
@@ -1028,10 +1030,10 @@ export function Playbook() {
                 key={tab.key}
                 type="button"
                 onClick={() => setActiveChecklistTab(tab.key)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${
                   activeChecklistTab === tab.key
-                    ? 'bg-amber-600 text-stone-950'
-                    : 'text-stone-400 hover:text-stone-100'
+                    ? 'bg-amber-500 text-stone-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]'
+                    : 'text-stone-400 hover:bg-white/[0.04] hover:text-stone-100'
                 }`}
               >
                 {tab.label}
@@ -1048,18 +1050,18 @@ export function Playbook() {
                 key={item.id}
                 className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
                   checked
-                    ? 'border-emerald-600/45 bg-emerald-600/10'
-                    : 'border-stone-800 bg-stone-950/80 hover:border-stone-700'
+                    ? 'border-emerald-500/40 bg-emerald-500/10'
+                    : 'border-white/[0.07] bg-[#0c0a09] hover:border-white/[0.14]'
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={() => toggleCheck(item.id)}
-                  className="mt-0.5 h-4 w-4 rounded border-stone-700 bg-stone-900 text-emerald-600"
+                  className="mt-0.5 h-4 w-4 rounded border-white/15 bg-stone-900 text-emerald-500"
                 />
                 <div>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-stone-100">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-stone-100">
                     <CheckSquare className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
                     <span>{item.step}</span>
                   </div>
@@ -1071,16 +1073,16 @@ export function Playbook() {
         </div>
 
         {/* Snippet de Deploy em 1 Minuto Dinâmico por Nicho */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-stone-800 bg-stone-950 p-3.5">
-          <div className="flex items-center gap-2 text-xs font-bold text-stone-300">
-            <Terminal className="h-4 w-4 text-amber-500" />
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/[0.07] bg-[#0c0a09] p-3.5">
+          <div className="flex items-center gap-2 text-xs font-semibold text-stone-300">
+            <Terminal className="h-4 w-4 text-amber-400" />
             <span>
               Deploy em 1 Minuto (Nicho Ativo:{' '}
-              <strong className="text-amber-400">vercel-{dynamicDeploySlug}</strong>):
+              <strong className="font-mono text-amber-400">vercel-{dynamicDeploySlug}</strong>):
             </span>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <code className="rounded-lg border border-stone-800 bg-stone-900 px-3 py-1.5 font-mono text-xs text-emerald-400">
+            <code className="rounded-lg border border-white/[0.07] bg-[#141210] px-3 py-1.5 font-mono text-xs text-emerald-400">
               {dynamicDeployCommand}
             </code>
             <button
@@ -1092,7 +1094,7 @@ export function Playbook() {
                   'Comando de deploy copiado!',
                 )
               }
-              className="inline-flex items-center gap-1 rounded-lg border border-stone-700 bg-stone-900 px-2.5 py-1.5 text-xs font-semibold text-stone-200 transition hover:border-emerald-500 hover:text-emerald-300"
+              className="btn-tactical-secondary px-2.5 py-1.5 text-xs hover:border-emerald-500/40 hover:text-emerald-300"
             >
               {copiedId === 'deploy-cmd' ? (
                 <>
@@ -1117,13 +1119,13 @@ export function Playbook() {
           onClick={() => setShowScriptModal(false)}
         >
           <div
-            className="w-full max-w-2xl rounded-2xl border border-stone-800 bg-[#1c1917] p-6 shadow-2xl"
+            className="tactical-panel w-full max-w-2xl p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-stone-800 pb-4">
+            <div className="flex items-center justify-between border-b border-white/[0.07] pb-4">
               <div className="flex items-center gap-2">
-                <MessageSquarePlus className="h-5 w-5 text-amber-500" />
-                <h2 className="font-serif text-xl font-bold text-stone-100">
+                <MessageSquarePlus className="h-4 w-4 text-amber-400" />
+                <h2 className="font-sans text-lg font-semibold tracking-tight text-stone-100">
                   {editingScriptId
                     ? 'Editar Roteiro / Contra-Ataque'
                     : 'Novo Roteiro / Quebra de Objeção'}
@@ -1132,7 +1134,7 @@ export function Playbook() {
               <button
                 type="button"
                 onClick={() => setShowScriptModal(false)}
-                className="rounded-lg border border-stone-800 bg-stone-950 p-1.5 text-stone-400 hover:text-stone-100"
+                className="btn-tactical-secondary p-1.5 text-stone-400"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -1142,13 +1144,13 @@ export function Playbook() {
               {/* Seletor de Tipo: PITCH vs OBJECTION */}
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-stone-300">
+                  <label className="mb-1 block text-[11px] font-medium text-stone-400">
                     Tipo de Registro *
                   </label>
                   <select
                     value={formScriptType}
                     onChange={(e) => setFormScriptType(e.target.value as ScriptType)}
-                    className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2.5 text-xs font-bold text-stone-100 outline-none focus:border-amber-500"
+                    className="input-tactical w-full px-3 py-2 text-xs font-semibold"
                   >
                     <option value="PITCH">Abordagem Inicial (Pitch)</option>
                     <option value="OBJECTION">Quebra de Objeção (Contra-Ataque)</option>
@@ -1156,13 +1158,13 @@ export function Playbook() {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-stone-300">
+                  <label className="mb-1 block text-[11px] font-medium text-stone-400">
                     Nicho / Vertical *
                   </label>
                   <select
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
-                    className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2.5 text-xs font-bold text-stone-100 outline-none focus:border-amber-500"
+                    className="input-tactical w-full px-3 py-2 text-xs font-semibold"
                   >
                     {allCategoryChoices.map((cat) => (
                       <option key={cat} value={cat}>
@@ -1174,7 +1176,7 @@ export function Playbook() {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-stone-300">
+                <label className="mb-1 block text-[11px] font-medium text-stone-400">
                   {formScriptType === 'OBJECTION'
                     ? 'Título / Gatilho da Objeção (Ex: “Já tenho Instagram / Linktree”) *'
                     : 'Título do Roteiro de Abordagem *'}
@@ -1189,13 +1191,13 @@ export function Playbook() {
                       ? 'Ex: “Acho caro / Preciso falar com meu sócio”'
                       : 'Ex: Pet Shop — Vitrine dos 4 Pilares + Táxi Dog'
                   }
-                  className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2.5 text-xs text-stone-100 placeholder-stone-500 outline-none focus:border-amber-500"
+                  className="input-tactical w-full px-3.5 py-2 text-xs"
                 />
               </div>
 
               {formScriptType === 'OBJECTION' ? (
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-stone-300">
+                  <label className="mb-1 block text-[11px] font-medium text-stone-400">
                     Contexto da Trava / Situação do Cliente (opcional)
                   </label>
                   <input
@@ -1203,13 +1205,13 @@ export function Playbook() {
                     value={formSituation}
                     onChange={(e) => setFormSituation(e.target.value)}
                     placeholder="Ex: Cliente acha que perfil no Instagram substitui site próprio no Google."
-                    className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2 text-xs text-stone-100 placeholder-stone-500 outline-none focus:border-amber-500"
+                    className="input-tactical w-full px-3.5 py-2 text-xs"
                   />
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div>
-                    <label className="mb-1 block text-xs font-semibold text-stone-300">
+                    <label className="mb-1 block text-[11px] font-medium text-stone-400">
                       Diagnóstico Web Alvo
                     </label>
                     <select
@@ -1217,7 +1219,7 @@ export function Playbook() {
                       onChange={(e) =>
                         setFormCondition(e.target.value as ScriptWebsiteCondition)
                       }
-                      className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-stone-100 outline-none focus:border-amber-500"
+                      className="input-tactical w-full px-3 py-2 text-xs"
                     >
                       <option value="IMPROVISADO">IMPROVISADO (Linktree / Instagram)</option>
                       <option value="SEM_SITE">SEM_SITE (Sem link na ficha)</option>
@@ -1227,13 +1229,13 @@ export function Playbook() {
                   </div>
 
                   <div>
-                    <label className="mb-1 block text-xs font-semibold text-stone-300">
+                    <label className="mb-1 block text-[11px] font-medium text-stone-400">
                       Foco de Upsell Posterior
                     </label>
                     <select
                       value={formUpsell}
                       onChange={(e) => setFormUpsell(e.target.value as UpsellFocus)}
-                      className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-stone-100 outline-none focus:border-amber-500"
+                      className="input-tactical w-full px-3 py-2 text-xs"
                     >
                       <option value="GMB">Google Meu Negócio (GMB)</option>
                       <option value="ADS">Google Ads Local</option>
@@ -1246,7 +1248,7 @@ export function Playbook() {
 
               <div>
                 <div className="mb-1 flex items-center justify-between">
-                  <label className="text-xs font-semibold text-stone-300">
+                  <label className="text-[11px] font-medium text-stone-400">
                     {formScriptType === 'OBJECTION'
                       ? 'Resposta / Contra-Ataque para Copiar no WhatsApp *'
                       : 'Texto da Mensagem de Abordagem *'}
@@ -1261,22 +1263,22 @@ export function Playbook() {
                   required
                   value={formMessage}
                   onChange={(e) => setFormMessage(e.target.value)}
-                  className="w-full rounded-xl border border-stone-700 bg-stone-950 p-3.5 text-xs leading-relaxed text-stone-100 outline-none focus:border-amber-500"
+                  className="input-tactical w-full p-3.5 text-xs leading-relaxed"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 border-t border-stone-800 pt-4">
+              <div className="flex items-center justify-end gap-2 border-t border-white/[0.07] pt-4">
                 <button
                   type="button"
                   onClick={() => setShowScriptModal(false)}
-                  className="rounded-xl border border-stone-700 px-4 py-2 text-xs font-semibold text-stone-300 hover:bg-stone-800"
+                  className="btn-tactical-secondary px-4 py-2 text-xs"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSavingScript}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-stone-950 transition hover:bg-emerald-500 disabled:opacity-50"
+                  className="btn-tactical-emerald px-5 py-2 text-xs"
                 >
                   <Save className="h-3.5 w-3.5" />
                   {isSavingScript ? 'Salvando...' : 'Salvar no Catálogo'}

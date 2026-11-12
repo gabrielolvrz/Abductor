@@ -782,27 +782,27 @@ export function PetExportConfigModalInner({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/80 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="pet-export-modal-title"
     >
-      <div className="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl border border-stone-700 bg-[#1c1917] shadow-2xl">
+      <div className="tactical-panel flex max-h-[90vh] w-full max-w-2xl flex-col shadow-2xl">
         {/* Topo do Modal */}
-        <div className="flex items-start justify-between border-b border-stone-800 p-5">
+        <div className="flex items-start justify-between border-b border-white/[0.07] p-5">
           <div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-600/40 bg-emerald-600/10 px-2.5 py-0.5 text-xs font-bold text-emerald-400">
+              <span className="inline-flex items-center gap-1 rounded-md border border-emerald-500/35 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-300">
                 <Code2 className="h-3.5 w-3.5" />
                 Gerador Turnkey Pet &amp; Vet
               </span>
               <span className="text-[11px] text-stone-400">
-                Template: <code>vercel-petshop</code>
+                Template: <code className="font-mono text-emerald-400">vercel-petshop</code>
               </span>
             </div>
             <h2
               id="pet-export-modal-title"
-              className="mt-2 font-serif text-xl font-bold tracking-tight text-stone-100"
+              className="mt-2 font-sans text-lg font-semibold tracking-tight text-stone-100"
             >
               Configurar Site Vitrine Pet — {cleanedName}
             </h2>
@@ -814,7 +814,7 @@ export function PetExportConfigModalInner({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-stone-800 bg-stone-950 p-2 text-stone-400 hover:text-stone-100"
+            className="btn-tactical-secondary p-2 text-stone-400"
           >
             <X className="h-4 w-4" />
           </button>
@@ -1325,12 +1325,12 @@ export function PetExportConfigModalInner({
         </div>
 
         {/* Rodapé Fixo */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-stone-800 p-5">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/[0.07] p-5">
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-stone-700 px-4 py-2.5 text-xs font-semibold text-stone-300 hover:bg-stone-800"
+              className="btn-tactical-secondary px-4 py-2 text-xs"
             >
               Cancelar
             </button>
@@ -1338,7 +1338,7 @@ export function PetExportConfigModalInner({
               type="button"
               onClick={handleResetDefaults}
               title="Limpar rascunho deste lead e restaurar configuração original"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2.5 text-xs font-semibold text-stone-400 transition hover:border-emerald-600/50 hover:text-emerald-400"
+              className="btn-tactical-secondary px-3.5 py-2 text-xs text-stone-400 hover:text-emerald-300"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               Restaurar Padrões
@@ -1348,7 +1348,7 @@ export function PetExportConfigModalInner({
           <button
             type="button"
             onClick={handleDownload}
-            className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-2.5 text-xs font-bold text-stone-950 shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-500"
+            className="btn-tactical-emerald px-6 py-2.5 text-xs"
           >
             <Download className="h-4 w-4" />
             Gerar e Baixar site.config.json

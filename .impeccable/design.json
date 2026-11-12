@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-12T00:46:00Z",
+  "title": "Design System: Abductor Cockpit",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Amber Signal", "canonical": "#d97706" },
+      "primary-hover": { "role": "primary", "displayName": "Amber Hover", "canonical": "#b45309" },
+      "primary-muted": { "role": "primary", "displayName": "Amber Muted", "canonical": "rgba(217, 119, 6, 0.15)" },
+      "success": { "role": "secondary", "displayName": "Radar Emerald", "canonical": "#059669" },
+      "danger": { "role": "tertiary", "displayName": "Signal Rose", "canonical": "#e11d48" },
+      "neutral-bg": { "role": "neutral", "displayName": "Void Black", "canonical": "#0c0a09" },
+      "neutral-surface": { "role": "neutral", "displayName": "Carbon Surface", "canonical": "#1c1917" },
+      "neutral-border": { "role": "neutral", "displayName": "Micro Border", "canonical": "#292524" },
+      "neutral-text": { "role": "neutral", "displayName": "Primary Text", "canonical": "#f5f5f4" },
+      "neutral-text-muted": { "role": "neutral", "displayName": "Muted Text", "canonical": "#a8a29e" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display Serif", "purpose": "Brand identity and hero titles." },
+      "headline": { "displayName": "Headline Sans", "purpose": "Section and column headers." },
+      "title": { "displayName": "Title Sans", "purpose": "Card titles and business names." },
+      "body": { "displayName": "Body Sans", "purpose": "Standard text, notes, and scripts." },
+      "label": { "displayName": "Data Mono", "purpose": "Scores, phones, and status badges." }
+    },
+    "shadows": [
+      { "name": "tonal-border", "value": "0 0 0 1px #292524", "purpose": "Subtle 1px boundary between dark surface layers." }
+    ],
+    "motion": [
+      { "name": "ease-tactical", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Fast responsive state transitions." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1536px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Used for main trigger action (e.g. search dispatch, direct whatsapp).",
+      "html": "<button class=\"ds-btn-primary\">DISPARAR BUSCA</button>",
+      "css": ".ds-btn-primary { background: #d97706; color: #0c0a09; font-family: Inter, sans-serif; font-size: 13px; font-weight: 600; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; } .ds-btn-primary:hover { background: #b45309; } .ds-btn-primary:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "Secondary Action Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Used for alternative actions and filters.",
+      "html": "<button class=\"ds-btn-secondary\">EXPORTAR CSV</button>",
+      "css": ".ds-btn-secondary { background: #1c1917; color: #f5f5f4; font-family: Inter, sans-serif; font-size: 13px; font-weight: 500; padding: 8px 14px; border: 1px solid #292524; border-radius: 8px; cursor: pointer; transition: all 0.15s ease; } .ds-btn-secondary:hover { background: #292524; border-color: #44403c; }"
+    },
+    {
+      "name": "Nav Tab Active",
+      "kind": "nav",
+      "refersTo": "nav-pill-active",
+      "description": "Active navigation item inside the top header.",
+      "html": "<button class=\"ds-nav-tab-active\">Bancada</button>",
+      "css": ".ds-nav-tab-active { background: #d97706; color: #0c0a09; font-family: Inter, sans-serif; font-size: 12px; font-weight: 600; padding: 8px 14px; border: none; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }"
+    },
+    {
+      "name": "Nav Tab Inactive",
+      "kind": "nav",
+      "refersTo": "nav-pill-inactive",
+      "description": "Inactive navigation item inside the top header.",
+      "html": "<button class=\"ds-nav-tab-inactive\">Kanban Comercial</button>",
+      "css": ".ds-nav-tab-inactive { background: transparent; color: #a8a29e; font-family: Inter, sans-serif; font-size: 12px; font-weight: 500; padding: 8px 14px; border: none; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s ease; } .ds-nav-tab-inactive:hover { background: #292524; color: #f5f5f4; }"
+    },
+    {
+      "name": "Lead Status Chip",
+      "kind": "chip",
+      "refersTo": "chip-status",
+      "description": "Status badge in CRM pipeline.",
+      "html": "<span class=\"ds-chip-status\">CONTATADO</span>",
+      "css": ".ds-chip-status { display: inline-flex; align-items: center; padding: 2px 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; border-radius: 6px; border: 1px solid rgba(217, 119, 6, 0.4); background: rgba(217, 119, 6, 0.12); color: #fcd34d; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "O Cockpit Tático de Alta Precisão",
+    "overview": "O Abductor é uma bancada operacional de alta performance para extração, triagem e fechamento de clientes em escala. Sua estética visual é inspirada em ferramentas profissionais de ponta (Linear, Raycast Dark, Bloomberg Terminal), combinando carvão profundo, superfícies de pedra escura e micro-bordas de 1px com iluminação sutil.",
+    "keyCharacteristics": [
+      "Atmosfera Tática Escura com carvão profundo e micro-bordas de 1px.",
+      "Tonal Layering de precisão sem sombras difusas pesadas.",
+      "Acentos estritos: Âmbar Signal para ações e Esmeralda Radar para conversão.",
+      "Economia cognitiva com abas em segmented control e tipografia mono tabular."
+    ],
+    "rules": [
+      {
+        "name": "The Single Primary Action Rule",
+        "body": "Cada bloco visual possui no máximo um botão primário âmbar sólido.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Precision Rule",
+        "body": "Todo número ou telefone deve usar tabular-nums font-mono.",
+        "section": "typography"
+      },
+      {
+        "name": "The Border-As-Light Rule",
+        "body": "A profundidade visual depende de micro-bordas sutis de 1px em vez de sombras difusas.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Manter a quantidade e posição de todas as abas e botões existentes.",
+      "Usar micro-bordas de 1px para separar painéis e cartões.",
+      "Garantir estados táteis de hover e active em todos os botões."
+    ],
+    "donts": [
+      "Não usar gradientes multicoloridos ou efeitos de neon exagerados.",
+      "Não aplicar cantos arredondados gigantes (pill) em botões de ação.",
+      "Não usar verde fora de contextos de validação, sucesso ou score alto."
+    ]
+  }
+}

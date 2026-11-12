@@ -119,7 +119,6 @@ export function PitchModal({ lead, onClose, onMarkContacted }: PitchModalProps) 
       })
       setMessageText(interp.interpolated_message)
     } catch {
-      // Fallback simples caso backend falhe
       setMessageText((prev) =>
         prev.replace(/R\$\s*\d+/g, `R$ ${newPrice}`)
       )
@@ -150,89 +149,86 @@ export function PitchModal({ lead, onClose, onMarkContacted }: PitchModalProps) 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/80 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="pitch-modal-title"
     >
       {copied && (
-        <div className="fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-xl border border-emerald-600/50 bg-stone-900 px-4 py-3 text-xs font-semibold text-emerald-300 shadow-2xl">
+        <div className="tactical-panel fixed bottom-5 right-5 z-[60] flex items-center gap-2 border-emerald-500/40 px-4 py-3 text-xs font-semibold text-emerald-300 shadow-2xl">
           <Check className="h-4 w-4 text-emerald-400" />
-          Copiado para a área de transferência!
+          <span>Copiado para a área de transferência!</span>
         </div>
       )}
-      <div className="w-full max-w-2xl rounded-2xl border border-stone-700 bg-stone-900 p-6 shadow-2xl">
-        {/* Cabeçalho */}
-        <div className="flex items-start justify-between gap-4 border-b border-stone-800 pb-4">
+      <div className="tactical-panel w-full max-w-2xl p-6 shadow-2xl">
+        <div className="flex items-start justify-between gap-4 border-b border-white/[0.07] pb-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-600/35 bg-emerald-600/10 px-2.5 py-0.5 text-xs font-bold text-emerald-400">
-                <Sparkles className="h-3.5 w-3.5" />
-                Interpolação Runtime
+              <span className="inline-flex items-center gap-1 rounded border border-emerald-500/35 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-emerald-400">
+                <Sparkles className="h-3 w-3" />
+                <span>Interpolação Runtime</span>
               </span>
               {upsellFocus !== 'NONE' && (
-                <span className="rounded-full border border-amber-600/35 bg-amber-600/10 px-2.5 py-0.5 text-xs font-semibold text-amber-400">
+                <span className="rounded border border-amber-500/35 bg-amber-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-amber-400">
                   Upsell: {upsellFocus}
                 </span>
               )}
             </div>
             <h2
               id="pitch-modal-title"
-              className="mt-2 font-serif text-xl font-bold tracking-tight text-stone-100"
+              className="mt-2 font-sans text-lg font-semibold tracking-tight text-stone-100"
             >
               Abordagem para {cleanedName || lead.name}
             </h2>
-            <p className="text-xs text-stone-400">
+            <p className="mt-0.5 text-xs text-stone-400">
               Ficha original: <span className="text-stone-300">{lead.name}</span> • Diagnóstico:{' '}
-              <strong className="text-amber-400">{lead.website_status}</strong>
+              <strong className="font-mono text-amber-400">{lead.website_status}</strong>
             </p>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-stone-800 bg-stone-950 p-2 text-stone-400 hover:text-stone-100"
+            className="btn-tactical-secondary p-2"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Corpo */}
         <div className="mt-4 space-y-4">
-          {/* Seletor Dinâmico de Ticket / Preço por Lead */}
-          <div className="rounded-xl border border-stone-800 bg-stone-950/70 p-3">
+          <div className="rounded-xl border border-white/[0.07] bg-[#0c0a09]/80 p-3">
             <div className="mb-2 flex items-center justify-between text-xs">
-              <span className="font-semibold uppercase tracking-wider text-stone-400">
+              <span className="text-[11px] font-medium uppercase tracking-wider text-stone-400">
                 Ticket Volátil para este Prospect
               </span>
-              <span className="font-mono text-xs font-bold text-emerald-400">
+              <span className="font-mono text-xs font-semibold tabular-nums text-emerald-400">
                 R$ {ticketPrice} em pagamento único
               </span>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5">
               {[300, 350, 400, 450, 500, 650, 850].map((p) => (
                 <button
                   key={p}
                   type="button"
                   onClick={() => void handleChangePrice(p)}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-mono transition-all ${
+                  className={`rounded-lg px-2.5 py-1 font-mono text-xs tabular-nums transition-all ${
                     ticketPrice === p
-                      ? 'bg-emerald-600 font-bold text-stone-950 shadow-sm'
-                      : 'border border-stone-800 bg-stone-900 text-stone-300 hover:border-stone-700'
+                      ? 'bg-amber-500 font-semibold text-stone-950 shadow-sm'
+                      : 'border border-white/[0.08] bg-[#141210] text-stone-300 hover:border-white/[0.18] hover:text-stone-100'
                   }`}
                 >
                   R$ {p}
                 </button>
               ))}
               <div className="ml-auto flex items-center gap-1.5 pt-1 sm:pt-0">
-                <span className="text-[11px] text-stone-500">Outro:</span>
+                <span className="text-[11px] text-stone-400">Outro:</span>
                 <input
                   type="number"
                   min={100}
                   step={50}
                   value={ticketPrice}
                   onChange={(e) => void handleChangePrice(Number(e.target.value) || 350)}
-                  className="w-20 rounded-lg border border-stone-700 bg-stone-900 px-2 py-1 font-mono text-xs text-stone-100 outline-none focus:border-amber-600"
+                  className="input-tactical w-20 py-1 font-mono tabular-nums"
                 />
               </div>
             </div>
@@ -241,7 +237,7 @@ export function PitchModal({ lead, onClose, onMarkContacted }: PitchModalProps) 
           <div>
             <label
               htmlFor="pitch-script-selector"
-              className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400"
+              className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-stone-400"
             >
               Roteiro Selecionado ({scriptTitle})
             </label>
@@ -250,7 +246,7 @@ export function PitchModal({ lead, onClose, onMarkContacted }: PitchModalProps) 
               value={selectedScriptId}
               disabled={isLoading}
               onChange={(e) => void handleSelectScript(e.target.value)}
-              className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2.5 text-xs font-medium text-stone-100 outline-none focus:border-amber-600"
+              className="input-tactical py-2.5 font-medium"
             >
               {scripts.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -263,13 +259,13 @@ export function PitchModal({ lead, onClose, onMarkContacted }: PitchModalProps) 
 
           <div>
             <div className="mb-1.5 flex items-center justify-between text-xs">
-              <span className="font-semibold uppercase tracking-wider text-stone-400">
+              <span className="text-[11px] font-medium uppercase tracking-wider text-stone-400">
                 Texto pronto (ajuste antes de disparar se quiser)
               </span>
               {isLoading && (
                 <span className="inline-flex items-center gap-1 text-amber-400">
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  Montando mensagem...
+                  <span>Montando mensagem...</span>
                 </span>
               )}
             </div>
@@ -277,36 +273,35 @@ export function PitchModal({ lead, onClose, onMarkContacted }: PitchModalProps) 
               rows={9}
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
-              className="w-full rounded-xl border border-stone-700 bg-stone-950 p-4 font-sans text-sm leading-relaxed text-stone-100 outline-none focus:border-amber-600"
+              className="input-tactical p-3.5 font-sans text-sm leading-relaxed"
             />
           </div>
         </div>
 
-        {/* Rodapé */}
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-stone-800 pt-4">
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.07] pt-4">
           <button
             type="button"
             onClick={() => void handleCopyOnly()}
-            className="inline-flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-950 px-4 py-2.5 text-xs font-bold text-stone-200 transition hover:border-stone-500 hover:text-stone-100"
+            className="btn-tactical-secondary px-4 py-2"
           >
             {copied ? (
               <>
                 <Check className="h-4 w-4 text-emerald-400" />
-                Texto Copiado!
+                <span>Texto Copiado!</span>
               </>
             ) : (
               <>
                 <Copy className="h-4 w-4 text-stone-400" />
-                Copiar Texto
+                <span>Copiar Texto</span>
               </>
             )}
           </button>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-stone-800 px-4 py-2.5 text-xs font-semibold text-stone-400 hover:bg-stone-800 hover:text-stone-100"
+              className="btn-tactical-ghost px-4 py-2"
             >
               Fechar
             </button>
@@ -315,10 +310,10 @@ export function PitchModal({ lead, onClose, onMarkContacted }: PitchModalProps) 
               type="button"
               disabled={!lead.phone_sanitized}
               onClick={() => void handleCopyAndOpenWhatsApp()}
-              className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-stone-950 shadow-lg transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+              className="btn-tactical-emerald px-5 py-2"
             >
               <MessageCircle className="h-4 w-4 fill-stone-950" />
-              Copiar e Abrir WhatsApp
+              <span>Copiar e Abrir WhatsApp</span>
               <ExternalLink className="h-3.5 w-3.5" />
             </button>
           </div>

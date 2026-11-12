@@ -26,25 +26,25 @@ const PIPELINE_STEPS: {
 }[] = [
   {
     phase: 'SCRAPING',
-    label: '1. Coleta no Maps',
+    label: 'Coleta no Maps',
     description: 'Container gosom varrendo fichas da região',
     icon: Radar,
   },
   {
     phase: 'PARSING',
-    label: '2. Filtro & Telefone',
+    label: 'Filtro & Telefone',
     description: 'Descartando órgãos públicos e validando DDD',
     icon: Filter,
   },
   {
     phase: 'VALIDATING',
-    label: '3. Sondagem Web',
+    label: 'Sondagem Web',
     description: '30 conexões simultâneas caçando Linktrees e erros',
     icon: Globe,
   },
   {
     phase: 'SCORING',
-    label: '4. Lead Scoring',
+    label: 'Lead Scoring',
     description: 'Aplicando Hard Gate e ordenando oportunidades',
     icon: Calculator,
   },
@@ -89,11 +89,11 @@ export function JobProgress({
 
   if (jobStatus === 'FAILED') {
     return (
-      <div className="rounded-2xl border border-rose-700/50 bg-rose-950/25 p-5 text-rose-200">
+      <div className="rounded-xl border border-rose-500/35 bg-rose-950/20 p-4 text-rose-200">
         <div className="flex items-center gap-3">
-          <AlertTriangle className="h-6 w-6 shrink-0 text-rose-500" />
+          <AlertTriangle className="h-5 w-5 shrink-0 text-rose-400" />
           <div>
-            <h3 className="font-serif text-base font-bold text-rose-300">
+            <h3 className="font-sans text-sm font-semibold text-rose-300">
               Coleta interrompida pelo Watchdog de 180s
             </h3>
             <p className="mt-0.5 text-xs text-rose-200/80">
@@ -107,15 +107,15 @@ export function JobProgress({
   }
 
   return (
-    <div className="space-y-5">
-      <div className="rounded-2xl border border-amber-600/35 bg-stone-900/95 p-5 shadow-lg">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-800 pb-4">
+    <div className="space-y-4">
+      <div className="tactical-panel border-amber-500/30 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.07] pb-3.5">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-600/15 text-amber-500">
-              <Loader2 className="h-5 w-5 animate-spin" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-400">
+              <Loader2 className="h-4 w-4 animate-spin" />
             </div>
             <div>
-              <h3 className="font-serif text-base font-bold text-stone-100">
+              <h3 className="font-sans text-sm font-semibold tracking-tight text-stone-100">
                 Garimpando oportunidades em background
               </h3>
               <p className="text-xs text-stone-400">
@@ -124,13 +124,13 @@ export function JobProgress({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-950 px-4 py-2 font-mono text-sm font-bold tabular-nums text-amber-400">
-            <Timer className="h-4 w-4 text-amber-500" />
+          <div className="flex items-center gap-2 rounded-lg border border-white/[0.08] bg-[#0c0a09] px-3.5 py-1.5 font-mono text-xs font-semibold tabular-nums text-amber-400">
+            <Timer className="h-3.5 w-3.5 text-amber-400" />
             <span>{formatChronometer(displayedSeconds)}</span>
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-3.5 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
           {PIPELINE_STEPS.map((step, index) => {
             const stepRank = index + 1
             const isCompleted = currentRank > stepRank
@@ -140,20 +140,20 @@ export function JobProgress({
             return (
               <div
                 key={step.phase}
-                className={`rounded-xl border p-3.5 transition-all ${
+                className={`rounded-lg border p-3 transition-all ${
                   isCurrent
-                    ? 'border-amber-600 bg-amber-600/10 shadow-sm'
+                    ? 'border-amber-500/50 bg-amber-500/10'
                     : isCompleted
-                      ? 'border-emerald-600/35 bg-stone-950/80'
-                      : 'border-stone-800 bg-stone-950/40 opacity-60'
+                      ? 'border-emerald-500/30 bg-[#0c0a09]/80'
+                      : 'border-white/[0.06] bg-[#0c0a09]/40 opacity-55'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-stone-100">{step.label}</span>
+                  <span className="text-xs font-semibold text-stone-100">{step.label}</span>
                   {isCompleted ? (
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                   ) : isCurrent ? (
-                    <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
+                    <Loader2 className="h-4 w-4 animate-spin text-amber-400" />
                   ) : (
                     <Icon className="h-4 w-4 text-stone-500" />
                   )}
@@ -167,25 +167,25 @@ export function JobProgress({
 
       <div
         aria-label="Carregando leads"
-        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
+        className="grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-3"
       >
         {Array.from({ length: 6 }).map((_, idx) => (
           <div
             key={idx}
-            className="animate-pulse rounded-2xl border border-stone-800 bg-stone-900/70 p-5"
+            className="tactical-card animate-pulse p-4"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 space-y-2">
-                <div className="h-4 w-3/4 rounded bg-stone-800" />
-                <div className="h-3 w-1/2 rounded bg-stone-800/70" />
+                <div className="h-4 w-3/4 rounded bg-stone-800/80" />
+                <div className="h-3 w-1/2 rounded bg-stone-800/50" />
               </div>
-              <div className="h-10 w-14 rounded-xl bg-stone-800" />
+              <div className="h-9 w-12 rounded-lg bg-stone-800/80" />
             </div>
-            <div className="mt-4 flex gap-2">
-              <div className="h-6 w-24 rounded-full bg-stone-800" />
-              <div className="h-6 w-28 rounded-full bg-stone-800" />
+            <div className="mt-3.5 flex gap-2">
+              <div className="h-5 w-20 rounded bg-stone-800/70" />
+              <div className="h-5 w-24 rounded bg-stone-800/70" />
             </div>
-            <div className="mt-5 h-9 w-full rounded-xl bg-stone-800" />
+            <div className="mt-4 h-8 w-full rounded-lg bg-stone-800/70" />
           </div>
         ))}
       </div>

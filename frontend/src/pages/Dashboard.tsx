@@ -528,120 +528,120 @@ export function Dashboard({
     activeSearch?.job_status === 'RUNNING' || activeSearch?.job_status === 'PENDING'
 
   return (
-    <main className="mx-auto max-w-[1920px] space-y-6 px-6 py-6">
+    <main className="mx-auto max-w-[1920px] space-y-5 px-6 py-5">
       {/* Toast Flutuante */}
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-xl border border-amber-600/50 bg-stone-900 px-4 py-3 text-xs font-semibold text-amber-300 shadow-2xl">
+        <div className="tactical-panel fixed bottom-5 right-5 z-50 flex items-center gap-2 border-amber-500/40 px-4 py-3 text-xs font-semibold text-amber-300 shadow-2xl">
           <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-          {toastMessage}
+          <span>{toastMessage}</span>
         </div>
       )}
 
       {/* 4 Métricas de Topo */}
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="flex items-center justify-between rounded-2xl border border-stone-800 bg-[#1c1917] px-5 py-4 shadow-sm">
+      <section className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="tactical-panel flex items-center justify-between px-4 py-3.5">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-stone-400">
               Total de Oportunidades
             </span>
-            <p className="mt-1 font-mono text-2xl font-black tabular-nums text-stone-100">
+            <p className="mt-1 font-mono text-2xl font-bold tabular-nums text-stone-100">
               {topMetrics.opportunitiesCount}
             </p>
             <span className="text-[11px] text-stone-400">
               {leads.length} fichas carregadas na leva atual
             </span>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-amber-600/30 bg-amber-600/10 text-amber-500">
-            <Flame className="h-5 w-5" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-500/25 bg-amber-500/10 text-amber-400">
+            <Flame className="h-4 w-4" />
           </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-2xl border border-stone-800 bg-[#1c1917] px-5 py-4 shadow-sm">
+        <div className="tactical-panel flex items-center justify-between px-4 py-3.5">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-stone-400">
               Em Negociação
             </span>
-            <p className="mt-1 font-mono text-2xl font-black tabular-nums text-amber-400">
+            <p className="mt-1 font-mono text-2xl font-bold tabular-nums text-amber-400">
               {topMetrics.inNegotiationCount}
             </p>
             <span className="font-mono text-[11px] tabular-nums text-stone-400">
               Previsão: R$ {topMetrics.negotiationForecastBrl.toLocaleString('pt-BR')}
             </span>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-stone-700 bg-stone-950 text-amber-400">
-            <Users className="h-5 w-5" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/[0.08] bg-[#0c0a09] text-amber-400">
+            <Users className="h-4 w-4" />
           </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-2xl border border-emerald-600/35 bg-[#1c1917] px-5 py-4 shadow-sm">
+        <div className="tactical-panel flex items-center justify-between border-emerald-500/30 px-4 py-3.5">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-emerald-400">
               Faturamento Fechado / Previsão
             </span>
-            <p className="mt-1 font-mono text-2xl font-black tabular-nums text-emerald-400">
+            <p className="mt-1 font-mono text-2xl font-bold tabular-nums text-emerald-400">
               R$ {topMetrics.closedRevenueBrl.toLocaleString('pt-BR')}
             </p>
             <span className="font-mono text-[11px] tabular-nums text-stone-400">
               {topMetrics.closedCount} venda(s) • Sincronizado com o Kanban
             </span>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-600/40 bg-emerald-600/15 text-emerald-400">
-            <DollarSign className="h-5 w-5" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+            <DollarSign className="h-4 w-4" />
           </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-2xl border border-stone-800 bg-[#1c1917] px-5 py-4 shadow-sm">
+        <div className="tactical-panel flex items-center justify-between px-4 py-3.5">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-stone-400">
               Taxa de Resposta
             </span>
-            <p className="mt-1 font-mono text-2xl font-black tabular-nums text-stone-100">
+            <p className="mt-1 font-mono text-2xl font-bold tabular-nums text-stone-100">
               {topMetrics.responseRate}%
             </p>
             <span className="font-mono text-[11px] tabular-nums text-stone-400">
               {topMetrics.totalContacted} contato(s) acionados no funil
             </span>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-stone-700 bg-stone-950 text-emerald-400">
-            <TrendingUp className="h-5 w-5" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/[0.08] bg-[#0c0a09] text-emerald-400">
+            <TrendingUp className="h-4 w-4" />
           </div>
         </div>
       </section>
 
       {/* Barra de Ação Rápida: Nova Varredura + Atalho Kanban + Últimas 3 Buscas Salvas */}
-      <section className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-stone-800 bg-[#1c1917] px-5 py-3.5">
-        <div className="flex flex-wrap items-center gap-2.5">
+      <section className="tactical-panel flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setShowSearchForm((prev) => !prev)}
-            className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-xs font-bold text-stone-950 transition hover:bg-amber-500"
+            className="btn-tactical-primary"
           >
-            <Radar className="h-4 w-4" />
-            {showSearchForm ? 'Recolher Painel de Busca' : 'Nova Varredura'}
+            <Radar className="h-3.5 w-3.5" />
+            <span>{showSearchForm ? 'Recolher Painel de Busca' : 'Nova Varredura'}</span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigate('/pipeline')}
-            className="inline-flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-950 px-4 py-2 text-xs font-bold text-stone-200 transition hover:border-amber-600/60 hover:text-amber-400"
+            className="btn-tactical-secondary"
           >
-            <Kanban className="h-4 w-4 text-amber-500" />
-            Abrir Kanban ({pipelineLeads.length})
+            <Kanban className="h-3.5 w-3.5 text-amber-400" />
+            <span>Abrir Kanban ({pipelineLeads.length})</span>
           </button>
 
           <button
             type="button"
             onClick={() => setShowNicheModal(true)}
-            className="inline-flex items-center gap-2 rounded-xl border border-stone-700 bg-stone-950 px-4 py-2 text-xs font-bold text-stone-200 transition hover:border-amber-600/60 hover:text-amber-400"
+            className="btn-tactical-secondary"
           >
-            <Layers className="h-4 w-4 text-amber-500" />
-            Nichos ({niches.length || HOMOLOGATED_CATEGORIES.length})
+            <Layers className="h-3.5 w-3.5 text-amber-400" />
+            <span>Nichos ({niches.length || HOMOLOGATED_CATEGORIES.length})</span>
           </button>
         </div>
 
         {/* Últimas 3 buscas salvas como pills rápidas */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-stone-400">
+          <span className="text-[11px] font-medium uppercase tracking-wider text-stone-400">
             Últimas 3 levas:
           </span>
           {recentThreeSearches.length === 0 ? (
@@ -654,16 +654,16 @@ export function Dashboard({
                   key={s.search_id}
                   type="button"
                   onClick={() => void handleSelectSavedSearch(s)}
-                  className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 font-mono text-xs font-semibold tabular-nums transition ${
+                  className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 font-mono text-xs font-medium tabular-nums transition-all ${
                     isSelected
-                      ? 'border-amber-600 bg-amber-600/15 text-amber-300'
-                      : 'border-stone-800 bg-stone-950 text-stone-300 hover:border-stone-700 hover:text-stone-100'
+                      ? 'border-amber-500/50 bg-amber-500/15 text-amber-300'
+                      : 'border-white/[0.08] bg-[#0c0a09] text-stone-300 hover:border-white/[0.16] hover:text-stone-100'
                   }`}
                 >
                   <span>
                     {s.category} • {s.city}
                   </span>
-                  <span className="rounded bg-stone-800 px-1.5 py-0.5 text-[10px] text-stone-300">
+                  <span className="rounded border border-white/[0.08] bg-[#141210] px-1.5 py-0.5 text-[10px] text-stone-300">
                     {s.total_leads}
                   </span>
                 </button>
@@ -701,55 +701,55 @@ export function Dashboard({
 
       {/* Barra de Filtros + Dual View Toggle ([ Modo Grade ] | [ Modo Lista ]) */}
       {!isRunning && leads.length > 0 && (
-        <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-stone-800 bg-[#1c1917] p-4">
+        <section className="tactical-panel flex flex-wrap items-center justify-between gap-4 p-3.5">
           <div className="flex flex-wrap items-center gap-4">
-            <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-stone-400">
-              <Filter className="h-3.5 w-3.5 text-amber-500" />
-              Refinar Bancada:
+            <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-stone-400">
+              <Filter className="h-3.5 w-3.5 text-amber-400" />
+              <span>Refinar Bancada:</span>
             </span>
 
-            <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-stone-200 select-none">
+            <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-stone-300 transition hover:text-stone-100 select-none">
               <input
                 type="checkbox"
                 checked={hideContacted}
                 onChange={(e) => setHideContacted(e.target.checked)}
-                className="h-4 w-4 rounded border-stone-700 bg-stone-950 text-amber-600 focus:ring-amber-600"
+                className="h-3.5 w-3.5 rounded border-white/[0.15] bg-[#0c0a09] text-amber-500 focus:ring-amber-500"
               />
-              Ocultar já acionados
+              <span>Ocultar já acionados</span>
             </label>
 
-            <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-stone-200 select-none">
+            <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-stone-300 transition hover:text-stone-100 select-none">
               <input
                 type="checkbox"
                 checked={onlyMobile}
                 onChange={(e) => setOnlyMobile(e.target.checked)}
-                className="h-4 w-4 rounded border-stone-700 bg-stone-950 text-amber-600 focus:ring-amber-600"
+                className="h-3.5 w-3.5 rounded border-white/[0.15] bg-[#0c0a09] text-amber-500 focus:ring-amber-500"
               />
-              Só WhatsApp Celular
+              <span>Só WhatsApp Celular</span>
             </label>
 
-            <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-stone-200 select-none">
+            <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-stone-300 transition hover:text-stone-100 select-none">
               <input
                 type="checkbox"
                 checked={onlyNoSiteOrImprovised}
                 onChange={(e) => setOnlyNoSiteOrImprovised(e.target.checked)}
-                className="h-4 w-4 rounded border-stone-700 bg-stone-950 text-amber-600 focus:ring-amber-600"
+                className="h-3.5 w-3.5 rounded border-white/[0.15] bg-[#0c0a09] text-amber-500 focus:ring-amber-500"
               />
-              Só Sem Site / Linktree
+              <span>Só Sem Site / Linktree</span>
             </label>
 
-            <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-stone-200 select-none">
+            <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-stone-300 transition hover:text-stone-100 select-none">
               <input
                 type="checkbox"
                 checked={hideBrokenSite}
                 onChange={(e) => setHideBrokenSite(e.target.checked)}
-                className="h-4 w-4 rounded border-stone-700 bg-stone-950 text-amber-600 focus:ring-amber-600"
+                className="h-3.5 w-3.5 rounded border-white/[0.15] bg-[#0c0a09] text-amber-500 focus:ring-amber-500"
               />
-              Ocultar Fora do Ar
+              <span>Ocultar Fora do Ar</span>
             </label>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
             {/* Filtro por Status no Funil */}
             <select
               aria-label="Filtrar por status no funil"
@@ -757,7 +757,7 @@ export function Dashboard({
               onChange={(e) =>
                 setPipelineStatusFilter(e.target.value as 'ALL' | PipelineStatus)
               }
-              className="rounded-xl border border-stone-700 bg-stone-950 px-3 py-1.5 text-xs font-semibold text-stone-100 outline-none focus:border-amber-600"
+              className="input-tactical w-auto py-1.5 font-medium"
             >
               <option value="ALL">Todos os Status</option>
               <option value="NOVO">Status: NOVO</option>
@@ -770,24 +770,24 @@ export function Dashboard({
 
             {/* Busca textual */}
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-stone-500" />
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-stone-500" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Filtrar por nome ou rua..."
-                className="rounded-xl border border-stone-700 bg-stone-950 py-1.5 pl-8 pr-3 text-xs text-stone-100 placeholder-stone-500 outline-none focus:border-amber-600"
+                className="input-tactical w-48 py-1.5 pl-8 pr-3"
               />
             </div>
 
             {/* Ordenação */}
-            <div className="flex items-center gap-2">
-              <ArrowUpDown className="h-3.5 w-3.5 text-amber-500" />
+            <div className="flex items-center gap-1.5">
+              <ArrowUpDown className="h-3.5 w-3.5 text-amber-400" />
               <select
                 aria-label="Ordenar contatos"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortField)}
-                className="rounded-xl border border-stone-700 bg-stone-950 px-3 py-1.5 text-xs font-semibold text-stone-100 outline-none focus:border-amber-600"
+                className="input-tactical w-auto py-1.5 font-medium"
               >
                 <option value="score">Maior Score</option>
                 <option value="reviews_count">Mais Avaliações</option>
@@ -796,30 +796,30 @@ export function Dashboard({
             </div>
 
             {/* Dual View Toggle: [ Modo Grade ] | [ Modo Lista ] */}
-            <div className="flex items-center rounded-xl border border-stone-700 bg-stone-950 p-0.5">
+            <div className="flex items-center rounded-lg border border-white/[0.08] bg-[#0c0a09] p-0.5">
               <button
                 type="button"
                 onClick={() => handleToggleViewMode('grid')}
-                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition ${
+                className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-all ${
                   viewMode === 'grid'
-                    ? 'bg-amber-600 text-stone-950'
-                    : 'text-stone-400 hover:text-stone-100'
+                    ? 'bg-amber-500 font-semibold text-stone-950 shadow-sm'
+                    : 'font-medium text-stone-400 hover:text-stone-100'
                 }`}
               >
                 <LayoutGrid className="h-3.5 w-3.5" />
-                Modo Grade
+                <span>Modo Grade</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleToggleViewMode('list')}
-                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition ${
+                className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-all ${
                   viewMode === 'list'
-                    ? 'bg-amber-600 text-stone-950'
-                    : 'text-stone-400 hover:text-stone-100'
+                    ? 'bg-amber-500 font-semibold text-stone-950 shadow-sm'
+                    : 'font-medium text-stone-400 hover:text-stone-100'
                 }`}
               >
                 <List className="h-3.5 w-3.5" />
-                Modo Lista
+                <span>Modo Lista</span>
               </button>
             </div>
           </div>
@@ -830,8 +830,8 @@ export function Dashboard({
       {!isRunning && (
         <section>
           {filteredAndSortedLeads.length === 0 ? (
-            <div className="rounded-2xl border border-stone-800 bg-[#1c1917]/70 p-12 text-center">
-              <p className="font-serif text-lg font-bold text-stone-200">
+            <div className="tactical-panel p-12 text-center">
+              <p className="font-sans text-base font-semibold text-stone-200">
                 {leads.length === 0
                   ? 'Sua bancada está limpa. Puxe uma nova leva de contatos ou confira o Kanban.'
                   : 'Nenhum contato bateu com os filtros marcados acima.'}
@@ -862,7 +862,7 @@ export function Dashboard({
               </div>
 
               {viewMode === 'grid' ? (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                   {visibleLeads.map((lead) => (
                     <LeadCard
                       key={lead.id}
@@ -877,10 +877,10 @@ export function Dashboard({
                 </div>
               ) : (
                 /* Modo Lista (Tabela Densa e Escaneável) */
-                <div className="overflow-x-auto rounded-2xl border border-stone-800 bg-[#1c1917] shadow-lg">
+                <div className="tactical-panel overflow-x-auto">
                   <table className="w-full border-collapse text-left text-xs">
                     <thead>
-                      <tr className="border-b border-stone-800 bg-stone-950/80 text-[11px] font-bold uppercase tracking-wider text-stone-400">
+                      <tr className="border-b border-white/[0.07] bg-[#0c0a09]/80 text-[11px] font-semibold uppercase tracking-wider text-stone-400">
                         <th className="px-4 py-3">Score</th>
                         <th className="px-4 py-3">Estabelecimento</th>
                         <th className="px-4 py-3">Nicho / Cidade</th>
@@ -891,7 +891,7 @@ export function Dashboard({
                         <th className="px-4 py-3 text-right">Ações Rápidas</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-stone-800/80">
+                    <tbody className="divide-y divide-white/[0.06]">
                       {visibleLeads.map((lead) => {
                         const isOptedOut = lead.pipeline_status === 'RECUSADO'
                         const quickMsg = buildQuickPitchMessage(lead)
@@ -902,33 +902,33 @@ export function Dashboard({
                         return (
                           <tr
                             key={lead.id}
-                            className={`transition hover:bg-stone-950/60 ${
+                            className={`transition hover:bg-white/[0.02] ${
                               isOptedOut ? 'opacity-55' : ''
                             }`}
                           >
-                            <td className="px-4 py-3">
+                            <td className="px-4 py-2.5">
                               <span
-                                className={`inline-flex min-w-[42px] justify-center rounded-lg border px-2 py-1 font-mono text-xs font-black tabular-nums ${
+                                className={`inline-flex min-w-[40px] justify-center rounded-md border px-2 py-0.5 font-mono text-xs font-bold tabular-nums ${
                                   lead.score >= 80
-                                    ? 'border-emerald-500 bg-emerald-600 text-stone-950'
+                                    ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300'
                                     : lead.score >= 50
-                                      ? 'border-amber-500 bg-amber-600 text-stone-950'
-                                      : 'border-stone-700 bg-stone-800 text-stone-300'
+                                      ? 'border-amber-500/40 bg-amber-500/15 text-amber-300'
+                                      : 'border-white/[0.08] bg-[#0c0a09] text-stone-400'
                                 }`}
                               >
                                 {lead.score}
                               </span>
                             </td>
 
-                            <td className="max-w-[260px] px-4 py-3">
+                            <td className="max-w-[260px] px-4 py-2.5">
                               <button
                                 type="button"
                                 onClick={() => setDrawerLead(lead)}
-                                className="flex items-center gap-1.5 text-left font-serif text-sm font-bold text-stone-100 hover:text-amber-400"
+                                className="flex items-center gap-1.5 text-left font-sans text-xs font-semibold text-stone-100 hover:text-amber-400"
                               >
                                 <span className="truncate">{lead.name}</span>
                                 {lead.is_manually_edited && (
-                                  <Lock className="h-3 w-3 shrink-0 text-amber-500" />
+                                  <Lock className="h-3 w-3 shrink-0 text-amber-400" />
                                 )}
                               </button>
                               {lead.notes && (
@@ -938,42 +938,42 @@ export function Dashboard({
                               )}
                             </td>
 
-                            <td className="px-4 py-3 text-stone-300">
-                              <div className="font-semibold">{lead.category ?? '—'}</div>
+                            <td className="px-4 py-2.5 text-stone-300">
+                              <div className="font-medium">{lead.category ?? '—'}</div>
                               <div className="text-[11px] text-stone-400">
                                 {lead.city} {lead.neighborhood ? `• ${lead.neighborhood}` : ''}
                               </div>
                             </td>
 
-                            <td className="px-4 py-3 font-mono tabular-nums text-amber-400">
+                            <td className="px-4 py-2.5 font-mono tabular-nums text-amber-400">
                               <span className="inline-flex items-center gap-1">
-                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                                {lead.rating.toFixed(1)}
+                                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                                <span>{lead.rating.toFixed(1)}</span>
                                 <span className="text-stone-400">({lead.reviews_count})</span>
                               </span>
                             </td>
 
-                            <td className="px-4 py-3">
+                            <td className="px-4 py-2.5">
                               <span
-                                className={`inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${
+                                className={`inline-flex rounded-md border px-2 py-0.5 font-mono text-[10px] font-medium ${
                                   lead.website_status === 'IMPROVISADO'
-                                    ? 'border-amber-600/40 bg-amber-600/15 text-amber-300'
+                                    ? 'border-amber-500/35 bg-amber-500/10 text-amber-300'
                                     : lead.website_status === 'QUEBRADO'
-                                      ? 'border-rose-700/50 bg-rose-950/40 text-rose-300'
+                                      ? 'border-rose-500/35 bg-rose-950/35 text-rose-300'
                                       : lead.website_status === 'SEM_SITE'
-                                        ? 'border-amber-500/40 bg-amber-500/10 text-amber-200'
-                                        : 'border-stone-700 bg-stone-800 text-stone-400'
+                                        ? 'border-amber-400/30 bg-amber-500/10 text-amber-200'
+                                        : 'border-white/[0.08] bg-[#0c0a09] text-stone-400'
                                 }`}
                               >
                                 {lead.website_status}
                               </span>
                             </td>
 
-                            <td className="px-4 py-3 font-mono tabular-nums text-stone-200">
+                            <td className="px-4 py-2.5 font-mono tabular-nums text-stone-200">
                               {lead.phone_raw || 'Sem telefone'}
                             </td>
 
-                            <td className="px-4 py-3">
+                            <td className="px-4 py-2.5">
                               <select
                                 aria-label={`Status de ${lead.name}`}
                                 value={lead.pipeline_status}
@@ -983,7 +983,7 @@ export function Dashboard({
                                     e.target.value as PipelineStatus,
                                   )
                                 }
-                                className="rounded-lg border border-stone-700 bg-stone-950 px-2 py-1 text-[11px] font-bold text-stone-200 outline-none focus:border-amber-600"
+                                className="input-tactical w-auto py-1 font-mono text-[11px] font-semibold"
                               >
                                 <option value="NOVO">NOVO</option>
                                 <option value="CONTATADO">CONTATADO</option>
@@ -994,7 +994,7 @@ export function Dashboard({
                               </select>
                             </td>
 
-                            <td className="px-4 py-3 text-right">
+                            <td className="px-4 py-2.5 text-right">
                               <div className="inline-flex items-center justify-end gap-1.5">
                                 {waHref && !isOptedOut && (
                                   <a
@@ -1006,19 +1006,19 @@ export function Dashboard({
                                         void handleUpdatePipeline(lead.id, 'CONTATADO')
                                       }
                                     }}
-                                    className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1.5 text-[11px] font-bold text-stone-950 transition hover:bg-emerald-500"
+                                    className="btn-tactical-emerald px-2.5 py-1 text-[11px]"
                                   >
-                                    <MessageCircle className="h-3.5 w-3.5 fill-stone-950" />
-                                    WhatsApp
+                                    <MessageCircle className="h-3 w-3 fill-stone-950" />
+                                    <span>WhatsApp</span>
                                   </a>
                                 )}
                                 <button
                                   type="button"
                                   onClick={() => setDrawerLead(lead)}
-                                  className="inline-flex items-center gap-1 rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-1.5 text-[11px] font-semibold text-stone-300 transition hover:border-amber-600/60 hover:text-amber-400"
+                                  className="btn-tactical-secondary px-2.5 py-1 text-[11px]"
                                 >
-                                  <Sliders className="h-3.5 w-3.5 text-amber-500" />
-                                  Override
+                                  <Sliders className="h-3 w-3 text-amber-400" />
+                                  <span>Override</span>
                                 </button>
                               </div>
                             </td>
@@ -1035,7 +1035,7 @@ export function Dashboard({
                   <button
                     type="button"
                     onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
-                    className="rounded-xl border border-stone-700 bg-stone-900 px-6 py-2.5 text-xs font-bold text-stone-200 transition hover:border-amber-600 hover:text-stone-100"
+                    className="btn-tactical-secondary px-6 py-2"
                   >
                     Mostrar mais contatos ({filteredAndSortedLeads.length - visibleCount}{' '}
                     restantes)
@@ -1074,19 +1074,19 @@ export function Dashboard({
       {/* Modal de Cadastro Manual Avulso */}
       {showManualLeadModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-lg rounded-2xl border border-stone-700 bg-[#1c1917] p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-stone-800 pb-3">
-              <h2 className="font-serif text-lg font-bold text-stone-100">
+          <div className="tactical-panel w-full max-w-lg p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/[0.07] pb-3.5">
+              <h2 className="font-sans text-base font-semibold tracking-tight text-stone-100">
                 Adicionar Contato Avulso na Bancada
               </h2>
               <button
                 type="button"
                 onClick={onCloseManualLeadModal}
-                className="rounded-lg p-1.5 text-stone-400 hover:text-stone-100"
+                className="btn-tactical-secondary p-1.5"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -1097,7 +1097,7 @@ export function Dashboard({
               className="mt-4 space-y-3"
             >
               <div>
-                <label className="block text-xs font-semibold text-stone-300">
+                <label className="mb-1 block text-xs font-medium text-stone-300">
                   Nome do Estabelecimento *
                 </label>
                 <input
@@ -1106,19 +1106,19 @@ export function Dashboard({
                   value={manualName}
                   onChange={(e) => setManualName(e.target.value)}
                   placeholder="Ex: Dr. Carlos Almeida Advocacia"
-                  className="mt-1 w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-stone-100 outline-none focus:border-amber-600"
+                  className="input-tactical"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-stone-300">
+                  <label className="mb-1 block text-xs font-medium text-stone-300">
                     Categoria *
                   </label>
                   <select
                     value={manualCategory}
                     onChange={(e) => setManualCategory(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-stone-100 outline-none focus:border-amber-600"
+                    className="input-tactical"
                   >
                     {HOMOLOGATED_CATEGORIES.map((c) => (
                       <option key={c} value={c}>
@@ -1129,7 +1129,7 @@ export function Dashboard({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-300">
+                  <label className="mb-1 block text-xs font-medium text-stone-300">
                     Cidade *
                   </label>
                   <input
@@ -1137,14 +1137,14 @@ export function Dashboard({
                     required
                     value={manualCity}
                     onChange={(e) => setManualCity(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-stone-100 outline-none focus:border-amber-600"
+                    className="input-tactical"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-stone-300">
+                  <label className="mb-1 block text-xs font-medium text-stone-300">
                     Telefone (DDD + Número)
                   </label>
                   <input
@@ -1152,26 +1152,26 @@ export function Dashboard({
                     value={manualPhone}
                     onChange={(e) => setManualPhone(e.target.value)}
                     placeholder="(34) 99876-5432"
-                    className="mt-1 w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 font-mono text-xs text-stone-100 outline-none focus:border-amber-600"
+                    className="input-tactical font-mono tabular-nums"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-300">
+                  <label className="mb-1 block text-xs font-medium text-stone-300">
                     Bairro
                   </label>
                   <input
                     type="text"
                     value={manualNeighborhood}
                     onChange={(e) => setManualNeighborhood(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-stone-100 outline-none focus:border-amber-600"
+                    className="input-tactical"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-stone-300">
+                  <label className="mb-1 block text-xs font-medium text-stone-300">
                     Website / Linktree URL
                   </label>
                   <input
@@ -1179,12 +1179,12 @@ export function Dashboard({
                     value={manualWebsite}
                     onChange={(e) => setManualWebsite(e.target.value)}
                     placeholder="https://linktr.ee/..."
-                    className="mt-1 w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 font-mono text-xs text-stone-100 outline-none focus:border-amber-600"
+                    className="input-tactical font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-300">
+                  <label className="mb-1 block text-xs font-medium text-stone-300">
                     Instagram URL
                   </label>
                   <input
@@ -1192,14 +1192,14 @@ export function Dashboard({
                     value={manualInstagram}
                     onChange={(e) => setManualInstagram(e.target.value)}
                     placeholder="https://instagram.com/..."
-                    className="mt-1 w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-stone-100 outline-none focus:border-amber-600"
+                    className="input-tactical"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-stone-300">
+                  <label className="mb-1 block text-xs font-medium text-stone-300">
                     Nota (0..5)
                   </label>
                   <input
@@ -1209,12 +1209,12 @@ export function Dashboard({
                     max="5"
                     value={manualRating}
                     onChange={(e) => setManualRating(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 font-mono text-xs tabular-nums text-stone-100 outline-none focus:border-amber-600"
+                    className="input-tactical font-mono tabular-nums"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-300">
+                  <label className="mb-1 block text-xs font-medium text-stone-300">
                     Nº Avaliações
                   </label>
                   <input
@@ -1222,7 +1222,7 @@ export function Dashboard({
                     min="0"
                     value={manualReviews}
                     onChange={(e) => setManualReviews(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 font-mono text-xs tabular-nums text-stone-100 outline-none focus:border-amber-600"
+                    className="input-tactical font-mono tabular-nums"
                   />
                 </div>
 
@@ -1232,40 +1232,40 @@ export function Dashboard({
                       type="checkbox"
                       checked={manualClaimed}
                       onChange={(e) => setManualClaimed(e.target.checked)}
-                      className="h-4 w-4 rounded border-stone-700 bg-stone-950 text-amber-600"
+                      className="h-4 w-4 rounded border-white/[0.15] bg-[#0c0a09] text-amber-500"
                     />
-                    Verificado
+                    <span>Verificado</span>
                   </label>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-stone-300">
+                <label className="mb-1 block text-xs font-medium text-stone-300">
                   Anotações Comerciais
                 </label>
                 <textarea
                   rows={2}
                   value={manualNotes}
                   onChange={(e) => setManualNotes(e.target.value)}
-                  className="mt-1 w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-stone-100 outline-none focus:border-amber-600"
+                  className="input-tactical"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 border-t border-stone-800 pt-3">
+              <div className="flex justify-end gap-2 border-t border-white/[0.07] pt-3">
                 <button
                   type="button"
                   onClick={onCloseManualLeadModal}
-                  className="rounded-xl border border-stone-700 px-4 py-2 text-xs font-semibold text-stone-300 hover:bg-stone-800"
+                  className="btn-tactical-secondary px-4 py-2"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isCreatingManual}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-amber-600 px-4 py-2 text-xs font-bold text-stone-950 hover:bg-amber-500 disabled:opacity-50"
+                  className="btn-tactical-primary px-4 py-2"
                 >
                   <Plus className="h-4 w-4" />
-                  {isCreatingManual ? 'Calculando Score...' : 'Cadastrar & Qualificar'}
+                  <span>{isCreatingManual ? 'Calculando Score...' : 'Cadastrar & Qualificar'}</span>
                 </button>
               </div>
             </form>

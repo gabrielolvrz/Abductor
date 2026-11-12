@@ -1,12 +1,12 @@
 # 🛸 Abductor
 
 <p align="center">
-  <img src="frontend/src/assets/hero.png" width="140" alt="Abductor" />
+  <img src="frontend/src/assets/hero.png" width="130" alt="Abductor" />
 </p>
 
 <p align="center">
-  <b>Cockpit local de prospecção para vender sites institucionais one-page.</b><br />
-  Extrai leads do Google Maps, valida a presença digital, calcula um score de 0 a 100 e organiza a abordagem no WhatsApp.
+  <b>Cockpit local de prospecção e fechamento rápido de sites vitrine institucionais.</b><br />
+  Extrai leads do Google Maps, valida presença digital em paralelo, aplica Lead Scoring com Hard Gate e organiza a abordagem comercial no WhatsApp.
 </p>
 
 <p align="center">
@@ -23,406 +23,233 @@
 
 ## O que é
 
-O Abductor é uma aplicação **local-first** de operador único. Ele transforma uma busca no Google Maps em uma fila de leads priorizada para vender **Sites Vitrine One-Page (Turnkey)** a profissionais liberais e negócios locais com boa reputação física, mas presença digital fraca: sem site, com link de agregador (Linktree, Instagram, WhatsApp) ou com domínio quebrado.
+O **Abductor** é uma plataforma local-first desenvolvida para operadores autônomos fecharem **Sites Vitrine One-Page (Turnkey Institucional)** com ticket de **R$ 300 a R$ 850** em pagamento único.
 
-| Etapa | O que o sistema faz |
-| :--- | :--- |
-| **Extração** | Dispara buscas por categoria, cidade e bairro no container `gosom/google-maps-scraper` e baixa o resultado em CSV. |
-| **Higienização** | Filtra órgãos e entidades institucionais, normaliza telefones brasileiros e preserva o nome original do estabelecimento. |
-| **Validação** | Verifica concorrentemente se o site do lead está ativo, quebrado ou é apenas um agregador de links. |
-| **Priorização** | Calcula um score de 0 a 100 com **Hard Gate** para quem já tem site ativo e persiste o breakdown explicativo. |
-| **Operação** | Entrega o lead no cockpit com filtros, Kanban, scripts de abordagem, link de WhatsApp e exportação de configuração para o template. |
+Ele resolve o gargalo de prospecção fria: em vez de minerar contatos manualmente, o sistema varre o Google Maps, descarta quem já possui website estruturado e entrega uma fila priorizada de profissionais liberais e negócios físicos com **alta reputação real (4.5★ a 5.0★)**, mas **presença digital fraca ou amadora** (Linktree, perfil de Instagram cru, link direto de WhatsApp ou domínio fora do ar).
+
+### O que o sistema faz
+
+- 🎯 **Lead Scoring com Hard Gate:** Pontua leads de 0 a 100 baseando-se em avaliações, nota e canal de contato, forçando **0 absoluto** para quem já tem site funcional ativo.
+- ⚡ **Validação Concorrente de URLs:** Varre dezenas de sites em paralelo lendo apenas os headers HTTP (`GET stream=True`) para detectar agregadores e erros sem baixar payloads pesados.
+- 🛡️ **CRM com Ingestão Preservativa:** Atualiza métricas públicas via `place_id` sem nunca sobrescrever anotações manuais, telefones editados ou estágios de negociação no funil.
+- 💬 **Abordagem via WhatsApp em 1 Clique:** Interpola scripts em tempo real (removendo termos societários como `LTDA`/`ME`, validando celular nacional e inserindo dados de autoridade).
+- 🚀 **Esteira Turnkey de 15 Minutos:** Gera um arquivo `site.config.json` pronto para ser injetado em templates estáticos perenes de alta performance com blindagem LGPD inclusa.
 
 ### O que ele não é
 
-- **Não é um SaaS.** Roda na máquina do operador, sem autenticação e sem multi-tenant.
-- **Não raspa o Maps com Selenium/Puppeteer.** A extração é delegada ao container Go do `gosom`.
-- **Não usa Celery, Redis ou fila externa.** Os jobs rodam in-process com `asyncio` e watchdog configurável (180 s por padrão).
-- **Não substitui o julgamento comercial.** O score prioriza a fila; a decisão de abordagem continua sendo do operador.
+- **Não é um SaaS multi-tenant:** Roda 100% na máquina do operador, sem autenticação externa, telemetria na nuvem ou mensalidades de terceiros.
+- **Não usa Selenium ou Puppeteer no backend:** A extração do Google Maps é delegada ao container em Go `gosom/google-maps-scraper`.
+- **Não depende de Redis, Celery ou filas externas:** A orquestração é in-process via `asyncio` com watchdog passivo configurável.
 
 ---
 
-## Como funciona
-
-```mermaid
-flowchart LR
-    UI["Cockpit React + Vite<br/>:3000"] -->|"REST /api"| API["FastAPI<br/>:8000"]
-    API -->|"cache-first"| DB[("PostgreSQL 16<br/>:5432")]
-    API -->|"cria job / baixa CSV"| GOSOM["gosom scraper (Go)<br/>:8080"]
-    GOSOM --> GMAPS[("Google Maps")]
-    API -->|"GET stream concorrente"| WEB["Sites dos leads"]
-    API -->|"score + upsert"| DB
-    API -.->|"site.config.json"| TPL["Templates Vercel"]
-    UI -->|"Kanban, pitches, notas"| API
-```
-
-O ciclo de uma busca:
-
-1. O cockpit envia categoria, cidade e bairro para `POST /api/searches`.
-2. O backend aplica **cache-first**: se a busca já foi concluída, devolve os leads do PostgreSQL; caso contrário, inicia ou reaproveita o job e responde `202`.
-3. O `job_runner` acompanha o `gosom`, baixa o CSV e percorre as fases `SCRAPING → PARSING → VALIDATING → SCORING`.
-4. Cada linha é filtrada, tem o telefone sanitizado e a URL validada em paralelo.
-5. O score é calculado e o lead é gravado com upsert preservativo; a interface acompanha o progresso por polling.
-
-Se um job ficar em `RUNNING` além do limite configurado em `JOB_TIMEOUT_SECONDS` (**180 s** por padrão), a rota de status aplica o watchdog passivo e marca a busca como `FAILED`. Coletas interrompidas que ainda tenham linhas úteis são salvas como `PARTIAL`.
-
----
-
-## Stack
-
-| Camada | Tecnologia |
-| :--- | :--- |
-| **Backend** | Python 3.12, FastAPI, SQLAlchemy 2 assíncrono, asyncpg, httpx, Pydantic v2 |
-| **Frontend** | React 19, TypeScript 6, Vite 8, Tailwind CSS 3, TanStack Query, Axios |
-| **Banco** | PostgreSQL 16 Alpine com `citext`, JSONB e índices de leitura |
-| **Extração** | Container `gosom/google-maps-scraper` (Go + Chromium headless) |
-| **Templates** | HTML/CSS/JS puro + `site.config.json`, prontos para Vercel |
-| **Infra** | Docker Compose para Postgres e `gosom`; aplicação nativa no host |
-
----
-
-## Rodando localmente
+## Início Rápido
 
 ### Pré-requisitos
 
-| Ferramenta | Versão |
-| :--- | :--- |
-| Docker + Docker Compose | Docker Compose v2 (`docker compose`) |
-| Python | 3.12 |
-| Node.js | 20.19+ (linha 20) ou 22.12+ (exigência do Vite 8) |
-| npm | Incluído com o Node |
+- **Docker & Docker Compose** (Docker Compose v2)
+- **Python 3.12+**
+- **Node.js 20.19+ ou 22.12+** (compatível com Vite 8)
 
-O projeto foi desenvolvido em **Arch Linux**. Os comandos abaixo assumem Linux e partem da raiz do repositório, salvo indicação contrária. Em outros sistemas, mantenha o Docker e ajuste os caminhos do host. `mise` é opcional: `backend/mise.toml` e `frontend/mise.toml` fixam as versões de Python e Node.
-
-### 1. Clonar e configurar
+### Subida em 3 Passos
 
 ```bash
+# 1. Clonar o repositório e configurar variáveis
 git clone https://github.com/gabrielolvrz/Abductor.git
 cd Abductor
 cp .env.example .env
-```
 
-O backend lê o `.env` da raiz e, se existir, `backend/.env`. O Docker Compose usa o `.env` da raiz.
-
-Se o repositório estiver em **Btrfs**, marque as pastas de dados como NoCoW **antes** do primeiro boot do Postgres:
-
-```bash
-mkdir -p data/postgres data/gosom
-sudo chattr +C data/postgres data/gosom 2>/dev/null || true
-```
-
-### 2. Subir a infraestrutura
-
-```bash
+# 2. Iniciar os containers (Postgres 16 + Scraper Go)
 docker compose up -d
-docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+# 3. Lançar a aplicação (Backend + Frontend + Abertura do Cockpit)
+chmod +x abductor.sh
+./abductor.sh
 ```
 
-Serviços esperados:
+O cockpit estará disponível em **`http://localhost:3000`** e a API em **`http://localhost:8000`** (documentação interativa em `/docs`).
 
-- **PostgreSQL 16:** `localhost:5432`
-- **gosom scraper:** `localhost:8080`
+<details>
+<summary><b>Execução Manual (Terminais Separados)</b></summary>
 
-O `backend/init.sql` é executado pelo Postgres apenas na primeira inicialização do volume. Ele cria as tabelas, índices, nichos e scripts iniciais.
-
-### 3. Backend
+Se preferir rodar os servidores explicitamente sem o script launcher:
 
 ```bash
+# Terminal 1 — Infraestrutura
+docker compose up -d
+
+# Terminal 2 — Backend FastAPI
 cd backend
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
 pip install -e .
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
 
-- API: `http://localhost:8000`
-- Swagger: `http://localhost:8000/docs`
-- Health check: `http://localhost:8000/api/health`
-
-### 4. Frontend
-
-Em outro terminal:
-
-```bash
+# Terminal 3 — Frontend React/Vite
 cd frontend
 npm install
 npm run dev
 ```
 
-Cockpit: `http://localhost:3000`
+> **Dica para usuários de Btrfs (Arch Linux):** Para evitar fragmentação e degradação de I/O nos bancos, aplique o atributo NoCoW nas pastas de dados antes da primeira execução:
+> ```bash
+> mkdir -p data/postgres data/gosom && sudo chattr +C data/postgres data/gosom 2>/dev/null || true
+> ```
+</details>
 
-Por padrão, o frontend chama `http://localhost:8000/api`. Para apontar para outro backend, defina `VITE_API_BASE_URL` antes de iniciar o Vite:
+---
 
-```bash
-VITE_API_BASE_URL=http://192.168.0.10:8000/api npm run dev
+## Arquitetura & Fluxo Operacional
+
+```mermaid
+flowchart LR
+    UI["Cockpit Tático<br/>(React + Vite :3000)"] -->|"REST /api"| API["Backend FastAPI<br/>(Python 3.12 :8000)"]
+    API -->|"Cache-First"| DB[("PostgreSQL 16<br/>(:5432)")]
+    API -->|"Dispara Job & Baixa CSV"| GOSOM["gosom Scraper (Go)<br/>(:8080)"]
+    GOSOM --> GMAPS[("Google Maps")]
+    API -->|"GET Stream Concorrente (Semáforo)"| WEB["Sites dos Leads"]
+    API -->|"Upsert Preservativo"| DB
+    UI -.->|"site.config.json"| TPL["Templates Turnkey<br/>(Vercel Estático)"]
 ```
 
-### Atalho
+O ciclo de uma busca opera em **4 fases contínuas**:
 
-Depois de criar o `.venv` e instalar as dependências do frontend uma vez, o launcher sobe o Docker, inicia os dois servidores e abre o cockpit:
+1. **`SCRAPING`:** O operador submete nicho, cidade e bairro. O backend consulta o PostgreSQL (**Cache-First**). Se não houver cache recente, despacha o job para o container `gosom` e inicia polling assíncrono.
+2. **`PARSING`:** O CSV retornado é processado em memória via `csv.DictReader`. Entidades institucionais incompatíveis com vendas (*Defensoria, OAB, Fórum, Tribunal, Sindicato*) são descartadas imediatamente.
+3. **`VALIDATING`:** Um pool concorrente (`httpx.AsyncClient` com semáforo de 30 conexões) checa a URL cadastrada. Se o domínio estiver na blocklist de agregadores (*Linktree, Instagram, wa.me, etc.*) ou redirecionar para eles, classifica como `IMPROVISADO`.
+4. **`SCORING`:** O motor calcula a pontuação (0 a 100). Leads com site convencional ativo recebem score `0` imediato (**Hard Gate**). Leads promissores têm o telefone sanitizado e são gravados no banco.
+
+---
+
+## Motor de Lead Scoring
+
+A nota de oportunidade reflete a viabilidade do fechamento imediato:
+
+| Dimensão | Condição Avaliada | Pontuação |
+| :--- | :--- | :---: |
+| **Presença Web** | `IMPROVISADO` (Linktree, Beacons, Instagram, WhatsApp cru) | **+30 pts** |
+| | `QUEBRADO` (Erro de conexão, timeout, HTTP 404 ou 5xx) | **+25 pts** |
+| | `SEM_SITE` (Ficha sem link cadastrado no Maps) | **+15 pts** |
+| **Contato** | Celular nacional verificado via `phonenumbers` (`MOBILE`) | **+20 pts** |
+| | Telefone fixo válido (`LANDLINE`) | **0 pts** |
+| | Telefone inválido, 0800 ou ausente (`INVALID`, `NONE`) | **−30 pts** |
+| **Reviews — Grupo 1**<br/>*(Advocacia, Odonto, Saúde, Imobiliário)* | ≥ 15 avaliações públicas | **+25 pts** |
+| | 5 a 14 avaliações públicas | **+15 pts** |
+| | < 5 avaliações | **0 pts** |
+| **Reviews — Grupo 2**<br/>*(Pet Shop, Serviços Gerais, Barbearias)* | ≥ 40 avaliações públicas | **+25 pts** |
+| | 15 a 39 avaliações públicas | **+15 pts** |
+| | < 15 avaliações | **0 pts** |
+| **Reputação Física** | Rating 4.5 a 5.0 estrelas | **+15 pts** |
+| | Rating 4.0 a 4.4 estrelas | **+5 pts** |
+| | Rating < 4.0 estrelas (com avaliações) | **−10 pts** |
+| **Ficha Reivindicada** | `is_claimed = true` no Google Meu Negócio | **+10 pts** |
+
+> 🚨 **Regra do Hard Gate Inegociável:** Se `website_status == 'ATIVO'`, o score é travado em **0 absoluto**. O Abductor não perde tempo prospectando negócios que já possuem sites convencionais estruturados.
+
+---
+
+## Módulos do Cockpit Tático
+
+A interface adota a estética *"Cockpit Tático de Alta Precisão"* (tons escuros de carbono `#0c0a09` / `#141210`, micro-bordas de 1px e tipografia Inter + JetBrains Mono):
+
+| Rota | Tela | Responsabilidade Operacional |
+| :--- | :--- | :--- |
+| **`/`** | **Bancada de Prospecção** | Disparo de buscas com telemetria ao vivo, alternador de visualização (`Grade` vs. `Tabela`), filtros por score/diagnóstico, gaveta lateral de edição e gerador de instância Turnkey. |
+| **`/pipeline`** | **Kanban CRM** | Acompanhamento comercial: `CONTATADO` ➔ `RESPONDEU` ➔ `NEGOCIANDO` ➔ `FECHADO` / `RECUSADO`, alertas de SLA de 48h sem contato e edição inline de valores de contrato. |
+| **`/abordagens`** | **Biblioteca de Roteiros** | Catálogo de scripts de pitch e contra-ataques segmentados por nicho, com interpolação de variáveis em runtime e cópia em 1 clique. |
+| **`/playbook`** | **Playbook & Negociação** | Matriz de quebra de objeções, tabela oficial de preços editável e checklists operacionais persistentes (*WhatsApp, Reunião, Entrega*). |
+| **`/anotacoes`** | **Caderno de Operação** | Backlog interno para anotações rápidas de nichos, copy e follow-ups, com tags (`IDEIA`, `LEMBRETE`, `BUG`) e sincronização local contínua. |
+
+---
+
+## Esteira Turnkey de Entrega (15 Minutos)
+
+Os sites vitrine são estáticos, ultra-leves, sem frameworks pesados no cliente e com SEO local agressivo:
+
+- **`templates/vercel-advocacia/`**: Para escritórios e advogados. Design sóbrio, conformidade ética com o Provimento 205/2021 da OAB e página nativa de Política de Privacidade LGPD.
+- **`templates/vercel-petshop/`**: Para clínicas veterinárias e pet shops. Bento-grid adaptável aos 4 pilares do negócio (*Banho & Tosa, Clínica Veterinária, Pet Shop, Hotelzinho/Daycare*) e banner de Táxi Dog.
+
+### Fluxo de Publicação de uma Instância
 
 ```bash
-chmod +x abductor.sh
-./abductor.sh
-```
-
----
-
-## Configuração
-
-As variáveis do backend e do Docker Compose ficam no `.env` da raiz. O frontend aceita `VITE_API_BASE_URL` pelo ambiente ou por um `frontend/.env`.
-
-| Variável | Padrão | Uso |
-| :--- | :--- | :--- |
-| `DATABASE_URL` | `postgresql+asyncpg://postgres:postgres123@localhost:5432/abductor_db` | Conexão assíncrona do backend com o Postgres. |
-| `DB_USER` | `postgres` | Usuário criado pelo container Postgres. |
-| `DB_PASSWORD` | `postgres123` | Senha do container Postgres. |
-| `DB_NAME` | `abductor_db` | Banco criado pelo container Postgres. |
-| `GOSOM_API_URL` | `http://localhost:8080` | Base da API do scraper `gosom`. |
-| `CORS_ORIGINS` | `http://localhost:3000` | Origens permitidas pelo FastAPI; aceita lista separada por vírgula. |
-| `VALIDATOR_MAX_CONCURRENCY` | `30` | Número máximo de validações de URL simultâneas. |
-| `VALIDATOR_TIMEOUT_SECONDS` | `4.0` | Timeout total de cada requisição de validação. |
-| `JOB_TIMEOUT_SECONDS` | `180` | Timeout do job no `gosom`, do polling e do watchdog passivo da rota de status. |
-| `VITE_API_BASE_URL` | `http://localhost:8000/api` | URL da API usada pelo frontend. Opcional. |
-
-O `DATABASE_URL` é o que o backend usa. As variáveis `DB_*` servem ao container Postgres. Se você alterar uma, mantenha a outra coerente.
-
----
-
-## Regras de negócio
-
-### Lead Scoring
-
-O score final é a soma dos pontos abaixo, limitada ao intervalo `[0, 100]`:
-
-| Dimensão | Condição | Pontos |
-| :--- | :--- | ---: |
-| **Site** | `IMPROVISADO` (agregador ou rede social) | +30 |
-| | `QUEBRADO` (DNS, timeout, 404 ou 5xx) | +25 |
-| | `SEM_SITE` | +15 |
-| **Contato** | Celular brasileiro válido (`MOBILE`) | +20 |
-| | Telefone fixo válido (`LANDLINE`) | 0 |
-| | `NONE`, `INVALID` ou `UNKNOWN` | −30 |
-| **Reviews — Grupo 1** | ≥ 15 avaliações | +25 |
-| | 5 a 14 avaliações | +15 |
-| | < 5 avaliações | 0 |
-| **Reviews — Grupo 2** | ≥ 40 avaliações | +25 |
-| | 15 a 39 avaliações | +15 |
-| | < 15 avaliações | 0 |
-| **Reputação** | Rating 4.5 a 5.0 | +15 |
-| | Rating 4.0 a 4.4 | +5 |
-| | Rating < 4.0 (com reviews) | −10 |
-| **Ficha** | `is_claimed = true` | +10 |
-
-- **Hard Gate:** se `website_status == 'ATIVO'`, o score é **0 absoluto**, independentemente dos demais critérios.
-- **Grupo 1:** advocacia, odontologia, medicina, psicologia, arquitetura, engenharia e imobiliário. **Grupo 2:** demais nichos.
-- Perfis sem avaliações não recebem penalidade de rating; ficam neutros nessa dimensão.
-- As regras de reviews podem ser sobrescritas por `scoring` no `rules.json` da vertical.
-- O objeto `score_breakdown` é persistido em JSONB e exibido no tooltip do card.
-
-### Presença web
-
-O validador usa `httpx.AsyncClient` com `GET` e `stream=True` (lê apenas os headers), semáforo e timeout configuráveis (padrões: 30 conexões e 4 s), `follow_redirects=True` e User-Agent desktop.
-
-| Resultado | Quando acontece |
-| :--- | :--- |
-| `SEM_SITE` | Campo de website vazio ou nulo. |
-| `IMPROVISADO` | Domínio na blocklist ou redirecionamento para um deles: `linktr.ee`, `beacons.ai`, `instabio.cc`, `heylink.me`, `wa.me`, `api.whatsapp.com`, `instagram.com`, `facebook.com`, `doctoralia.com.br`, `jusbrasil.com.br`, `canva.site`, `guiamais.com.br`. |
-| `QUEBRADO` | Erro de conexão, timeout, HTTP 404 ou 5xx. |
-| `ATIVO` | HTTP 200, 401 ou 403 (WAF/Cloudflare), além de outras respostas que não sejam 404/5xx. O Hard Gate é ativado. |
-
-### Telefone
-
-O motor usa `phonenumbers` com região `BR`.
-
-| Tipo | Regra | Pontos | WhatsApp |
-| :--- | :--- | ---: | :--- |
-| `MOBILE` | Celular brasileiro válido | +20 | `https://wa.me/55{ddd+número}` |
-| `LANDLINE` | Fixo ou fixo/celular válido | 0 | Também gera link `wa.me` |
-| `INVALID` | Inválido, DDD inexistente ou 0800 | −30 | Não gera |
-| `NONE` | Sem telefone | −30 | Não gera |
-
-O campo `phone_sanitized` guarda apenas DDD + número nacional, sem `+55`.
-
-### Ingestão preservativa
-
-- `leads.name` mantém o nome completo do Google Maps. A limpeza de `LTDA`, `ME`, `S/S`, `EIRELI` e afins acontece somente em runtime, nos scripts e na exportação do `site.config.json`.
-- O upsert por `place_id` **não sobrescreve** `pipeline_status` nem `notes`.
-- Telefones manuais são preservados com `COALESCE(NULLIF(...))`; métricas públicas e score só são atualizados quando o lead não foi editado manualmente.
-- Leads institucionais com termos como `Defensoria`, `OAB`, `Tribunal`, `Fórum` e `Sindicato` são descartados na ingestão.
-
----
-
-## API
-
-Base: `http://localhost:8000/api` · documentação interativa em `/docs`.
-
-### Buscas
-
-| Método | Rota | Uso |
-| :--- | :--- | :--- |
-| `GET` | `/searches` | Histórico das últimas buscas. |
-| `POST` | `/searches` | Cria ou reaproveita uma busca; `force_sync` ignora o cache. |
-| `GET` | `/searches/{id}/status` | Status e fase do job; aplica o watchdog configurado em `JOB_TIMEOUT_SECONDS`. |
-| `GET` | `/searches/{id}/leads` | Leads da busca, ordenados por score. |
-| `POST` | `/searches/{id}/revalidate` | Revalida URLs e recalcula o score dos leads salvos. |
-
-### Leads e CRM
-
-| Método | Rota | Uso |
-| :--- | :--- | :--- |
-| `GET` | `/leads/pipeline` | Leads com status diferente de `NOVO`, ordenados pela última mudança. |
-| `GET` | `/leads/{id}` | Detalhe de um lead. |
-| `POST` | `/leads` | Cadastro manual com sanitização, validação e score. |
-| `PATCH` | `/leads/{id}` | Edita dados e notas do lead. |
-| `PATCH` | `/leads/{id}/pipeline` | Move o lead no Kanban. |
-| `GET` | `/leads/{id}/export-config` | Gera o `site.config.json` turnkey. |
-
-### Conteúdo operacional
-
-| Método | Rota | Uso |
-| :--- | :--- | :--- |
-| `GET/POST` | `/scripts` | Lista e cria pitches e quebras de objeção. |
-| `PATCH/DELETE` | `/scripts/{id}` | Edita ou remove um script. |
-| `POST` | `/scripts/interpolate` | Preenche o script com os dados do lead e devolve o link do WhatsApp. |
-| `GET/POST` | `/niches` | Lista e cadastra nichos. |
-| `DELETE` | `/niches/{id}` | Remove um nicho. |
-| `GET/POST` | `/notes` | Lista e cria notas do backlog. |
-| `PATCH/DELETE` | `/notes/{id}` | Edita ou remove uma nota. |
-
----
-
-## Interface
-
-| Rota | Tela | O que faz |
-| :--- | :--- | :--- |
-| `/` | Bancada | Busca, progresso do job, filtros, cards de lead, cadastro manual, gestor de nichos e exportação de configuração. |
-| `/pipeline` | Kanban comercial | Colunas `CONTATADO → RESPONDEU → NEGOCIANDO → FECHADO / RECUSADO`, com SLA por dias no status. |
-| `/abordagens` | Roteiros | Pitches e objeções por nicho, com cópia e interpolação para o lead. |
-| `/playbook` | Playbook | Abordagens, contra-ataque de objeções e checklists de WhatsApp, reunião e entrega. |
-| `/anotacoes` | Backlog | Notas com tags `IDEIA`, `BUG` e `LEMBRETE`, com conclusão e exclusão. |
-
-Os leads entram como `NOVO` na Bancada. O Kanban trabalha a partir de `CONTATADO`; `NOVO` é o estado inicial antes do primeiro toque.
-
----
-
-## Templates turnkey
-
-A esteira fica em `templates/` e contém dois modelos estáticos, sem framework JS no cliente:
-
-- `templates/vercel-advocacia/` — escritórios e advogados, com página de privacidade e diretrizes OAB no `AI_GUIDELINES.md`.
-- `templates/vercel-petshop/` — pet shops e clínicas veterinárias, com layout adaptável aos pilares do negócio.
-
-Fluxo de uma instância:
-
-```bash
+# 1. Navegar até o template da vertical
 cd templates/vercel-advocacia
-cp -r base clientes/nome_do_cliente
-cd clientes/nome_do_cliente
 
-# Substitua o site.config.json pelo arquivo exportado no cockpit
+# 2. Duplicar o molde base para a pasta isolada do cliente
+cp -r base clientes/advocacia_silva_santos
+cd clientes/advocacia_silva_santos
+
+# 3. Mover o site.config.json baixado no Cockpit do Abductor
 cp ~/Downloads/site.config.json ./site.config.json
 
-# Pré-visualização
+# 4. Validar localmente (opcional)
 python -m http.server 5000
 
-# Deploy
-npx vercel --prod
+# 5. Publicar em produção na Vercel
+npx vercel --prod --yes
 ```
 
-As pastas `templates/*/clientes/*` são ignoradas pelo Git; os dados dos clientes ficam apenas na máquina do operador.
+> **Privacidade Garantida:** As pastas `templates/*/clientes/*` estão incluídas no `.gitignore`. Dados, fotos e configurações dos seus clientes nunca sobem para o repositório Git.
 
 ---
 
-## Estrutura do repositório
+## Variáveis de Ambiente
 
-```text
-Abductor/
-├── backend/
-│   ├── app/
-│   │   ├── core/          # Configuração, banco assíncrono e normalizador
-│   │   ├── engines/       # cleaner, sanitizer, scorer e validator
-│   │   ├── models/        # ORM: leads, searches, scripts, nichos e notas
-│   │   ├── routers/       # Endpoints REST
-│   │   ├── schemas/       # DTOs Pydantic
-│   │   ├── services/      # Cliente gosom, ingestão e job runner
-│   │   └── verticals/     # Regras JSON por nicho
-│   ├── init.sql           # DDL, índices e seeds iniciais
-│   ├── tests/             # 44 testes unitários
-│   └── pyproject.toml
-├── frontend/
-│   └── src/
-│       ├── components/    # Cards, modais, busca, progresso e exportação
-│       ├── pages/         # Dashboard, Pipeline, Pitches, Playbook, Notes
-│       └── services/      # Cliente Axios e tipos compartilhados
-├── templates/
-│   ├── vercel-advocacia/
-│   └── vercel-petshop/
-├── docs/                  # Especificações 00 a 09
-├── abductor.sh            # Launcher do cockpit
-├── docker-compose.yml     # Postgres 16 + gosom
-└── .env.example
-```
+As configurações principais residem no `.env` da raiz:
+
+| Variável | Padrão | Finalidade |
+| :--- | :--- | :--- |
+| `DATABASE_URL` | `postgresql+asyncpg://postgres:postgres123@localhost:5432/abductor_db` | String de conexão assíncrona SQLAlchemy/asyncpg. |
+| `DB_USER` / `DB_PASSWORD` | `postgres` / `postgres123` | Credenciais do container PostgreSQL 16. |
+| `DB_NAME` | `abductor_db` | Nome da base de dados relacional. |
+| `GOSOM_API_URL` | `http://localhost:8080` | Endpoint REST do scraper Go. |
+| `CORS_ORIGINS` | `http://localhost:3000` | Origens autorizadas pelo FastAPI. |
+| `VALIDATOR_MAX_CONCURRENCY` | `30` | Semáforo de requisições simultâneas de checagem de URLs. |
+| `VALIDATOR_TIMEOUT_SECONDS` | `4.0` | Timeout total por requisição de validação HTTP. |
+| `JOB_TIMEOUT_SECONDS` | `180` | Limite de tolerância do scraper e gatilho do Watchdog Passivo. |
+| `VITE_API_BASE_URL` | `http://localhost:8000/api` | Base URL consumida pelo cliente Axios/Vite no frontend. |
 
 ---
 
-## Testes e qualidade
+## Testes & Qualidade de Código
 
-O backend tem **44 testes unitários** cobrindo scorer, sanitizer, cleaner, normalizador, validador e contratos da API. Eles rodam sem um Postgres em execução.
+A suite de testes do backend é autocontida e roda isolada em memória:
 
 ```bash
+# Backend (Ambiente Virtual ativo)
 cd backend
-source .venv/bin/activate
+pytest -v                      # 44 testes unitários de regras, scoring e API
+python -m mypy app/            # Checagem estrita de tipos estáticos
+python -m ruff check app/      # Linter e formatação Python
 
-# Ferramentas de desenvolvimento (não são dependências de runtime)
-pip install pytest mypy ruff
-
-pytest -q
-python -m mypy app/
-python -m ruff check app/
-```
-
-Frontend:
-
-```bash
+# Frontend
 cd frontend
-npx tsc --noEmit
-npm run lint
-npm run build
+npx tsc --noEmit               # Verificação rigorosa de tipagem TypeScript
+npm run lint                   # Linter ESLint
+npm run build                  # Build de produção do Vite
 ```
 
 ---
 
-## Segurança e limites
+## Documentação Técnica do Repositório
 
-- **Ferramenta local.** A API não tem autenticação. Não exponha as portas `8000`/`8080` na internet sem uma camada de autenticação e reverse proxy.
-- **Segredos fora do Git.** `.env`, `data/`, `.venv/`, `node_modules/` e as instâncias de clientes em `templates/*/clientes/*` estão no `.gitignore`.
-- **Dados públicos.** A extração opera sobre dados cadastrais publicados pelos próprios estabelecimentos no Google Maps. Os templates incluem página de privacidade e tratamento de dados, mas a adequação jurídica final deve ser validada pelo operador.
-- **Sem fila externa.** O processamento assíncrono é in-process; reiniciar o backend interrompe jobs em andamento.
-- **Um operador.** Não há usuários, permissões ou isolamento entre contas.
-
----
-
-## Documentação
-
-As decisões e contratos completos estão em `docs/`:
+Para aprofundamento nos contratos de engenharia e regras de negócio, consulte a pasta `docs/`:
 
 - [00 — Central de Controle (MOC)](docs/00%20-%20MOC%20-%20Central%20de%20Controle.md)
-- [01 — Visão de Produto (PRD)](docs/01%20-%20PRD%20-%20Visao%20de%20Produto.md)
-- [02 — Requisitos do Sistema (SRS)](docs/02%20-%20SRS%20-%20Requisitos%20do%20Sistema.md)
-- [03 — Arquitetura e Engenharia (SDD)](docs/03%20-%20SDD%20-%20Arquitetura%20e%20Engenharia.md)
-- [04 — Modelagem de Dados (DATA)](docs/04%20-%20DATA%20-%20Modelagem%20e%20Banco.md)
-- [05 — Decisões de Arquitetura (ADR)](docs/05%20-%20ADR%20-%20Decisoes%20de%20Arquitetura.md)
-- [06 — Playbook Comercial](docs/06%20-%20PLAYBOOK%20-%20Abordagens%20e%20Vendas.md)
-- [07 — Verticais e Boilerplates](docs/07%20-%20TEMPLATES%20-%20Verticais%20e%20Boilerplates.md)
-- [08 — Runbook do Host](docs/08%20-%20RUNBOOK%20-%20Setup%20da%20Maquina.md)
-- [09 — Checklist de Execução](docs/09%20-%20TASKS%20-%20Checklist%20de%20Execucao.md)
+- [01 — Visão de Produto & ICP](docs/01%20-%20PRD%20-%20Visao%20de%20Produto.md)
+- [02 — Requisitos do Sistema & Scoring](docs/02%20-%20SRS%20-%20Requisitos%20do%20Sistema.md)
+- [03 — Arquitetura e Engenharia](docs/03%20-%20SDD%20-%20Arquitetura%20e%20Engenharia.md)
+- [04 — Modelagem de Dados & DDL](docs/04%20-%20DATA%20-%20Modelagem%20e%20Banco.md)
+- [05 — Decisões de Arquitetura (ADRs)](docs/05%20-%20ADR%20-%20Decisoes%20de%20Arquitetura.md)
+- [06 — Playbook Comercial & Scripts](docs/06%20-%20PLAYBOOK%20-%20Abordagens%20e%20Vendas.md)
+- [07 — Verticais & Boilerplates](docs/07%20-%20TEMPLATES%20-%20Verticais%20e%20Boilerplates.md)
+- [08 — Setup do Host Arch Linux](docs/08%20-%20RUNBOOK%20-%20Setup%20da%20Maquina.md)
+- [09 — Checklist de Execução & Tarefas](docs/09%20-%20TASKS%20-%20Checklist%20de%20Execucao.md)
 
-O [AGENTS.md](AGENTS.md) define as convenções de engenharia para agentes que trabalharem neste repositório.
+Diretrizes de desenvolvimento para assistentes e agentes autônomos estão consolidadas no [AGENTS.md](AGENTS.md). Especificações de design visual encontram-se no [DESIGN.md](DESIGN.md) e [PRODUCT.md](PRODUCT.md).
 
 ---
 
 ## Licença
 
-Projeto pessoal de [Gabriel Oliveira](https://github.com/gabrielolvrz). Não há licença open source definida neste repositório; entre em contato antes de reutilizar o código.
+Desenvolvido por **[Gabriel Oliveira](https://github.com/gabrielolvrz)**. Projeto de uso pessoal e fechamento comercial local. Todos os direitos reservados.

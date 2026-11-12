@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
-import { ChevronDown, Clock, ShieldAlert, X } from 'lucide-react'
+import {
+  Brain,
+  ChevronDown,
+  Clock,
+  Clock3,
+  Scale,
+  Scissors,
+  ShieldAlert,
+  X,
+} from 'lucide-react'
 
 interface ProspectingWindowSlot {
   start: number
@@ -13,7 +22,7 @@ interface ProspectingWindow {
   niches: string
   slots: ProspectingWindowSlot[]
   reason: string
-  icon: string
+  icon: typeof Scale
 }
 
 const PROSPECTING_WINDOWS: ProspectingWindow[] = [
@@ -23,7 +32,7 @@ const PROSPECTING_WINDOWS: ProspectingWindow[] = [
     niches: 'Advogados, Corretores e Clínicas Médicas',
     slots: [{ start: 9.5, end: 11.5, label: '09h30 às 11h30' }],
     reason: 'Abertura de expediente e triagem de demandas matinais antes das audiências e consultas.',
-    icon: '🏛️',
+    icon: Scale,
   },
   {
     id: 'acolhimento-psicologia',
@@ -34,7 +43,7 @@ const PROSPECTING_WINDOWS: ProspectingWindow[] = [
       { start: 14.0, end: 16.0, label: '14h00 às 16h00' },
     ],
     reason: 'Intervalos entre sessões clínicas de acolhimento.',
-    icon: '🧠',
+    icon: Brain,
   },
   {
     id: 'comercial-servicos',
@@ -45,7 +54,7 @@ const PROSPECTING_WINDOWS: ProspectingWindow[] = [
       { start: 15.0, end: 17.0, label: '15h00 às 17h00' },
     ],
     reason: 'Horários de menor fluxo no balcão e trégua nos atendimentos.',
-    icon: '✂️',
+    icon: Scissors,
   },
   {
     id: 'tarde-turnos',
@@ -53,7 +62,7 @@ const PROSPECTING_WINDOWS: ProspectingWindow[] = [
     niches: 'Profissionais em Turnos e Plantões',
     slots: [{ start: 14.5, end: 16.5, label: '14h30 às 16h30' }],
     reason: 'Janela de transição de turno e conferência calma de mensagens.',
-    icon: '⏳',
+    icon: Clock3,
   },
 ]
 
@@ -70,7 +79,6 @@ export function ProspectingWindowWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const popoverRef = useRef<HTMLDivElement>(null)
 
-  // Atualiza relógio local a cada 10 segundos
   useEffect(() => {
     const timer = setInterval(() => {
       setNow(new Date())
@@ -78,7 +86,6 @@ export function ProspectingWindowWidget() {
     return () => clearInterval(timer)
   }, [])
 
-  // Fechar no clique fora ou no Escape
   useEffect(() => {
     if (!isOpen) return
 
@@ -111,98 +118,101 @@ export function ProspectingWindowWidget() {
 
   return (
     <div className="relative inline-block" ref={popoverRef}>
-      {/* Botão de Disparo / Indicador Inteligente no Header */}
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`group flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
+        className={`group flex items-center gap-2 rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-all duration-150 ${
           isAnyActive
-            ? 'border-emerald-500/40 bg-emerald-950/40 text-emerald-300 hover:border-emerald-400 hover:bg-emerald-900/40 shadow-[0_0_15px_-3px_rgba(16,185,129,0.2)]'
+            ? 'border-emerald-500/35 bg-emerald-500/10 text-emerald-300 hover:border-emerald-400/50'
             : isNightOrEarly
-              ? 'border-stone-800 bg-stone-900/80 text-stone-400 hover:border-stone-700 hover:text-stone-300'
-              : 'border-amber-600/30 bg-stone-900/90 text-amber-300/90 hover:border-amber-500/50'
+              ? 'border-white/[0.08] bg-[#141210] text-stone-400 hover:border-white/[0.15] hover:text-stone-200'
+              : 'border-amber-500/30 bg-amber-500/10 text-amber-300 hover:border-amber-400/50'
         }`}
         title="Clique para ver o mapa completo de horários recomendados de contato"
         aria-expanded={isOpen}
         aria-haspopup="dialog"
       >
-        <span className="relative flex h-2 w-2">
+        <span className="relative flex h-1.5 w-1.5">
           {isAnyActive && (
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
           )}
           <span
-            className={`relative inline-flex h-2 w-2 rounded-full ${
+            className={`relative inline-flex h-1.5 w-1.5 rounded-full ${
               isAnyActive ? 'bg-emerald-400' : isNightOrEarly ? 'bg-stone-500' : 'bg-amber-400'
             }`}
           />
         </span>
 
-        <span className="font-sans font-semibold tracking-tight">
+        <span className="font-sans font-medium">
           {isAnyActive
-            ? `Janela Ativa: ${activeWindows[0].title}`
+            ? `Janela: ${activeWindows[0].title}`
             : isNightOrEarly
-              ? 'Fora do horário de disparo'
+              ? 'Fora de expediente'
               : 'Intervalo Comercial'}
         </span>
 
-        <span className="font-mono text-[11px] font-bold tabular-nums opacity-80 border-l border-stone-800 pl-2">
+        <span className="border-l border-white/[0.1] pl-2 font-mono text-[11px] font-semibold tabular-nums opacity-85">
           {timeFormatted}
         </span>
 
         <ChevronDown
-          className={`h-3 w-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          className={`h-3 w-3 opacity-70 transition-transform duration-150 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
         />
       </button>
 
-      {/* Popover com Grade Completa de Horários */}
       {isOpen && (
         <div
-          className="absolute left-0 mt-2 z-50 w-96 max-w-[calc(100vw-2rem)] rounded-2xl border border-stone-700 bg-stone-900/95 p-4 shadow-2xl backdrop-blur-md"
+          className="tactical-panel absolute left-0 z-50 mt-2 w-96 max-w-[calc(100vw-2rem)] p-4 shadow-2xl"
           role="dialog"
           aria-label="Grade de Horários de Prospecção"
         >
-          {/* Cabeçalho do Popover */}
-          <div className="flex items-start justify-between border-b border-stone-800 pb-3">
+          <div className="flex items-start justify-between border-b border-white/[0.07] pb-3">
             <div>
               <div className="flex items-center gap-1.5">
-                <Clock className="h-4 w-4 text-amber-500" />
-                <h3 className="font-serif text-sm font-bold text-stone-100">
+                <Clock className="h-3.5 w-3.5 text-amber-400" />
+                <h3 className="font-sans text-xs font-semibold tracking-tight text-stone-100">
                   Janelas de Prospecção Ética
                 </h3>
               </div>
               <p className="mt-0.5 text-[11px] text-stone-400">
-                Sincronizado com o relógio local do sistema ({timeFormatted})
+                Sincronizado com o relógio local ({timeFormatted})
               </p>
             </div>
 
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="rounded-lg p-1 text-stone-400 hover:bg-stone-800 hover:text-stone-200"
+              className="btn-tactical-ghost p-1"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
             </button>
           </div>
 
-          {/* Lista de Janelas */}
-          <div className="mt-3 space-y-2.5">
+          <div className="mt-3 space-y-2">
             {PROSPECTING_WINDOWS.map((windowItem) => {
               const active = isWindowActive(windowItem, decimalHour)
+              const WindowIcon = windowItem.icon
               return (
                 <div
                   key={windowItem.id}
-                  className={`rounded-xl border p-3 transition-all ${
+                  className={`rounded-lg border p-3 transition-all ${
                     active
-                      ? 'border-emerald-500/50 bg-emerald-950/25 shadow-sm'
-                      : 'border-stone-800/80 bg-stone-950/50 opacity-60 hover:opacity-85'
+                      ? 'border-emerald-500/40 bg-emerald-950/20'
+                      : 'border-white/[0.06] bg-[#0c0a09]/60 opacity-70 hover:opacity-95'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5">
-                      <span>{windowItem.icon}</span>
+                      <WindowIcon
+                        className={`h-3.5 w-3.5 ${
+                          active ? 'text-emerald-400' : 'text-amber-400/80'
+                        }`}
+                      />
                       <span
-                        className={`font-serif text-xs font-bold ${
-                          active ? 'text-emerald-300' : 'text-stone-300'
+                        className={`font-sans text-xs font-semibold ${
+                          active ? 'text-emerald-300' : 'text-stone-200'
                         }`}
                       >
                         {windowItem.title}
@@ -210,18 +220,18 @@ export function ProspectingWindowWidget() {
                     </div>
 
                     {active ? (
-                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="inline-flex items-center gap-1 rounded border border-emerald-500/40 bg-emerald-500/15 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-emerald-300">
+                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
                         ATIVA AGORA
                       </span>
                     ) : (
-                      <span className="rounded border border-stone-800 bg-stone-900 px-1.5 py-0.5 text-[10px] font-mono text-stone-500">
-                        Inativa
+                      <span className="rounded border border-white/[0.06] bg-[#141210] px-1.5 py-0.5 font-mono text-[10px] text-stone-400">
+                        Aguardando
                       </span>
                     )}
                   </div>
 
-                  <p className="mt-1 text-xs font-medium text-stone-200">
+                  <p className="mt-1 text-xs font-medium text-stone-300">
                     {windowItem.niches}
                   </p>
 
@@ -231,10 +241,10 @@ export function ProspectingWindowWidget() {
                       return (
                         <span
                           key={idx}
-                          className={`rounded px-2 py-0.5 font-mono text-[11px] font-semibold ${
+                          className={`rounded px-2 py-0.5 font-mono text-[11px] font-medium tabular-nums ${
                             slotActive
-                              ? 'bg-emerald-600/30 text-emerald-200 border border-emerald-500/40'
-                              : 'bg-stone-900 text-stone-400 border border-stone-800'
+                              ? 'border border-emerald-500/40 bg-emerald-500/20 text-emerald-200'
+                              : 'border border-white/[0.07] bg-[#141210] text-stone-400'
                           }`}
                         >
                           {s.label}
@@ -243,7 +253,7 @@ export function ProspectingWindowWidget() {
                     })}
                   </div>
 
-                  <p className="mt-1.5 text-[10px] leading-relaxed text-stone-400">
+                  <p className="mt-1.5 text-[11px] leading-relaxed text-stone-400">
                     {windowItem.reason}
                   </p>
                 </div>
@@ -251,13 +261,11 @@ export function ProspectingWindowWidget() {
             })}
           </div>
 
-          {/* Alerta de Ética Noturna */}
-          <div className="mt-3.5 flex items-start gap-2 rounded-xl border border-stone-800 bg-stone-950 p-2.5 text-[10px] text-stone-400">
-            <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-amber-500 mt-0.5" />
+          <div className="mt-3 flex items-start gap-2 rounded-lg border border-white/[0.07] bg-[#0c0a09] p-2.5 text-[11px] text-stone-400">
+            <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
             <p className="leading-relaxed">
-              <strong className="text-stone-300">Código Comercial Ético:</strong> Não faça disparos
-              entre 19h e 08h. Mensagens enviadas dentro das janelas têm até 3.8x mais respostas no
-              mesmo dia.
+              <strong className="text-stone-200">Código Comercial Ético:</strong> Evite disparos
+              entre 19h e 08h. Mensagens nas janelas ativas têm até 3.8x mais conversão.
             </p>
           </div>
         </div>

@@ -110,7 +110,6 @@ export function SearchForm({
   const categoryOptions =
     niches.length > 0 ? niches.map((n) => n.name) : [...HOMOLOGATED_CATEGORIES]
 
-  // Persiste alterações do formulário no localStorage
   useEffect(() => {
     try {
       const draft: SearchFormDraft = {
@@ -183,26 +182,25 @@ export function SearchForm({
   }
 
   return (
-    <section className="rounded-2xl border border-stone-800 bg-stone-900/95 p-5 shadow-lg">
+    <section className="tactical-panel p-4">
       <form
         onSubmit={(e) => void handleSubmit(e)}
-        className="grid grid-cols-1 gap-4 md:grid-cols-12 md:items-end"
+        className="grid grid-cols-1 gap-3.5 md:grid-cols-12 md:items-end"
       >
-        {/* Dropdown de Categoria / Nicho Homologado */}
         <div className="md:col-span-3">
           <label
             htmlFor="search-category"
-            className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-stone-400"
+            className="mb-1.5 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-stone-400"
           >
-            <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-            Vertical / Nicho
+            <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+            <span>Vertical / Nicho</span>
           </label>
           <select
             id="search-category"
             value={selectedCategory}
             disabled={isRunning}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2.5 text-sm font-medium text-stone-100 outline-none transition focus:border-amber-600 disabled:opacity-60"
+            className="input-tactical py-2.5 font-medium"
           >
             <option value="" disabled>
               Selecione o nicho / vertical...
@@ -220,10 +218,10 @@ export function SearchForm({
           <div className="md:col-span-2">
             <label
               htmlFor="custom-category"
-              className="mb-1.5 flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-amber-400"
+              className="mb-1.5 flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider text-amber-400"
             >
               <Plus className="h-3 w-3" />
-              Novo Nicho *
+              <span>Novo Nicho *</span>
             </label>
             <input
               id="custom-category"
@@ -233,19 +231,18 @@ export function SearchForm({
               placeholder="Ex: Contabilidade"
               value={customCategory}
               onChange={(e) => setCustomCategory(e.target.value)}
-              className="w-full rounded-xl border border-amber-600/60 bg-stone-950 px-3.5 py-2.5 text-sm text-stone-100 placeholder-stone-500 outline-none transition focus:border-amber-500 disabled:opacity-60"
+              className="input-tactical border-amber-500/40 py-2.5"
             />
           </div>
         )}
 
-        {/* Input de Cidade */}
         <div className={isCustomMode ? 'md:col-span-2' : 'md:col-span-3'}>
           <label
             htmlFor="search-city"
-            className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-stone-400"
+            className="mb-1.5 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-stone-400"
           >
-            <MapPin className="h-3.5 w-3.5 text-amber-500" />
-            Cidade *
+            <MapPin className="h-3.5 w-3.5 text-amber-400" />
+            <span>Cidade *</span>
           </label>
           <input
             id="search-city"
@@ -255,15 +252,14 @@ export function SearchForm({
             placeholder="Ex: Uberlândia"
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2.5 text-sm text-stone-100 placeholder-stone-500 outline-none transition focus:border-amber-600 disabled:opacity-60"
+            className="input-tactical py-2.5"
           />
         </div>
 
-        {/* Input de Bairro */}
         <div className={isCustomMode ? 'md:col-span-2' : 'md:col-span-3'}>
           <label
             htmlFor="search-neighborhood"
-            className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400"
+            className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-stone-400"
           >
             Bairro / Região <span className="text-stone-500">(opcional)</span>
           </label>
@@ -274,38 +270,36 @@ export function SearchForm({
             placeholder="Ex: Centro, Santa Mônica"
             value={neighborhood}
             onChange={(e) => setNeighborhood(e.target.value)}
-            className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3.5 py-2.5 text-sm text-stone-100 placeholder-stone-500 outline-none transition focus:border-amber-600 disabled:opacity-60"
+            className="input-tactical py-2.5"
           />
         </div>
 
-        {/* Botão de Envio */}
         <div className="md:col-span-3">
           <button
             type="submit"
             disabled={isRunning || !effectiveCategory || !city.trim()}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-600 px-5 py-2.5 text-sm font-bold text-stone-950 shadow-md transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
+            className="btn-tactical-primary w-full py-2.5 text-xs"
           >
             <Search className="h-4 w-4" />
-            {isRunning ? 'Varrendo Maps...' : 'Puxar Leads / Carregar'}
+            <span>{isRunning ? 'Varrendo Maps...' : 'Puxar Leads / Carregar'}</span>
           </button>
         </div>
       </form>
 
-      {/* Barra inferior: Cache-First Status e Revalidação */}
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-stone-800 pt-3.5 text-xs">
-        <div className="flex flex-wrap items-center gap-3">
+      <div className="mt-3.5 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.07] pt-3 text-xs">
+        <div className="flex flex-wrap items-center gap-2.5">
           {activeSearch ? (
             <div className="flex flex-wrap items-center gap-2 text-stone-300">
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-stone-800 bg-stone-950 px-2.5 py-1 font-mono text-xs tabular-nums text-stone-200">
-                <Clock className="h-3.5 w-3.5 text-amber-500" />
-                Sincronizado em{' '}
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.07] bg-[#0c0a09] px-2.5 py-1 font-mono text-[11px] tabular-nums text-stone-300">
+                <Clock className="h-3.5 w-3.5 text-amber-400" />
+                <span>Sincronizado em</span>
                 <strong className="text-stone-100">
                   {formatTimestamp(activeSearch.last_scraped_at ?? activeSearch.created_at)}
-                </strong>{' '}
-                ({activeSearch.total_leads} leads)
+                </strong>
+                <span className="text-stone-400">({activeSearch.total_leads} leads)</span>
               </span>
               {activeSearch.cached && (
-                <span className="rounded-md border border-emerald-600/35 bg-emerald-600/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-400">
+                <span className="rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[11px] font-medium text-emerald-400">
                   Cache-First (&lt;100ms)
                 </span>
               )}
@@ -335,7 +329,7 @@ export function SearchForm({
                   onSelectSavedSearch(found)
                 }
               }}
-              className="rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-1.5 font-mono text-xs text-stone-200 outline-none focus:border-amber-600 disabled:opacity-50"
+              className="input-tactical w-auto py-1.5 font-mono text-xs tabular-nums"
             >
               <option value="" disabled>
                 Histórico de varreduras ({savedSearches.length})
@@ -357,10 +351,10 @@ export function SearchForm({
                   disabled={isRunning}
                   onClick={() => onRevalidateUrls(activeSearch.search_id)}
                   title="Checa novamente todas as URLs (ignorando leads com Override Manual)"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-stone-700 bg-stone-950 px-3 py-1.5 font-semibold text-stone-300 transition hover:border-amber-600/60 hover:text-amber-400 disabled:opacity-50"
+                  className="btn-tactical-secondary py-1.5"
                 >
-                  <Globe className="h-3.5 w-3.5 text-amber-500" />
-                  Revalidar Sites
+                  <Globe className="h-3.5 w-3.5 text-amber-400" />
+                  <span>Revalidar Sites</span>
                 </button>
               )}
 
@@ -369,10 +363,10 @@ export function SearchForm({
                 disabled={isRunning}
                 onClick={handleForceResync}
                 title="Roda nova coleta no Google Maps preservando notas, funil e overrides"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-stone-700 bg-stone-950 px-3 py-1.5 font-semibold text-stone-300 transition hover:border-emerald-600/60 hover:text-emerald-400 disabled:opacity-50"
+                className="btn-tactical-secondary py-1.5"
               >
-                <RefreshCw className={`h-3.5 w-3.5 ${isRunning ? 'animate-spin' : ''}`} />
-                Re-escanear Maps
+                <RefreshCw className={`h-3.5 w-3.5 text-emerald-400 ${isRunning ? 'animate-spin' : ''}`} />
+                <span>Re-escanear Maps</span>
               </button>
             </>
           )}
