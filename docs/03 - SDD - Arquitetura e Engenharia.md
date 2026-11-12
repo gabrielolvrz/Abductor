@@ -219,7 +219,7 @@ O download retorna um arquivo **CSV** (34 colunas). O backend deve consumi-lo co
 A rota executa apenas `SELECT job_status, progress_phase, started_at, total_leads, ... FROM searches WHERE id = :search_id`. Ela **não** consulta o `gosom`, **não** baixa CSV e **não** dispara ingestão, eliminando condições de corrida de pollings concorrentes.
 
 > [!TIP]
-> **Watchdog de Timeout Passivo:** Caso `job_status == 'RUNNING'` e `NOW() - started_at > INTERVAL '180 seconds'` (avaliado com base no início do ciclo ativo `started_at`, permitindo re-sincronizações sem falsos disparos), a rota atualiza automaticamente o banco para `job_status = 'FAILED'`, `progress_phase = 'FAILED'` e devolve status de erro, destravando a interface sem exigir intervenção no terminal.
+> **Watchdog de Timeout Passivo:** Caso `job_status == 'RUNNING'` e `NOW() - started_at > JOB_TIMEOUT_SECONDS * INTERVAL '1 second'` (padrão: 180 segundos; avaliado com base no início do ciclo ativo `started_at`, permitindo re-sincronizações sem falsos disparos), a rota atualiza automaticamente o banco para `job_status = 'FAILED'`, `progress_phase = 'FAILED'` e devolve status de erro, destravando a interface sem exigir intervenção no terminal.
 > 
 > As transições de `progress_phase` gravadas no banco refletem:
 > `IDLE` ➔ `SCRAPING` (Maps) ➔ `PARSING` (CSV) ➔ `VALIDATING` (httpx) ➔ `SCORING` (Regras) ➔ `COMPLETED` / `FAILED`.
@@ -474,8 +474,8 @@ O pipeline de ingestão recebe o CSV do `gosom` e executa as seguintes etapas se
 
 1. **Falha do Container ou CAPTCHA:** Se o processo do `gosom` for interrompido prematuramente, o FastAPI recupera os dados parciais que já foram gravados no banco interno do scraper, salvando o status `PARTIAL`.
 2. **Watchdog de Timeout de Proteção:**
-   * **No Job Runner:** Se a chamada ao `gosom` exceder 180 segundos sem resposta, a task força o encerramento e grava `job_status = 'FAILED'`, `progress_phase = 'FAILED'`.
-   * **Na Rota de Polling:** Se a task do backend morrer (devido a reload de código do Uvicorn ou crash de sistema), a rota `GET /api/searches/{id}/status` detecta que a busca está em `RUNNING` há mais de 180s com base em `started_at` (`NOW() - started_at > INTERVAL '180 seconds'`) e força a atualização no banco para `FAILED`, recuperando o sistema automaticamente sem travar re-sincronizações.
+   * **No Job Runner:** Se a chamada ao `gosom` exceder `JOB_TIMEOUT_SECONDS` (padrão: 180 segundos) sem resposta, a task força o encerramento e grava `job_status = 'FAILED'`, `progress_phase = 'FAILED'`.
+   * **Na Rota de Polling:** Se a task do backend morrer (devido a reload de código do Uvicorn ou crash de sistema), a rota `GET /api/searches/{id}/status` detecta que a busca está em `RUNNING` além de `JOB_TIMEOUT_SECONDS` (padrão: 180s) com base em `started_at` (`NOW() - started_at > :timeout_seconds * INTERVAL '1 second'`) e força a atualização no banco para `FAILED`, recuperando o sistema automaticamente sem travar re-sincronizações.
     
       
     

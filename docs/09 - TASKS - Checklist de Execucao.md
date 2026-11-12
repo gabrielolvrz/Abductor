@@ -122,7 +122,7 @@ Objetivo: Estruturar as rotas HTTP, o gerenciamento de jobs em background, watch
 - [x] Criar endpoints de Busca (`routers/searches.py`):
   - [x] `POST /api/searches`: Verifica cache primário; se não existir, cria a busca, retorna `202 Accepted` e dispara o ciclo do job em `asyncio.create_task`.
   - [x] `GET /api/searches/{id}/status`: Retorna `job_status`, `progress_phase` (`IDLE`, `SCRAPING`, `PARSING`, `VALIDATING`, `SCORING`, `COMPLETED`, `FAILED`) e tempo decorrido.
-  - [x] Implementar **Watchdog Passivo de Timeout** na rota de status: se `RUNNING` há mais de 180s com base em `started_at` (`NOW() - started_at > INTERVAL '180 seconds'`), atualiza para `FAILED` no banco e destrava a UI.
+  - [x] Implementar **Watchdog Passivo de Timeout** na rota de status: se `RUNNING` além de `JOB_TIMEOUT_SECONDS` (padrão: 180s) com base em `started_at` (`NOW() - started_at > :timeout_seconds * INTERVAL '1 second'`), atualiza para `FAILED` no banco e destrava a UI.
   - [x] `GET /api/searches/{id}/leads`: Retorna leads vinculados com subquery `EXISTS` global para `is_shared_phone`.
 - [x] Criar pipeline de ingestão (`services/ingestion.py`):
   - [x] Filtrar estabelecimentos contendo termos de `blocked_terms_in_name` do `rules.json` antes de validar redes.

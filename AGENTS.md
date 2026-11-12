@@ -66,7 +66,7 @@ O **Abductor** é uma plataforma local de inteligência de prospecção e fecham
 
 ## 3. Guardrails Inegociáveis (O Que NUNCA Fazer)
 
-1. **NÃO use Celery, Redis ou filas externas:** A execução assíncrona do backend é estritamente **in-process via `asyncio.create_task` com Watchdog Passivo** de timeout de 180s (conforme **ADR 010**).
+1. **NÃO use Celery, Redis ou filas externas:** A execução assíncrona do backend é estritamente **in-process via `asyncio.create_task` com Watchdog Passivo** de timeout configurável em `JOB_TIMEOUT_SECONDS` (padrão: 180s, conforme **ADR 010**).
 2. **NÃO use Selenium, Puppeteer ou Playwright no backend:** A extração do Google Maps é delegada 100% para o container do `gosom` via REST na porta `8080` (conforme **ADR 002**).
 3. **NÃO viole o NoCoW no Btrfs:** As pastas `data/postgres` e `data/gosom` exigem o atributo `+C` (`chattr +C`) para evitar fragmentação e degradação de I/O (**ADR 007** e **04 - DATA**).
 4. **NÃO quebre o Hard Gate de Lead Scoring:** Se `website_status == 'ATIVO'`, o `score` DEVE ser forçado a `0` absoluto. Nunca pontue negócios com sites convencionais ativos (**ADR 008** e **02 - SRS**).
@@ -194,7 +194,7 @@ npm run build
 - **Termos Institucionais Bloqueados:** Descarte no CSV registros contendo termos de `blocked_terms_in_name` (_Defensoria_, _OAB_, _Tribunal_, _Fórum_, _Sindicato_).
 - **Watchdog Passivo na Rota de Status (`GET /api/searches/{id}/status`):**
 - A rota executa apenas `SELECT`.
-- Se `job_status == 'RUNNING'` e `NOW() - started_at > INTERVAL '180 seconds'`, força atualização no banco para `job_status = 'FAILED'`, `progress_phase = 'FAILED'` e destrava o frontend.
+- Se `job_status == 'RUNNING'` e `NOW() - started_at > JOB_TIMEOUT_SECONDS * INTERVAL '1 second'` (padrão: 180s), força atualização no banco para `job_status = 'FAILED'`, `progress_phase = 'FAILED'` e destrava o frontend.
 
 ---
 

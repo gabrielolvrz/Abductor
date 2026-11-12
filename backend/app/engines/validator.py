@@ -8,7 +8,8 @@ Conforme especificado em docs/03 - SDD e docs/02 - SRS:
 - Códigos 401 e 403 são interpretados como ATIVO (proteção WAF/Cloudflare) ativando Hard Gate.
 - Erros de conexão, timeouts, 404 e 5xx são classificados como QUEBRADO.
 - Ausência de URL classifica como SEM_SITE.
-- Semáforo concorrente limitado a 30 conexões simultâneas (asyncio.Semaphore(30)).
+- Semáforo e timeout configuráveis via VALIDATOR_MAX_CONCURRENCY e
+  VALIDATOR_TIMEOUT_SECONDS (padrões: 30 conexões e 4 s).
 """
 
 import asyncio
@@ -17,6 +18,8 @@ from urllib.parse import urlparse
 
 import httpx
 import tldextract
+
+from app.core.config import settings
 
 # Blocklist de agregadores identificados sem requisição de rede
 IMPROVISED_DOMAINS: set[str] = {
@@ -42,6 +45,13 @@ DESKTOP_HEADERS: dict[str, str] = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
 }
+
+
+def _validator_limits() -> tuple[int, float]:
+    """Retorna (concorrência, timeout total) saneados a partir das settings."""
+    concurrency = max(1, settings.VALIDATOR_MAX_CONCURRENCY)
+    timeout_seconds = max(0.1, settings.VALIDATOR_TIMEOUT_SECONDS)
+    return concurrency, timeout_seconds
 
 
 def is_improvised_url(url: str) -> bool:
@@ -119,11 +129,17 @@ async def check_single_url(
 
 async def check_url(url: str | None) -> tuple[str, int]:
     """Helper autônomo para validação pontual de uma URL com cliente isolado."""
+    max_concurrency, timeout_seconds = _validator_limits()
     semaphore = asyncio.Semaphore(1)
-    limits = httpx.Limits(max_connections=5, max_keepalive_connections=2)
+    limits = httpx.Limits(
+        max_connections=min(5, max_concurrency),
+        max_keepalive_connections=min(2, max_concurrency),
+    )
     async with httpx.AsyncClient(
         headers=DESKTOP_HEADERS,
-        timeout=httpx.Timeout(4.0, connect=3.0),
+        timeout=httpx.Timeout(
+            timeout_seconds, connect=min(3.0, timeout_seconds)
+        ),
         follow_redirects=True,
         verify=False,
         limits=limits,
@@ -139,12 +155,18 @@ async def validate_leads_urls(raw_leads: list[dict[str, Any]]) -> list[dict[str,
     if not raw_leads:
         return raw_leads
 
-    semaphore = asyncio.Semaphore(30)
-    limits = httpx.Limits(max_connections=30, max_keepalive_connections=20)
+    max_concurrency, timeout_seconds = _validator_limits()
+    semaphore = asyncio.Semaphore(max_concurrency)
+    limits = httpx.Limits(
+        max_connections=max_concurrency,
+        max_keepalive_connections=min(20, max_concurrency),
+    )
 
     async with httpx.AsyncClient(
         headers=DESKTOP_HEADERS,
-        timeout=httpx.Timeout(4.0, connect=3.0),
+        timeout=httpx.Timeout(
+            timeout_seconds, connect=min(3.0, timeout_seconds)
+        ),
         follow_redirects=True,
         verify=False,
         limits=limits,

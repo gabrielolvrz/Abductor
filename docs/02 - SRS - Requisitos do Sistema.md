@@ -151,7 +151,7 @@ O backend executa a classificação de URL seguindo esta ordem estrita:
 * **[RNF01] Execução Totalmente Local:** O ecossistema completo deve funcionar na máquina local sem dependência de serviços externos pagos ou instâncias em nuvem.
 * **[RNF02] Isolamento e Persistência de Dados:** O banco de dados PostgreSQL 16 deve ser executado em container Docker, com volume persistente em pasta local configurada com desativação de Copy-on-Write (`chattr +C ./data/postgres`) para compatibilidade com o sistema Btrfs.
 * **[RNF03] Performance de Validação de Rede:** O motor assíncrono em Python deve conseguir validar o status de 50 URLs externas em menos de 8 segundos no host local.
-* **[RNF04] Confiabilidade de Jobs e Watchdog de Timeout:** O backend deve ser blindado contra tasks zumbis. O endpoint de status executa checagem passiva: se o job estiver em `RUNNING` há mais de 180 segundos em relação ao início da execução atual (`NOW() - started_at > INTERVAL '180 seconds'`), o banco é automaticamente atualizado para `FAILED` com mensagem de timeout, liberando a interface.
+* **[RNF04] Confiabilidade de Jobs e Watchdog de Timeout:** O backend deve ser blindado contra tasks zumbis. O endpoint de status executa checagem passiva: se o job estiver em `RUNNING` além de `JOB_TIMEOUT_SECONDS` (padrão: 180 segundos) em relação ao início da execução atual (`NOW() - started_at > :timeout_seconds * INTERVAL '1 second'`), o banco é automaticamente atualizado para `FAILED` com mensagem de timeout, liberando a interface.
 * **[RNF05] Interface Leve e Sem Travamentos:** O frontend deve aplicar renderização paginada ou virtualizada caso uma busca retorne mais de 100 leads, mantendo a rolagem fluida no monitor Ultrawide a 75 Hz.
 
 ---

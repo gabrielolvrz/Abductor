@@ -5,7 +5,7 @@ set -euo pipefail
 # 🛸 ABDUCTOR — Launcher Unificado do Cockpit de Prospecção & Vendas
 # ==============================================================================
 
-ABDUCTOR_DIR="/home/gabrielolvr/Projects/personal/Abductor"
+ABDUCTOR_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ABDUCTOR_DIR" || exit 1
 
 echo "🛸 [1/3] Iniciando infraestrutura Docker (PostgreSQL 16 + gosom)..."
@@ -39,7 +39,7 @@ if command -v xdg-open >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}${DISPLAY:-
   xdg-open "http://localhost:3000" >/dev/null 2>&1 &
 fi
 
-cd "/home/gabrielolvr/Projects/personal/Abductor/templates" || exit 1
+cd "$ABDUCTOR_DIR/templates" || exit 1
 
 cat << 'EOF'
 

@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import settings
 from app.core.database import get_db
 from app.core.normalizer import normalize_search_param
 from app.schemas.lead_dto import LeadResponse
@@ -79,7 +80,7 @@ PASSIVE_WATCHDOG_SQL = text(
         progress_phase = 'FAILED'
     WHERE id = :search_id
       AND job_status = 'RUNNING'
-      AND (NOW() - started_at) > INTERVAL '180 seconds'
+      AND (NOW() - started_at) > (INTERVAL '1 second' * :timeout_seconds)
     RETURNING id;
     """
 )
@@ -191,7 +192,13 @@ async def create_or_get_search(
 
     if existing_id is not None:
         # Aplica watchdog passivo antes de avaliar o estado atual
-        await db.execute(PASSIVE_WATCHDOG_SQL, {"search_id": existing_id})
+        await db.execute(
+            PASSIVE_WATCHDOG_SQL,
+            {
+                "search_id": existing_id,
+                "timeout_seconds": settings.JOB_TIMEOUT_SECONDS,
+            },
+        )
         await db.commit()
 
         status_res = await db.execute(
@@ -213,7 +220,7 @@ async def create_or_get_search(
                 leads=leads,
             )
 
-        # Job já em andamento dentro da janela de 180s
+        # Job já em andamento dentro da janela configurada
         if search_row["job_status"] == "RUNNING" and not payload.force_sync:
             response.status_code = status.HTTP_202_ACCEPTED
             return SearchStatusResponse(
@@ -290,13 +297,18 @@ async def get_search_status(
     search_id: uuid.UUID,
     db: DbSession,
 ) -> SearchStatusResponse:
-    """Consulta de polling de status com Watchdog Passivo de Timeout (180s).
+    """Consulta de polling de status com Watchdog Passivo de Timeout.
 
-    Executa apenas SELECT (precedido da verificação passiva de timeout em SQL).
-    Não consulta o gosom nem faz download de CSV na rota de status.
+    O limite vem de JOB_TIMEOUT_SECONDS (padrão: 180s). Executa apenas SELECT
+    (precedido da verificação passiva de timeout em SQL). Não consulta o gosom
+    nem faz download de CSV na rota de status.
     """
     watchdog_res = await db.execute(
-        PASSIVE_WATCHDOG_SQL, {"search_id": search_id}
+        PASSIVE_WATCHDOG_SQL,
+        {
+            "search_id": search_id,
+            "timeout_seconds": settings.JOB_TIMEOUT_SECONDS,
+        },
     )
     if watchdog_res.scalar_one_or_none() is not None:
         await db.commit()
@@ -311,9 +323,10 @@ async def get_search_status(
 
     row_dict = dict(row)
     msg = (
-        "Timeout de 180s excedido (Watchdog Passivo acionado)."
+        f"Timeout de {settings.JOB_TIMEOUT_SECONDS}s excedido "
+        "(Watchdog Passivo acionado)."
         if row_dict["job_status"] == "FAILED"
-        and row_dict["elapsed_seconds"] > 180
+        and row_dict["elapsed_seconds"] > settings.JOB_TIMEOUT_SECONDS
         else None
     )
     return SearchStatusResponse(**row_dict, message=msg)

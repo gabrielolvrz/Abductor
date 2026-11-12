@@ -147,6 +147,9 @@ CORS_ORIGINS=http://localhost:3000
 # Concorrência HTTP para Validação de Sites
 VALIDATOR_MAX_CONCURRENCY=30
 VALIDATOR_TIMEOUT_SECONDS=4.0
+
+# Timeout máximo de um job de scraping e do watchdog passivo
+JOB_TIMEOUT_SECONDS=180
 ```
 
 ## 5. Setup do Backend (FastAPI + Python 3.12 via `mise`)

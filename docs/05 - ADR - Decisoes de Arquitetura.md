@@ -262,7 +262,7 @@ Por outro lado, usar apenas `asyncio.create_task` em memória no FastAPI trazia 
 
 ### Decisão
 Manter a execução das tarefas assíncronas **in-process via `asyncio.create_task` nativo** no FastAPI, combinado com um **Watchdog Passivo de Timeout** implementado no endpoint de status (`GET /api/searches/{id}/status`) e sincronização de `progress_phase` no PostgreSQL.
-Se uma busca estiver marcada como `RUNNING` por mais de 180 segundos em relação ao início do ciclo atual (`NOW() - started_at > INTERVAL '180 seconds'`), o endpoint de consulta força a transição de estado para `FAILED` diretamente no banco, destravando a interface sem dependência de serviços externos e sem matar re-sincronizações legítimas.
+Se uma busca estiver marcada como `RUNNING` além de `JOB_TIMEOUT_SECONDS` (padrão: 180 segundos) em relação ao início do ciclo atual (`NOW() - started_at > :timeout_seconds * INTERVAL '1 second'`), o endpoint de consulta força a transição de estado para `FAILED` diretamente no banco, destravando a interface sem dependência de serviços externos e sem matar re-sincronizações legítimas.
 
 ### Consequências
 * **Positivas:**

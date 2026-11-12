@@ -119,7 +119,7 @@ async def run_scraping_job(search_id: uuid.UUID) -> None:
             )
             await session.commit()
 
-        # 2. Polling de conclusão no gosom (respeitando watchdog de 180s)
+        # 2. Polling de conclusão no gosom (respeitando o timeout configurado)
         start_monotonic = time.monotonic()
         completed_cleanly = False
 
